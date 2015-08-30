@@ -1,0 +1,10 @@
+Goal: 
+    >Separate the code into a core and a exercice specific part. 
+    >The core should contain the basic general A* algorithm, while the specific part should contain the GUI, the input manager, and the exercice specifics. 
+    >The input dialogue can be run in command line, but each shortest path problem should be run in a GUI window. 
+    >The window could have buttons for best-first, depth-first, and breadth-first; And when all of these have run, comparisons should be printed in the terminal. 
+    >The GUI should use squares, circles, and three colors pluss black and white.
+
+Problems: 
+    >How does the A* core communicate with the GUI? 
+    >How general should the A* core be?
