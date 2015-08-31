@@ -6,6 +6,7 @@ import os
 import re
 import platform
 import sys
+import a_star
 
 #The main function runs the basic terminal communication
 def main():
@@ -14,7 +15,7 @@ def main():
     os.system("clear")
     flag = True
     f = open("input.txt", "r")
-    fileList = []
+    file_list = []
 
     #Print welcome message including the premade grid information. Save the grid information as a list
     print """Project Module #1:
@@ -24,7 +25,7 @@ Premade problems are:"""
     
     print f.name
     for line in f.readlines():
-        fileList.append(line)
+        file_list.append(line)
         sys.stdout.write(line)
     
     print """
@@ -42,24 +43,24 @@ Premade problems are:"""
 
             #Get the correct premade grid and add the numbers to a list
             number = the_input[4:]
-            lineList = map(int, re.findall(r'\d+', fileList[int(number)]))
+            line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
 
             #Add the walls to a list
             walls = []
-            for wallStart in range(7, len(lineList), 4):
+            for wall_start in range(7, len(line_list), 4):
                 wall = []
-                for wallNumber in range(wallStart, wallStart+4):
-                    wall.append(lineList[wallNumber])
+                for wall_number in range(wall_start, wall_start+4):
+                    wall.append(line_list[wall_number])
                 walls.append(wall)
              
             #Initialize premade grid, and gui; If the grid is not too large
-            if lineList[1] <= 50 and lineList[2] <=30:
-                premadeGrid = Grid(columns=lineList[1], rows=lineList[2], aPosX=lineList[3], aPosY=lineList[4], bPosX=lineList[5], bPosY=lineList[6], walls= walls)
-                premadeGridGui = GUI(grid = premadeGrid)
-                _run_gui(premadeGridGui)
+            if line_list[1] <= 50 and line_list[2] <=30:
+                premade_grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
+                premade_grid_gui = GUI(grid = premade_grid)
+                _run_gui(premade_grid_gui)
             else: print "Error: Grid too large"
-            #flag = False
-            #f.close()
+            flag = False
+            f.close()
 
         #Run a custom grid
         elif the_input == "Run new":
@@ -70,9 +71,9 @@ Premade problems are:"""
 
             #Initialize custom grid, and gui; If the grid is not too large
             if size[0] <= 50 and size[1] <= 30:
-                customGrid = Grid(columns=size[0],rows=size[1], aPosX=start[0], aPosY=start[1], bPosX=end[0], bPosY=end[1], walls=walls)
-                customGridGui = GUI(grid = customGrid)
-                _run_gui(customGridGui)
+                custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
+                custom_grid_gui = GUI(grid = custom_grid)
+                _run_gui(custom_grid_gui)
             else: print "Error: Grid too large"
 
         #Exit the loop
@@ -91,25 +92,25 @@ def _run_gui(grid):
 
 #Node class
 class Node:
-    def __init__(self, tag, g, h, f, posX, posY, parent, kids):
+    def __init__(self, tag, g, h, f, pos_x, pos_y, parent, kids):
         self.tag = tag
         self.g = g
         self.h = h
         self.f = f
-        self.posX = posX
-        self.posY = posY
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.parent = parent
         self.kids = kids
 
 #Grid class
 class Grid:
-    def __init__(self, columns, rows, aPosX, aPosY, bPosX, bPosY, walls):
+    def __init__(self, columns, rows, a_pos_x, a_pos_y, b_pos_x, b_pos_y, walls):
         self.columns = columns
         self.rows = rows
-        self.aPosX = aPosX
-        self.aPosY = aPosY
-        self.bPosX = bPosX
-        self.bPosY = bPosY
+        self.a_pos_x = a_pos_x
+        self.a_pos_y = a_pos_y
+        self.b_pos_x = b_pos_x
+        self.b_pos_y = b_pos_y
         self.walls = walls
          
         #Initialize the nodes in the grid
@@ -117,12 +118,12 @@ class Grid:
         for c in range(columns):
             row = []
             for r in range(rows):
-                row.append(Node(tag="O", g=None, h=None, f=None, posX=c, posY=r, parent=None, kids=None))
+                row.append(Node(tag="O", g=None, h=None, f=None, pos_x=c, pos_y=r, parent=None, kids=None))
             grid.append(row)
         
         #Set node tags
-        grid[aPosX][aPosY].tag = "A"
-        grid[bPosX][bPosY].tag = "B"
+        grid[a_pos_x][a_pos_y].tag = "A"
+        grid[b_pos_x][b_pos_y].tag = "B"
         for wall in walls:
             for c in range(wall[0], wall[0]+wall[2]):
                 for r in range(wall[1], wall[1]+wall[3]):
@@ -182,7 +183,7 @@ class GUI(tk.Tk):
     
     #Run best-first search
     def best_first_search(self):
-        raise NotImplementedError
+        search = a_star.AStar(self.grid, "best-first", "manhattan distance")
 
     #Run depth-first search
     def depth_first_search(self):
