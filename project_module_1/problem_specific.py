@@ -137,9 +137,9 @@ class Grid:
 class GUI(tk.Tk):
 
     #Initialize GUI as itself and as Tkinter
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args)
-        grid = kwargs.pop("grid")
+    def __init__(self, grid):
+        tk.Tk.__init__(self)
+        self.grid = grid
         
         #Create the menu
         menubar = tk.Menu(self)
@@ -184,6 +184,7 @@ class GUI(tk.Tk):
     #Run best-first search
     def best_first_search(self):
         search = a_star.AStar(self.grid, "best-first", "manhattan distance")
+        search.complete_solver()
 
     #Run depth-first search
     def depth_first_search(self):
