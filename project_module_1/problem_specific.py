@@ -52,10 +52,12 @@ Premade problems are:"""
                     wall.append(lineList[wallNumber])
                 walls.append(wall)
              
-            #Initialize premade grid, and gui
-            premadeGrid = Grid(rows=lineList[2], columns=lineList[1], aPosX=lineList[3], aPosY=lineList[4], bPosX=lineList[5], bPosY=lineList[6], walls= walls)
-            premadeGridGui = GUI(grid = premadeGrid)
-            _run_gui(premadeGridGui)
+            #Initialize premade grid, and gui; If the grid is not too large
+            if lineList[1] <= 50 and lineList[2] <=30:
+                premadeGrid = Grid(columns=lineList[1], rows=lineList[2], aPosX=lineList[3], aPosY=lineList[4], bPosX=lineList[5], bPosY=lineList[6], walls= walls)
+                premadeGridGui = GUI(grid = premadeGrid)
+                _run_gui(premadeGridGui)
+            else: print "Error: Grid too large"
             #flag = False
             #f.close()
 
@@ -66,10 +68,12 @@ Premade problems are:"""
             end = input("End position: ")
             walls = input("Wall positions: ")
 
-            #Initialize custom grid, and gui
-            customGrid = Grid(rows=size[1], columns=size[0], aPosX=start[0], aPosY=start[1], bPosX=end[0], bPosY=end[1], walls=walls)
-            customGridGui = GUI(grid = customGrid)
-            _run_gui(customGridGui)
+            #Initialize custom grid, and gui; If the grid is not too large
+            if size[0] <= 50 and size[1] <= 30:
+                customGrid = Grid(columns=size[0],rows=size[1], aPosX=start[0], aPosY=start[1], bPosX=end[0], bPosY=end[1], walls=walls)
+                customGridGui = GUI(grid = customGrid)
+                _run_gui(customGridGui)
+            else: print "Error: Grid too large"
 
         #Exit the loop
         elif the_input == "Exit":
@@ -99,9 +103,9 @@ class Node:
 
 #Grid class
 class Grid:
-    def __init__(self, rows, columns, aPosX, aPosY, bPosX, bPosY, walls):
-        self.rows = rows
+    def __init__(self, columns, rows, aPosX, aPosY, bPosX, bPosY, walls):
         self.columns = columns
+        self.rows = rows
         self.aPosX = aPosX
         self.aPosY = aPosY
         self.bPosX = bPosX
