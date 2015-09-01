@@ -166,10 +166,8 @@ class Grid:
     def calculate_arc_cost(self, C, P):
         return 1
 
-#GUI is a subclass of Tkinter
+#GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-
-    #Initialize GUI as itself and as Tkinter
     def __init__(self, grid):
         tk.Tk.__init__(self)
         self.grid = grid
@@ -219,7 +217,8 @@ class GUI(tk.Tk):
     #Run best-first search
     def best_first_search(self):
         search = a_star.AStar(self.grid, "best-first", "manhattan distance")
-        print(search.complete_solver())
+        print(search.incremental_solver())
+        print(search.incremental_solver())
 
     #Run breadth-first search
     def breadth_first_search(self):
