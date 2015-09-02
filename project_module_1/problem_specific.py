@@ -1,12 +1,12 @@
 #Written by johannsl 2015
 
-import Tkinter as tk
-import random
-import os
-import re
-import platform
-import sys
 import a_star
+import os
+import platform
+import random
+import re
+import sys
+import Tkinter as tk
 
 #The main function runs the basic terminal communication
 def main():
@@ -34,10 +34,9 @@ Premade problems are:"""
 'Exit' ends the script
     """
 
-    #This is the mainloop - It reads input from the user
+    #This is the mainloop - It reads input from the user and executes the commands
     while flag:
-        #the_input = raw_input(" > ")
-        the_input = "Run 2"
+        the_input = raw_input(" > ")
         
         #Run a premade grid
         if the_input != "Run new" and the_input.startswith("Run"):
@@ -55,13 +54,17 @@ Premade problems are:"""
                 walls.append(wall)
              
             #Initialize premade grid, and gui; If the grid is not too large
-            if line_list[1] <= 50 and line_list[2] <=30:
+            if line_list[1] <= 250 and line_list[2] <= 150:
                 premade_grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
-                premade_grid_gui = GUI(grid = premade_grid)
-                #_run_gui(premade_grid_gui)
+                
+                #Scale down the size if the grid is too large
+                if line_list[1] > 50 and line_list[2] > 30:
+                    size = 25/5
+                else:
+                    size = 25
+                premade_grid_gui = GUI(grid=premade_grid, cellsize=size)
+                _run_gui(premade_grid_gui)
             else: print "Error: Grid too large"
-            flag = False
-            f.close()
 
         #Run a custom grid
         elif the_input == "Run new":
@@ -71,9 +74,14 @@ Premade problems are:"""
             walls = input("Wall positions: ")
 
             #Initialize custom grid, and gui; If the grid is not too large
-            if size[0] <= 50 and size[1] <= 30:
+            if size[0] <= 250 and size[1] <= 150:
                 custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
-                custom_grid_gui = GUI(grid = custom_grid)
+                #Scale down the size if the grid is too large
+                if size[0] > 50 and size[1] > 30:
+                    size = 25/5
+                else:
+                    size = 25
+                custom_grid_gui = GUI(grid=custom_grid, cellsize=size)
                 _run_gui(custom_grid_gui)
             else: print "Error: Grid too large"
 
@@ -130,17 +138,7 @@ class Grid:
             for c in range(wall[0], wall[0]+wall[2]):
                 for r in range(wall[1], wall[1]+wall[3]):
                     grid[c][r].tag = "X"
-        
-        #Initialize the grid of nodes and flip the grid so it fits the exercice
-        #ISSUE: When to flip the board?
-        #grid = zip(*grid)[::-1]
-
-        for r in range(rows):
-            row = []
-            for c in range(columns):
-                row.append(grid[c][r].tag)
-            print row
-
+       
     #Find succeessors to a node in the grid and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
@@ -168,70 +166,113 @@ class Grid:
 
 #GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-    def __init__(self, grid):
+    def __init__(self, grid, cellsize):
         tk.Tk.__init__(self)
         self.grid = grid
+        self.search = None
+        self.speed = 50
         
         #Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
         execmenu.add_command(label="Best-first search", command=self.best_first_search)
-        execmenu.add_separator()
         execmenu.add_command(label="Breadth-first search", command=self.breadth_first_search)
-        execmenu.add_separator()
         execmenu.add_command(label="Depth-first search", command=self.depth_first_search)
-        execmenu.add_separator()
         menubar.add_cascade(label="Exec", menu=execmenu)
         self.config(menu=menubar)
+
+        #?Should a speed menu be added?
+        #speedmenu = tk.Menu(menubar)
+        #speedmenu.add_command(label="High speed", command=self.set_speed(100))
+        #speedmenu.add_command(label="Standard speed", command=self.set_speed(300))
+        #speedmenu.add_command(label="Low speed", command=self.set_speed(1000))
+        #menubar.add_cascade(label="Speed", menu=speedmenu)
         
-        #Set size and create cells according to the tag of the coordinate
-        self.canvas = tk.Canvas(self, width=(grid.columns*25)+5, height=(grid.rows*25)+5, borderwidth=10)
+        #Create a canvas to put the grid on. Set the size of boxes
+        self.cellwidth = cellsize
+        self.cellheight = cellsize
+        self.canvas = tk.Canvas(self, width=(grid.columns*self.cellwidth)+5, height=(grid.rows*self.cellheight)+5, borderwidth=10)
         self.canvas.pack(side="top", fill="both", expand="true")
-        self.cellwidth = 25
-        self.cellheight = 25
-        self.rect = {}
-        for c in range(grid.columns):
-            for r in range(grid.rows):
+        self.rectangle = {}
+        self.oval = {}
+
+        #Loop through the grid and paint boxes. Subtract y values from total rows to simulate the exercice grids
+        for r in range(grid.rows):
+            for c in range(grid.columns):
                 x1 = c * self.cellwidth
                 y1 = r * self.cellheight
                 x2 = x1 + self.cellwidth
                 y2 = y1 + self.cellheight
-                if grid.grid[r][c].tag == "O":
-                    self.rect[c,r] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="open")
-                if grid.grid[r][c].tag == "X":
-                    self.rect[c,r] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="red", tags="wall")
-                if grid.grid[r][c].tag == "A":
-                    self.rect[c,r] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="rect")
-                    self.rect[c,r] = self.canvas.create_text(x1+12, y1+12, text="A", tags="start")
-                    self.rect[c,r] = self.canvas.create_oval(x1, y1, x2, y2, tags="oval")
-                if grid.grid[r][c].tag == "B":
-                    self.rect[c,r] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="rect")
-                    self.rect[c,r] = self.canvas.create_text(x1+12, y1+12, text="B", tags="end")
-                    
+                if grid.grid[c][grid.rows-r-1].tag == "O":
+                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+                if grid.grid[c][grid.rows-r-1].tag == "X":
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
+                if grid.grid[c][grid.rows-r-1].tag == "A":
+                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
+                    self.canvas.create_text(x1+12, y1+12, text="A")
+                if grid.grid[c][grid.rows-r-1].tag == "B":
+                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+                    self.canvas.create_text(x1+12, y1+12, text="B")
+ 
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
-        self.best_first_search()
-    
     #Run best-first search
     def best_first_search(self):
-        search = a_star.AStar(self.grid, "best-first", "manhattan distance")
-        print(search.incremental_solver())
-        print(search.incremental_solver())
+        self.canvas.itemconfig("oval", fill="white", outline="white")
+        self.search = a_star.AStar(self.grid, "best-first", "manhattan distance")
+        self.redraw()
 
     #Run breadth-first search
     def breadth_first_search(self):
-        raise NotImplementedError
+        self.canvas.itemconfig("oval", fill="white", outline="white")
+        self.search = a_star.AStar(self.grid, "breadth-first", "manhattan distance")
+        self.redraw()
 
     #Run depth-first search
     def depth_first_search(self):
-        raise NotImplementedError
+        self.canvas.itemconfig("oval", fill="white", outline="white")
+        self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance")
+        self.redraw()
 
-    
-    #Redraw the gui
-    def redraw():
-        raise NotImplementedError
+    #?Would a speed menu need this?
+    #Set the solver speed of the gui
+    #def set_speed(self, speed):
+    #    self.speed = speed
+ 
+    #Draws the gui with nodes from the open, closed, and complete path list
+    def redraw(self):
+        result = self.search.incremental_solver()
+        
+        #Draws optimal path and returns
+        if result[3][0].startswith("SUCCESS: path"):
+            for i in result[2]:
+                column = i.pos_x
+                row = i.pos_y
+                item_id = self.oval[column, row]
+                self.canvas.itemconfig(item_id, fill="green")
+            print result[3]
+            print self.search.search_type, ": Shortest path found: ", len(result[2]), "Nodes generated: ", len(result[0]) + len(result[1])
+            return
+        
+        #Draws the open node list
+        for i in result[0]:
+            column = i.pos_x
+            row = i.pos_y
+            item_id = self.oval[column, row]
+            self.canvas.itemconfig(item_id, outline="black", fill="gray50")
+
+        #Draws the closed node list
+        for j in result[1]:
+            column = j.pos_x
+            row = j.pos_y
+            item_id = self.oval[column, row]
+            self.canvas.itemconfig(item_id, outline="black", fill="gray15")
+        self.after(self.speed, lambda: self.redraw())
 
 #Run the main function
 main()

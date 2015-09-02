@@ -38,7 +38,7 @@ class AStar:
         #Look for end properties
         if X.tag == "B":
             path = self.retrace_path(X, [X])
-            return [self.open_list, self.closed_list, path, ["SUCCESS: optimal path found"]]
+            return [self.open_list, self.closed_list, path, ["SUCCESS: path found"]]
 
         #Generate a list of successor nodes to a node X
         successors = self.graph.generate_all_successors(X) 
@@ -80,7 +80,7 @@ class AStar:
             #Look for end properties
             if X.tag == "B":
                 path = self.retrace_path(X, [X])
-                return [path, ["SUCCESS: optimal path found"]]
+                return [path, ["SUCCESS: path found"]]
 
             #Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X) 
@@ -127,7 +127,7 @@ class AStar:
                 C.parent = P
                 C.g = P.g + self.graph.calculate_arc_cost(P, C)
                 C.f = C.g + C.h
-                propagate_path_improvements(self, C)
+                self.propagate_path_improvements(C)
                 
     #This method recursively finds the path from B to A and returns it as a list
     def retrace_path(self, N, path):
