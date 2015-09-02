@@ -76,6 +76,8 @@ Premade problems are:"""
             #Initialize custom grid, and gui; If the grid is not too large
             if size[0] <= 250 and size[1] <= 150:
                 custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
+                print walls
+
                 #Scale down the size if the grid is too large
                 if size[0] > 50 and size[1] > 30:
                     size = 25/5
@@ -90,7 +92,7 @@ Premade problems are:"""
             flag = False
             f.close()
         
-#Private run gui function
+#Private run gui function aimed at making the program run more smoothly on Mac OS
 def _run_gui(grid):
     if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
@@ -111,7 +113,7 @@ class Node:
         self.parent = parent
         self.kids = kids
 
-#Grid class
+#Grid class containing some problem specific help for the AStar class
 class Grid:
     def __init__(self, columns, rows, a_pos_x, a_pos_y, b_pos_x, b_pos_y, walls):
         self.columns = columns
