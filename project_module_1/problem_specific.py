@@ -1,6 +1,7 @@
 #Written by johannsl 2015
 
 import a_star
+import datetime
 import os
 import platform
 import random
@@ -76,7 +77,6 @@ Premade problems are:"""
             #Initialize custom grid, and gui; If the grid is not too large
             if size[0] <= 250 and size[1] <= 150:
                 custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
-                print walls
 
                 #Scale down the size if the grid is too large
                 if size[0] > 50 and size[1] > 30:
@@ -86,6 +86,28 @@ Premade problems are:"""
                 custom_grid_gui = GUI(grid=custom_grid, cellsize=size)
                 _run_gui(custom_grid_gui)
             else: print "Error: Grid too large"
+
+        #Run a speed test for algorithm optimalization purposes
+        elif the_input.startswith("Speed test"):
+            number = the_input[11:]
+            line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
+
+            #Add the walls to a list
+            walls = []
+            for wall_start in range(7, len(line_list), 4):
+                wall = []
+                for wall_number in range(wall_start, wall_start+4):
+                    wall.append(line_list[wall_number])
+                walls.append(wall)
+             
+            #Initialize the grid and run AStar
+            grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
+            for run in range(10):
+                search = a_star.AStar(grid, "best-first", "manhattan distance")
+                a = datetime.datetime.now()
+                result = search.complete_solver()
+                b = datetime.datetime.now()
+                print result[1], "\n", b-a
 
         #Exit the loop
         elif the_input == "Exit":
@@ -144,22 +166,22 @@ class Grid:
     #Find succeessors to a node in the grid and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
-        if node.pos_x > 0:
-            left = self.grid[node.pos_x-1][node.pos_y]
-            if left.tag is not "X":
-                successors.append(left)
-        if node.pos_y < self.rows-1:
-            below = self.grid[node.pos_x][node.pos_y+1]
-            if below.tag is not "X":
-                successors.append(below)
-        if node.pos_x < self.columns-1:
-            right = self.grid[node.pos_x+1][node.pos_y]
-            if right.tag is not "X":
-                successors.append(right)
         if node.pos_y > 0:
             above = self.grid[node.pos_x][node.pos_y-1]
             if above.tag is not "X":
                 successors.append(above)
+        if node.pos_x < self.columns-1:
+            right = self.grid[node.pos_x+1][node.pos_y]
+            if right.tag is not "X":
+                successors.append(right)
+        if node.pos_y < self.rows-1:
+            below = self.grid[node.pos_x][node.pos_y+1]
+            if below.tag is not "X":
+                successors.append(below)
+        if node.pos_x > 0:
+            left = self.grid[node.pos_x-1][node.pos_y]
+            if left.tag is not "X":
+                successors.append(left)
         return successors
     
     #Find the distance between a node C
@@ -213,11 +235,13 @@ class GUI(tk.Tk):
                 if grid.grid[c][grid.rows-r-1].tag == "A":
                     self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
                     self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
-                    self.canvas.create_text(x1+12, y1+12, text="A")
+                    if cellsize == 25:
+                        self.canvas.create_text(x1+12, y1+12, text="A")
                 if grid.grid[c][grid.rows-r-1].tag == "B":
                     self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
                     self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
-                    self.canvas.create_text(x1+12, y1+12, text="B")
+                    if cellsize == 25:
+                        self.canvas.create_text(x1+12, y1+12, text="B")
  
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)

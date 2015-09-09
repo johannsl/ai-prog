@@ -8,3 +8,30 @@ Goal:
 Problems: 
     >How does the A* core communicate with the GUI? 
     >How general should the A* core be?
+
+Optimize A*:
+
+First test, map 0:
+
+['SUCCESS: path found']
+0:00:00.007054
+['SUCCESS: path found']
+0:00:00.004955
+['SUCCESS: path found']
+0:00:00.003868
+['SUCCESS: path found']
+0:00:00.003563
+['SUCCESS: path found']
+0:00:00.003613
+['SUCCESS: path found']
+0:00:00.003575
+['SUCCESS: path found']
+0:00:00.003491
+['SUCCESS: path found']
+0:00:00.003802
+['SUCCESS: path found']
+0:00:00.003629
+['SUCCESS: path found']
+0:00:00.003435
+
+set max nodes generated. optimalize a*. create retracepath for every iteration.

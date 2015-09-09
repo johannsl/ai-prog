@@ -135,5 +135,4 @@ class AStar:
             return path
         else:
             path.append(N.parent)
-            return self.retrace_path(N.parent, path)
-         
+            return self.retrace_path(N.parent, path)         
