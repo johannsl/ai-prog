@@ -1,7 +1,4 @@
 #Written by johannsl 2015
-#This file contains the general use AStar class, and the methods that it uses
-
-import heapq
 
 #A star class
 class AStar:
@@ -12,93 +9,77 @@ class AStar:
         self.max_nodes = max_nodes
 
         #Initialize the algorithm
-        self.open_set = set()
-        self.open_heap = []
-        self.closed_set = set()
+        self.open_list = []
+        self.closed_list = []
         n0 = graph.grid[graph.a_pos_x][graph.a_pos_y]
         n0.g = 0
         n0.h = self.calculate_h(n0)
         n0.f = n0.g + n0.h
-        self.open_set.add(n0)
-        heapq.heappush(self.open_heap, n0)
+        self.open_list.append(n0)
 
     #This method incrementally solves the problem
     def incremental_solver(self):
         
         #Check whether a path can be found        
-        if not self.open_set:
+        if not self.open_list:
             return [[], [], [], ["FAIL: no path found"]]
 
-        #Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
+        #Sort the open_list according to search method, pop a node, and add it to closed_list
         if self.search_type == "best-first":
-            X = heapq.heappop(self.open_heap)
-            self.open_set.remove(X)
+            self.open_list.sort(key=lambda x: x.f, reverse=True)
+            X = self.open_list.pop()
         elif self.search_type == "breadth-first":
-            X = self.open_heap.pop(0)
-            self.open_set.remove(X)
+            X = self.open_list.pop(0)
         elif self.search_type == "depth-first":
-            X = self.open_heap.pop()
-            self.open_set.remove(X)
+            X = self.open_list.pop()
         else:
             return [[], [], [], ["ERROR: search_type"]]
-        self.closed_set.add(X)
+        self.closed_list.append(X)
 
         #Look for end properties
         if X.tag == "B":
             path = self.retrace_path(X, [X])
-            return [self.open_set, self.closed_set, path, ["SUCCESS: path found"]]
+            return [self.open_list, self.closed_list, path, ["SUCCESS: path found"]]
 
         #Generate a list of successor nodes to a node X
-        successors = self.graph.generate_all_successors(X)
-        
-        #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
+        successors = self.graph.generate_all_successors(X) 
+
+        #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_list
         for S in successors:
             X.kids.append(S)
-            if S not in self.closed_set:
-                if S not in self.open_set:
+            if S not in self.closed_list:
+                if S not in self.open_list:
                     self.attach_and_eval(S, X)
-                    if self.search_type == "best-first":
-                        self.open_set.add(S)
-                        heapq.heappush(self.open_heap, S)
-                    elif self.search_type == "breadth-first":
-                        self.open_set.add(S)
-                        self.open_heap.append(S)
-                    elif self.search_type == "depth-first":
-                        self.open_set.add(S)
-                        self.open_heap.append(S)
-                    else:
-                        return [[], [], [], ["ERROR: search_type"]]
+                    self.open_list.append(S)
                 elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                     self.attach_and_eval(S, X)
                     self.propagate_path_improvements(S)
             elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                 self.attach_and_eval(S, X)
-
+        
         #Return the current iteration results if the max number of generated nodes is not reached
-        if len(self.open_set) + len(self.closed_set) > self.max_nodes:
+        if len(self.open_list + self.closed_list) > self.max_nodes:
             return [[], [], [], ["ABORT: max number of nodes reached"]]
         path = self.retrace_path(X, [X])
-        return [self.open_set, self.closed_set, path, ["SUCCESS: lists updated"]]
+        return [self.open_list, self.closed_list, path, ["SUCCESS: lists updated"]]
 
     #This method completely solves the problem
     def complete_solver(self):
         
         #Initiate agenda loop
-        while self.open_set:
+        while self.open_list:
 
-            #Remove the next promising node from open_heap and open_set, then add it to closed_set
+            #Sort the open_list according to search method, pop a node, and add it to closed_list
             if self.search_type == "best-first":
-                X = heapq.heappop(self.open_heap)
-                self.open_set.remove(X)
+                self.open_list.sort(key=lambda x: x.f, reverse=True)
+                X = self.open_list.pop()
             elif self.search_type == "breadth-first":
                 X = self.open_list.pop(0)
-                self.open_set.remove(X)
             elif self.search_type == "depth-first":
                 X = self.open_list.pop()
-                self.open_set.remove(X)
             else:
                 return [[], ["ERROR: search_type"]]
-            self.closed_set.add(X)
+            self.closed_list.append(X)
 
             #Look for end properties
             if X.tag == "B":
@@ -108,23 +89,13 @@ class AStar:
             #Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X) 
 
-            #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
+            #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_list
             for S in successors:
                 X.kids.append(S)
-                if S not in self.closed_set:
-                    if S not in self.open_set:
+                if S not in self.closed_list:
+                    if S not in self.open_list:
                         self.attach_and_eval(S, X)
-                        if self.search_type == "best-first":
-                            self.open_set.add(S)
-                            heapq.heappush(self.open_heap, S)
-                        elif self.search_type == "breadth-first":
-                            self.open_set.add(S)
-                            self.open_heap.append(S)
-                        elif self.search_type == "depth-first":
-                            self.open_set.add(S)
-                            self.open_heap.append(S)
-                        else:
-                            return [[], ["ERROR: search_type"]]
+                        self.open_list.append(S)
                     elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                         self.attach_and_eval(S, X)
                         self.propagate_path_improvements(S)
@@ -132,10 +103,10 @@ class AStar:
                     self.attach_and_eval(S, X)
             
             #Check if the max number of generated nodes is reached
-            if len(self.open_set) + len(self.closed_set) > self.max_nodes:
+            if len(self.open_list + self.closed_list) > self.max_nodes:
                 return [[], ["ABORT: max number of nodes reached"]]
 
-        #If there are no more nodes in open_set, there is no solution        
+        #If there are no more nodes in open_list, there is no solution        
         return [[], ["FAIL: no path found"]]
     
     #This method calculates the h value depending on distance_type

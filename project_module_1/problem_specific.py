@@ -1,4 +1,5 @@
 #Written by johannsl 2015
+#This file contains classes, methods, and functions related to the specifications of Module #1
 
 import a_star
 import datetime
@@ -8,6 +9,12 @@ import random
 import re
 import sys
 import Tkinter as tk
+
+#These are the global values
+max_nodes = 600
+max_breadth = 250
+max_height = 150
+update_speed = 50
 
 #The main function runs the basic terminal communication
 def main():
@@ -55,7 +62,7 @@ Premade problems are:"""
                 walls.append(wall)
              
             #Initialize premade grid, and gui; If the grid is not too large
-            if line_list[1] <= 250 and line_list[2] <= 150:
+            if line_list[1] <= max_breadth and line_list[2] <= max_height:
                 premade_grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
                 
                 #Scale down the size if the grid is too large
@@ -75,7 +82,7 @@ Premade problems are:"""
             walls = input("Wall positions: ")
 
             #Initialize custom grid, and gui; If the grid is not too large
-            if size[0] <= 250 and size[1] <= 150:
+            if size[0] <= max_breadth and size[1] <= max_height:
                 custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
 
                 #Scale down the size if the grid is too large
@@ -103,7 +110,7 @@ Premade problems are:"""
             #Initialize the grid and run AStar
             grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
             for run in range(10):
-                search = a_star.AStar(grid, "best-first", "manhattan distance")
+                search = a_star.AStar(grid, "best-first", "manhattan distance", max_nodes)
                 a = datetime.datetime.now()
                 result = search.complete_solver()
                 b = datetime.datetime.now()
@@ -134,6 +141,12 @@ class Node:
         self.pos_y = pos_y
         self.parent = parent
         self.kids = kids
+    
+    #The nodes are to be sorted after their f value, or if they are similar, their h value
+    def __lt__(self, other):
+        if self.f == other.f:
+            return self.h < other.h
+        return self.f < other.f
 
 #Grid class containing some problem specific help for the AStar class
 class Grid:
@@ -166,10 +179,6 @@ class Grid:
     #Find succeessors to a node in the grid and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
-        if node.pos_y > 0:
-            above = self.grid[node.pos_x][node.pos_y-1]
-            if above.tag is not "X":
-                successors.append(above)
         if node.pos_x < self.columns-1:
             right = self.grid[node.pos_x+1][node.pos_y]
             if right.tag is not "X":
@@ -182,6 +191,10 @@ class Grid:
             left = self.grid[node.pos_x-1][node.pos_y]
             if left.tag is not "X":
                 successors.append(left)
+        if node.pos_y > 0:
+            above = self.grid[node.pos_x][node.pos_y-1]
+            if above.tag is not "X":
+                successors.append(above)
         return successors
     
     #Find the distance between a node C
@@ -194,7 +207,6 @@ class GUI(tk.Tk):
         tk.Tk.__init__(self)
         self.grid = grid
         self.search = None
-        self.speed = 50
         
         #Create the menu
         menubar = tk.Menu(self)
@@ -250,19 +262,19 @@ class GUI(tk.Tk):
     #Run best-first search
     def best_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "best-first", "manhattan distance")
+        self.search = a_star.AStar(self.grid, "best-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run breadth-first search
     def breadth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "breadth-first", "manhattan distance")
+        self.search = a_star.AStar(self.grid, "breadth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run depth-first search
     def depth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance")
+        self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #?Would a speed menu need this?
@@ -273,12 +285,22 @@ class GUI(tk.Tk):
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
         result = self.search.incremental_solver()
-        
-        #Draws optimal path and returns
+
+        #Check whether some error has been encountered
+        if not result[0] and not result[1] and not result[2]:
+            print result[3]
+            return
+                    
+        #Clears the last optimal path and draws the new optimal path, then returns
         if result[3][0].startswith("SUCCESS: path"):
-            for i in result[2]:
+            for i in result[1]:
                 column = i.pos_x
                 row = i.pos_y
+                item_id = self.oval[column, row]
+                self.canvas.itemconfig(item_id, fill="gray15")
+            for j in result[2]:
+                column = j.pos_x
+                row = j.pos_y
                 item_id = self.oval[column, row]
                 self.canvas.itemconfig(item_id, fill="green")
             print result[3]
@@ -298,7 +320,16 @@ class GUI(tk.Tk):
             row = j.pos_y
             item_id = self.oval[column, row]
             self.canvas.itemconfig(item_id, outline="black", fill="gray15")
-        self.after(self.speed, lambda: self.redraw())
+        
+        #Draws the current best path
+        for k in result[2]:
+            column = k.pos_x
+            row = k.pos_y
+            item_id = self.oval[column, row]
+            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
+
+        #Delay before next drawing phase
+        self.after(update_speed, lambda: self.redraw())
 
 #Run the main function
 main()

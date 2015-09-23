@@ -9,10 +9,10 @@ Problems:
     >How does the A* core communicate with the GUI? 
     >How general should the A* core be?
 
-Optimize A*:
+Optimize A*: sets and heap instead of lists
+Changes: Create best path for every iteration, set a max number of generated nodes
 
 First test, map 0:
-
 ['SUCCESS: path found']
 0:00:00.007054
 ['SUCCESS: path found']
@@ -34,4 +34,113 @@ First test, map 0:
 ['SUCCESS: path found']
 0:00:00.003435
 
-set max nodes generated. optimalize a*. create retracepath for every iteration.
+map 5:
+['SUCCESS: path found']
+0:00:00.135465
+['SUCCESS: path found']
+0:00:00.125229
+['SUCCESS: path found']
+0:00:00.131480
+['SUCCESS: path found']
+0:00:00.135849
+['SUCCESS: path found']
+0:00:00.125368
+['SUCCESS: path found']
+0:00:00.139033
+['SUCCESS: path found']
+0:00:00.132744
+['SUCCESS: path found']
+0:00:00.132559
+['SUCCESS: path found']
+0:00:00.139543
+['SUCCESS: path found']
+0:00:00.128118
+
+map 6:
+['SUCCESS: path found']
+0:00:00.222817
+['SUCCESS: path found']
+0:00:00.209780
+['SUCCESS: path found']
+0:00:00.219713
+['SUCCESS: path found']
+0:00:00.215071
+['SUCCESS: path found']
+0:00:00.207890
+['SUCCESS: path found']
+0:00:00.218945
+['SUCCESS: path found']
+0:00:00.215237
+['SUCCESS: path found']
+0:00:00.205460
+['SUCCESS: path found']
+0:00:00.209612
+['SUCCESS: path found']
+0:00:00.229189
+
+Second test, map 0:
+['SUCCESS: path found']
+0:00:00.001459
+['SUCCESS: path found']
+0:00:00.001269
+['SUCCESS: path found']
+0:00:00.001272
+['SUCCESS: path found']
+0:00:00.001285
+['SUCCESS: path found']
+0:00:00.001261
+['SUCCESS: path found']
+0:00:00.000938
+['SUCCESS: path found']
+0:00:00.000851
+['SUCCESS: path found']
+0:00:00.000847
+['SUCCESS: path found']
+0:00:00.000972
+['SUCCESS: path found']
+0:00:00.001092
+
+map 5:
+['SUCCESS: path found']
+0:00:00.007544
+['SUCCESS: path found']
+0:00:00.005370
+['SUCCESS: path found']
+0:00:00.004319
+['SUCCESS: path found']
+0:00:00.004235
+['SUCCESS: path found']
+0:00:00.005022
+['SUCCESS: path found']
+0:00:00.004632
+['SUCCESS: path found']
+0:00:00.005176
+['SUCCESS: path found']
+0:00:00.006000
+['SUCCESS: path found']
+0:00:00.005237
+['SUCCESS: path found']
+0:00:00.004507
+
+map 6:
+['SUCCESS: path found']
+0:00:00.006646
+['SUCCESS: path found']
+0:00:00.005364
+['SUCCESS: path found']
+0:00:00.005586
+['SUCCESS: path found']
+0:00:00.005184
+['SUCCESS: path found']
+0:00:00.005158
+['SUCCESS: path found']
+0:00:00.005432
+['SUCCESS: path found']
+0:00:00.005654
+['SUCCESS: path found']
+0:00:00.006468
+['SUCCESS: path found']
+0:00:00.005419
+['SUCCESS: path found']
+0:00:00.006158
+
