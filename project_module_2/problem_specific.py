@@ -65,21 +65,22 @@ def main():
             #Initialize the graph
             premade_graph = Graph(NV=number_of_verticies, NE=number_of_edges, verticies=verticies, edges=edges)
             premade_graph_gui = GUI(graph=premade_graph)
-            
+            _run_gui(premade_graph_gui)
+            flag = False
+                        
         #Exit the loop
         elif the_input == "Exit":
             flag = False
 
  
-##Private run gui function aimed at making the program run more smoothly on Mac OS
-#def _run_gui(grid):
-#    if platform.system() == 'Darwin':
-#            os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-#            grid.mainloop()
-#            os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
-#    else: grid.mainloop()
-#    return
-#
+#Private run gui function aimed at making the program run more smoothly on Mac OS
+def _run_gui(graph):
+    if platform.system() == 'Darwin':
+            os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+            graph.mainloop()
+            os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
+    else: graph.mainloop()
+    return
 
 
 #Graph class containing some problem specific help for the AStar class
@@ -96,23 +97,23 @@ class Graph:
             graph.append(Vertex(index=vertex, pos_x=vertex[1], pos_y=vertex[2], color=None))
         self.graph = graph
         
-#    #Find succeessors to a node in the grid and add them to a clockwise list
+#    #Find succeessors to a node in the graph and add them to a clockwise list
 #    def generate_all_successors(self, node):
 #        successors = []
 #        if node.pos_x < self.columns-1:
-#            right = self.grid[node.pos_x+1][node.pos_y]
+#            right = self.graph[node.pos_x+1][node.pos_y]
 #            if right.tag is not "X":
 #                successors.append(right)
 #        if node.pos_y < self.rows-1:
-#            below = self.grid[node.pos_x][node.pos_y+1]
+#            below = self.graph[node.pos_x][node.pos_y+1]
 #            if below.tag is not "X":
 #                successors.append(below)
 #        if node.pos_x > 0:
-#            left = self.grid[node.pos_x-1][node.pos_y]
+#            left = self.graph[node.pos_x-1][node.pos_y]
 #            if left.tag is not "X":
 #                successors.append(left)
 #        if node.pos_y > 0:
-#            above = self.grid[node.pos_x][node.pos_y-1]
+#            above = self.graph[node.pos_x][node.pos_y-1]
 #            if above.tag is not "X":
 #                successors.append(above)
 #        return successors
@@ -137,50 +138,39 @@ class GUI(tk.Tk):
         tk.Tk.__init__(self)
         self.graph = graph
         
-#        #Create the menu
-#        menubar = tk.Menu(self)
-#        execmenu = tk.Menu(menubar)
-#        execmenu.add_command(label="Best-first search", command=self.best_first_search)
-#        execmenu.add_command(label="Breadth-first search", command=self.breadth_first_search)
-#        execmenu.add_command(label="Depth-first search", command=self.depth_first_search)
-#        menubar.add_cascade(label="Exec", menu=execmenu)
-#        self.config(menu=menubar)
-#
-#        #?Should a speed menu be added?
-#        #speedmenu = tk.Menu(menubar)
-#        #speedmenu.add_command(label="High speed", command=self.set_speed(100))
-#        #speedmenu.add_command(label="Standard speed", command=self.set_speed(300))
-#        #speedmenu.add_command(label="Low speed", command=self.set_speed(1000))
-#        #menubar.add_cascade(label="Speed", menu=speedmenu)
-#        
-#        #Create a canvas to put the grid on. Set the size of boxes
-#        self.cellwidth = cellsize
-#        self.cellheight = cellsize
-#        self.canvas = tk.Canvas(self, width=(grid.columns*self.cellwidth)+5, height=(grid.rows*self.cellheight)+5, borderwidth=10)
-#        self.canvas.pack(side="top", fill="both", expand="true")
-#        self.rectangle = {}
-#        self.oval = {}
-#
-#        #Loop through the grid and paint boxes. Subtract y values from total rows to simulate the exercice grids
-#        for r in range(grid.rows):
-#            for c in range(grid.columns):
+        #Create the menu
+        menubar = tk.Menu(self)
+        execmenu = tk.Menu(menubar)
+        execmenu.add_command(label="Execute!", command=self.execute)
+        menubar.add_cascade(label="Exec", menu=execmenu)
+        self.config(menu=menubar)
+
+        #Create a canvas to put the graph on. Set the size of boxes
+        self.canvas = tk.Canvas(self, width=800, height=800, borderwidth=10)
+        self.canvas.pack(side="top", fill="both", expand="true")
+        self.rectangle = {}
+        self.oval = {}
+
+#        #Loop through the graph and paint boxes. Subtract y values from total rows to simulate the exercice graphs
+#        for r in range(graph.rows):
+#            for c in range(graph.columns):
 #                x1 = c * self.cellwidth
 #                y1 = r * self.cellheight
 #                x2 = x1 + self.cellwidth
 #                y2 = y1 + self.cellheight
-#                if grid.grid[c][grid.rows-r-1].tag == "O":
-#                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
-#                if grid.grid[c][grid.rows-r-1].tag == "X":
+#                if graph.graph[c][graph.rows-r-1].tag == "O":
+#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+#                if graph.graph[c][graph.rows-r-1].tag == "X":
 #                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
-#                if grid.grid[c][grid.rows-r-1].tag == "A":
-#                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
+#                if graph.graph[c][graph.rows-r-1].tag == "A":
+#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
 #                    if cellsize == 25:
 #                        self.canvas.create_text(x1+12, y1+12, text="A")
-#                if grid.grid[c][grid.rows-r-1].tag == "B":
-#                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+#                if graph.graph[c][graph.rows-r-1].tag == "B":
+#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
 #                    if cellsize == 25:
 #                        self.canvas.create_text(x1+12, y1+12, text="B")
 # 
@@ -188,29 +178,10 @@ class GUI(tk.Tk):
 #        self.canvas.xview_moveto(0)
 #        self.canvas.yview_moveto(0)
 #
-#    #Run best-first search
-#    def best_first_search(self):
-#        self.canvas.itemconfig("oval", fill="white", outline="white")
-#        self.search = a_star.AStar(self.grid, "best-first", "manhattan distance", max_nodes)
-#        self.redraw()
-#
-#    #Run breadth-first search
-#    def breadth_first_search(self):
-#        self.canvas.itemconfig("oval", fill="white", outline="white")
-#        self.search = a_star.AStar(self.grid, "breadth-first", "manhattan distance", max_nodes)
-#        self.redraw()
-#
-#    #Run depth-first search
-#    def depth_first_search(self):
-#        self.canvas.itemconfig("oval", fill="white", outline="white")
-#        self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance", max_nodes)
-#        self.redraw()
-#
-#    #?Would a speed menu need this?
-#    #Set the solver speed of the gui
-#    #def set_speed(self, speed):
-#    #    self.speed = speed
-# 
+    #Execute algorithm
+    def execute(self):
+        return
+
 #    #Draws the gui with nodes from the open, closed, and complete path list
 #    def redraw(self):
 #        result = self.search.incremental_solver()
