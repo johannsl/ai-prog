@@ -10,7 +10,6 @@ import re
 import sys
 import Tkinter as tk
 
-##These are the global values
 
 #The main function runs the basic terminal communication
 def main():
@@ -22,20 +21,19 @@ def main():
     graph_list = os.listdir(graph_path)
 
     #Print welcome message including the premade graph information
-    print """Project Module #2:
-A*-GAC
-    
-Premade problems are:"""
+    print ("Project Module #2: \n"
+            "A*-GAC \n"
+            "\n"
+            "Premade problems are:")
     
     for i in range(len(graph_list)):
         print i, graph_list[i]
-    print graph_list
     
-    print """
-'Run 0-X' for premade problem
-'Run new' for custom problem
-'Exit' ends the script
-    """
+    print ("\n"
+            "'Run 0-X' for premade problem \n"
+            "'Run new' for custom problem \n"
+            "'Exit' ends the script \n"
+            "\n")
 
     #This is the mainloop - It reads input from the user and executes the commands
     while flag:
@@ -44,44 +42,35 @@ Premade problems are:"""
         #Run a premade graph
         if the_input != "Run new" and the_input.startswith("Run"):
 
-            #Get the correct premade grid and add the numbers to a list
-            number = the_input[4:]
-            f = open("./graphs/" + str(graphs[int(number)]), "r")
+            #Get the correct premade graph and add its numbers to a list
+            number = int(the_input[4:])
+            f = open(graph_path + str(graph_list[number]), "r")
             line_list = map(int, re.findall(r'\d+', f.readline()))
             
-            nv = line_list[0]
-            ne = line_list[1]
+            #Structure the input from f
+            number_of_verticies = line_list[0]
+            number_of_edges = line_list[1]
             verticies = []
-            for i in range(nv):
-                verticies.append(f.readline())
-                print f.readline
-
-
-            #line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
+            edges = []
             
+            #Fill the verticies and edges, then close f
+            for i in range(number_of_verticies):
+                vertex = map(int, re.findall(r'\d+', f.readline()))
+                verticies.append(vertex)
+            for j in range(number_of_edges):
+                edge = map(int, re.findall(r'\d+', f.readline()))
+                edges.append(edge)
+            f.close()
+             
+            #Initialize the graph
+            premade_graph = Graph(NV=number_of_verticies, NE=number_of_edges, verticies=verticies, edges=edges)
+            premade_graph_gui = GUI(graph=premade_graph)
             
-
-            #print f.readline(1)
-            #print f.readline(1)
-            #verticies = [] 
-
-#        #Run a speed test for algorithm optimalization purposes
-#        elif the_input.startswith("Speed test"):
-#            number = the_input[11:]
-#            line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
-
         #Exit the loop
         elif the_input == "Exit":
             flag = False
-            f.close()
-       
-       
-       
-       
-       
-       
-       
-        
+
+ 
 ##Private run gui function aimed at making the program run more smoothly on Mac OS
 #def _run_gui(grid):
 #    if platform.system() == 'Darwin':
@@ -91,52 +80,22 @@ Premade problems are:"""
 #    else: grid.mainloop()
 #    return
 #
-##Node class
-#class Node:
-#    def __init__(self, tag, g, h, f, pos_x, pos_y, parent, kids):
-#        self.tag = tag
-#        self.g = g
-#        self.h = h
-#        self.f = f
-#        self.pos_x = pos_x
-#        self.pos_y = pos_y
-#        self.parent = parent
-#        self.kids = kids
-#    
-#    #The nodes are to be sorted after their f value, or if they are similar, their h value
-#    def __lt__(self, other):
-#        if self.f == other.f:
-#            return self.h < other.h
-#        return self.f < other.f
-#
-##Grid class containing some problem specific help for the AStar class
-#class Grid:
-#    def __init__(self, columns, rows, a_pos_x, a_pos_y, b_pos_x, b_pos_y, walls):
-#        self.columns = columns
-#        self.rows = rows
-#        self.a_pos_x = a_pos_x
-#        self.a_pos_y = a_pos_y
-#        self.b_pos_x = b_pos_x
-#        self.b_pos_y = b_pos_y
-#        self.walls = walls
-#         
-#        #Initialize the nodes in the grid
-#        grid = []
-#        for c in range(columns):
-#            row = []
-#            for r in range(rows):
-#                row.append(Node(tag="O", g=None, h=None, f=None, pos_x=c, pos_y=r, parent=None, kids=[]))
-#            grid.append(row)
-#        self.grid = grid
-#        
-#        #Set node tags
-#        grid[a_pos_x][a_pos_y].tag = "A"
-#        grid[b_pos_x][b_pos_y].tag = "B"
-#        for wall in walls:
-#            for c in range(wall[0], wall[0]+wall[2]):
-#                for r in range(wall[1], wall[1]+wall[3]):
-#                    grid[c][r].tag = "X"
-#       
+
+
+#Graph class containing some problem specific help for the AStar class
+class Graph:
+    def __init__(self, NV, NE, verticies, edges):
+        self.NV = NV
+        self.NE = NE
+        self.verticies = verticies
+        self.edges = edges
+         
+        #Initialize the nodes in the graph
+        graph = []
+        for vertex in verticies:
+            graph.append(Vertex(index=vertex, pos_x=vertex[1], pos_y=vertex[2], color=None))
+        self.graph = graph
+        
 #    #Find succeessors to a node in the grid and add them to a clockwise list
 #    def generate_all_successors(self, node):
 #        successors = []
@@ -161,14 +120,23 @@ Premade problems are:"""
 #    #Find the distance between a node C
 #    def calculate_arc_cost(self, C, P):
 #        return 1
-#
+
+
+#Node class
+class Vertex:
+    def __init__(self, index, pos_x, pos_y, color):
+        self.index = index
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.color = color
+    
+
 ##GUI is an interface subclass of Tkinter
-#class GUI(tk.Tk):
-#    def __init__(self, grid, cellsize):
-#        tk.Tk.__init__(self)
-#        self.grid = grid
-#        self.search = None
-#        
+class GUI(tk.Tk):
+    def __init__(self, graph):
+        tk.Tk.__init__(self)
+        self.graph = graph
+        
 #        #Create the menu
 #        menubar = tk.Menu(self)
 #        execmenu = tk.Menu(menubar)
@@ -291,6 +259,7 @@ Premade problems are:"""
 #
 #        #Delay before next drawing phase
 #        self.after(update_speed, lambda: self.redraw())
-#
-##Run the main function
+
+
+#Run the main function
 main()
