@@ -52,7 +52,6 @@ Premade problems are:"""
             #Get the correct premade grid and add the numbers to a list
             number = the_input[4:]
             line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
-            print line_list
 
             #Add the walls to a list
             walls = []
