@@ -10,14 +10,16 @@ import re
 import sys
 import Tkinter as tk
 
-#These are the global values
+##These are the global values
 
 #The main function runs the basic terminal communication
 def main():
     
-    #Clear the screen, prepare the mainlopp
+    #Clear the screen, prepare the mainlopp, create graph_list, create graph_path
     os.system("clear")
     flag = True
+    graph_path = "./graphs/"
+    graph_list = os.listdir(graph_path)
 
     #Print welcome message including the premade graph information
     print """Project Module #2:
@@ -25,10 +27,9 @@ A*-GAC
     
 Premade problems are:"""
     
-    graphs = []
-    for i in range(len(os.listdir("./graph"))):
-        print i, os.listdir("./graph")[i]
-        graphs.append(os.listdir("./graph")[i])
+    for i in range(len(graph_list)):
+        print i, graph_list[i]
+    print graph_list
     
     print """
 'Run 0-X' for premade problem
@@ -40,19 +41,20 @@ Premade problems are:"""
     while flag:
         the_input = raw_input(" > ")
         
-        #Run a premade grid
+        #Run a premade graph
         if the_input != "Run new" and the_input.startswith("Run"):
 
             #Get the correct premade grid and add the numbers to a list
             number = the_input[4:]
-            f = open("./graph/" + str(graphs[int(number)]), "r")
+            f = open("./graphs/" + str(graphs[int(number)]), "r")
             line_list = map(int, re.findall(r'\d+', f.readline()))
             
             nv = line_list[0]
             ne = line_list[1]
-            
+            verticies = []
             for i in range(nv):
-                print f.readline()
+                verticies.append(f.readline())
+                print f.readline
 
 
             #line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
