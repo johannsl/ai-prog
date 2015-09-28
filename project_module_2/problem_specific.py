@@ -165,7 +165,7 @@ class GUI(tk.Tk):
             x1 = vertex.pos_x * 10
             y1 = vertex.pos_y * 10
             x2 = x1 + 10
-            y2 = y1 + 10
+            y2 = y1 + 100
             self.oval[vertex.pos_x, vertex.pos_y] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", tag="oval")
 
 #        for r in range(graph.x_size):
