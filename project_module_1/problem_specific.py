@@ -258,6 +258,7 @@ class GUI(tk.Tk):
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
+        print self.oval
 
     #Run best-first search
     def best_first_search(self):
