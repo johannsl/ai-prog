@@ -91,11 +91,21 @@ class Graph:
         self.verticies = verticies
         self.edges = edges
          
-        #Initialize the nodes in the graph
+        #Find the two dimensional size of the graph, and initialize the nodes
+        x_min = verticies[0][1]
+        x_max = verticies[0][1]
+        y_min = verticies[0][2]
+        y_max = verticies[0][2]
         graph = []
         for vertex in verticies:
+            if vertex[1] < x_min: x_min = vertex[1]
+            elif vertex[1] > x_max: x_max = vertex[1]
+            if vertex[2] < y_min: y_min = vertex[2]
+            elif vertex[2] > y_max: y_max = vertex[2]
             graph.append(Vertex(index=vertex, pos_x=vertex[1], pos_y=vertex[2], color=None))
         self.graph = graph
+        self.x_size = x_max - x_min
+        self.y_size = y_max - y_min
         
 #    #Find succeessors to a node in the graph and add them to a clockwise list
 #    def generate_all_successors(self, node):
@@ -148,19 +158,25 @@ class GUI(tk.Tk):
         #Create a canvas to put the graph on. Set the size of boxes
         self.canvas = tk.Canvas(self, width=800, height=800, borderwidth=10)
         self.canvas.pack(side="top", fill="both", expand="true")
-        self.rectangle = {}
         self.oval = {}
 
-#        #Loop through the graph and paint boxes. Subtract y values from total rows to simulate the exercice graphs
-#        for r in range(graph.rows):
-#            for c in range(graph.columns):
-#                x1 = c * self.cellwidth
-#                y1 = r * self.cellheight
-#                x2 = x1 + self.cellwidth
-#                y2 = y1 + self.cellheight
-#                if graph.graph[c][graph.rows-r-1].tag == "O":
-#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+        #Loop through the graph and create a two dimensional grid
+        for vertex in graph.graph:
+            x1 = vertex.pos_x * 10
+            y1 = vertex.pos_y * 10
+            x2 = x1 + 10
+            y2 = y1 + 10
+            self.oval[vertex.pos_x, vertex.pos_y] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", tag="oval")
+
+#        for r in range(graph.x_size):
+#            for c in range(graph.y_size):
+#                
+#
+#
+
+#                
+#                self.oval[c, r] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+#                
 #                if graph.graph[c][graph.rows-r-1].tag == "X":
 #                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
 #                if graph.graph[c][graph.rows-r-1].tag == "A":
@@ -177,7 +193,7 @@ class GUI(tk.Tk):
 #        #Place the window in the topmost left corner to prevent glitches in the gui
 #        self.canvas.xview_moveto(0)
 #        self.canvas.yview_moveto(0)
-#
+
     #Execute algorithm
     def execute(self):
         return
