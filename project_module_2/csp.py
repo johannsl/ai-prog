@@ -175,7 +175,7 @@ class CSP:
                 # return false if there is no element in the current i.
                 if len(assignment[i]) == 0:
                     return False
-                # go through all the neighbours and check they should be added to the queue
+                # go through all the neighbours and check if they should be added to the queue
                 for k, var in self.get_all_neighboring_arcs(i):
                     if (k != i) and (k != j):
                         queue.append((k, var))
@@ -207,7 +207,9 @@ class CSP:
             # If the constraint check was true, remove i from assignment 
             # and return true
             if herp:
-                assignment[i].remove(a) 
+                print "ass: ", assignment[i]
+                print "a: ", a
+                assignment[i].remove(a)
                 revised = True
         return revised
 
@@ -255,3 +257,5 @@ def create_sudoku_csp(filename):
             csp.add_all_different_constraint(cells)
 
     return csp
+
+print create_map_coloring_csp().backtracking_search()
