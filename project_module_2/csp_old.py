@@ -207,8 +207,6 @@ class CSP:
             # If the constraint check was true, remove i from assignment 
             # and return true
             if herp:
-                print "ass: ", assignment[i]
-                print "a: ", a
                 assignment[i].remove(a)
                 revised = True
         return revised
