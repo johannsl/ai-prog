@@ -183,7 +183,7 @@ class GUI(tk.Tk):
         tk.Tk.__init__(self)
         self.graph = graph
         self.graph_size = 800.0
-        self.vertex_size = 7.0
+        self.vertex_size = 10.0
         
         #Create the menu
         menubar = tk.Menu(self)

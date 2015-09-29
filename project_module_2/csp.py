@@ -1,7 +1,7 @@
 # http://www.cs.mtu.edu/~nilufer/classes/cs5811/2014-fall/lecture-slides/cs5811-ch06-csp.pdf
 
 class CSP:
-    def __init__(self):
+    def __init__(self, graph):
         # self.variables is a list of the variable names in the CSP
         self.variables = []
 
