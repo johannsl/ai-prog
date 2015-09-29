@@ -87,7 +87,7 @@ def _run_gui(graph):
 
 #Graph class containing some problem specific help for the AStar class
 class Graph:
-    def __init__(self, NV, NE, verticies, edges):
+    def __init__(self,NV, NE, verticies, edges):
         self.NV = NV
         self.NE = NE
         self.verticies = verticies
