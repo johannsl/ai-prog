@@ -2,6 +2,7 @@
 #This file contains classes, methods, and functions related to the specifications of Module #2
 
 import a_star
+import csp
 import datetime
 import os
 import platform
@@ -194,37 +195,15 @@ class GUI(tk.Tk):
             y2 = y1 + self.vertex_size
             self.oval[vertex.pos_x, vertex.pos_y] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", fill="gray80", tag="oval")
         
-
-            
-
-#        for r in range(graph.x_size):
-#            for c in range(graph.y_size):
-#                
-#
-#
-
-#                
-#                self.oval[c, r] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
-#                
-#                if graph.graph[c][graph.rows-r-1].tag == "X":
-#                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
-#                if graph.graph[c][graph.rows-r-1].tag == "A":
-#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
-#                    if cellsize == 25:
-#                        self.canvas.create_text(x1+12, y1+12, text="A")
-#                if graph.graph[c][graph.rows-r-1].tag == "B":
-#                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-#                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
-#                    if cellsize == 25:
-#                        self.canvas.create_text(x1+12, y1+12, text="B")
-# 
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
     #Execute algorithm
     def execute(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        #self.search = csp.CSP()
+        #self.redraw()
         return
 
 #    #Draws the gui with nodes from the open, closed, and complete path list
