@@ -1,4 +1,4 @@
-#Written by johannsl 2015
+#Written by johannsl and iverasp 2015
 #This file contains classes, methods, and functions related to the specifications of Module #1
 
 import a_star
@@ -26,21 +26,21 @@ def main():
     file_list = []
 
     #Print welcome message including the premade grid information. Save the grid information as a list
-    print """Project Module #1:
-A Star
-    
-Premade problems are:"""
+    print ("Project Module #1: \n"
+            "A Star \n"
+            "\n"
+            "Premade problems are:")
     
     print f.name
     for line in f.readlines():
         file_list.append(line)
         sys.stdout.write(line)
     
-    print """
-'Run 0-X' for premade problem
-'Run new' for custom problem
-'Exit' ends the script
-    """
+    print ("\n"
+            "'Run 0-X' for premade problem \n"
+            "'Run new' for custom problem \n"
+            "'Exit' ends the script \n"
+            "\n")
 
     #This is the mainloop - It reads input from the user and executes the commands
     while flag:
@@ -217,13 +217,6 @@ class GUI(tk.Tk):
         menubar.add_cascade(label="Exec", menu=execmenu)
         self.config(menu=menubar)
 
-        #?Should a speed menu be added?
-        #speedmenu = tk.Menu(menubar)
-        #speedmenu.add_command(label="High speed", command=self.set_speed(100))
-        #speedmenu.add_command(label="Standard speed", command=self.set_speed(300))
-        #speedmenu.add_command(label="Low speed", command=self.set_speed(1000))
-        #menubar.add_cascade(label="Speed", menu=speedmenu)
-        
         #Create a canvas to put the grid on. Set the size of boxes
         self.cellwidth = cellsize
         self.cellheight = cellsize
@@ -277,11 +270,6 @@ class GUI(tk.Tk):
         self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance", max_nodes)
         self.redraw()
 
-    #?Would a speed menu need this?
-    #Set the solver speed of the gui
-    #def set_speed(self, speed):
-    #    self.speed = speed
- 
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
         result = self.search.incremental_solver()

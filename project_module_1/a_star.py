@@ -1,4 +1,4 @@
-#Written by johannsl 2015
+#Written by johannsl and iverasp 2015
 #This file contains the general use AStar class, and the methods that it uses
 
 import heapq
