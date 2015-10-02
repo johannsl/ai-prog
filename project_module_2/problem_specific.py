@@ -1,16 +1,19 @@
-#Written by johannsl 2015
+#Written by johannsl and iverasp 2015
 #This file contains classes, methods, and functions related to the specifications of Module #2
 
-import a_star
-import csp
+import sys
+sys.path.append("..")
+import project_module_1.a_star as a_star
+import csp_j
 import datetime
 import os
 import platform
 import random
 import re
-import sys
 import Tkinter as tk
-from csp import CSP
+
+#These are the global values
+color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")
 
 
 #The main function runs the basic terminal communication
@@ -33,7 +36,6 @@ def main():
     
     print ("\n"
             "'Run 0-X' for premade problem \n"
-            "'Run new' for custom problem \n"
             "'Exit' ends the script \n"
             "\n")
 
@@ -123,20 +125,20 @@ class Graph:
             self.y_size = y_max
         self.graph = graph
 
-        colors = {"red", "green", "blue", "yellow"}
-        csp = CSP()
-        for g in graph:
-            d = g.index
-            print d
-            csp.variables.append(d)
-            csp.domains[d] = colors
-            csp.constraints[d] = g.edges
+        #colors = {"red", "green", "blue", "yellow"}
+        #csp = CSP()
+        #for g in graph:
+        #    d = g.index
+        #    print d
+        #    csp.variables.append(d)
+        #    csp.domains[d] = colors
+        #    csp.constraints[d] = g.edges
 
-        print "VARIABLES: ", csp.variables
-        print "DOMAINS: ", csp.domains
-        print "CONSTRAINTS: ", csp.constraints
+        #print "VARIABLES: ", csp.variables
+        #print "DOMAINS: ", csp.domains
+        #print "CONSTRAINTS: ", csp.constraints
 
-        csp.revise(csp, " x != y ")
+        #csp.revise(csp, " x != y ")
 
         #for i in graph:
         #    print i.pos_x, i.pos_y
@@ -188,8 +190,16 @@ class GUI(tk.Tk):
         #Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
-        execmenu.add_command(label="Execute!", command=self.execute)
-        menubar.add_cascade(label="Exec", menu=execmenu)
+        execmenu.add_command(label="2 Colors", command=self.execute)
+        execmenu.add_command(label="3 Colors", command=self.execute)
+        execmenu.add_command(label="4 Colors", command=self.execute)
+#        execmenu.add_command(label="5 Colors", command=self.execute)
+#        execmenu.add_command(label="6 Colors", command=self.execute)
+#        execmenu.add_command(label="7 Colors", command=self.execute)
+#        execmenu.add_command(label="8 Colors", command=self.execute)
+#        execmenu.add_command(label="9 Colors", command=self.execute)
+#        execmenu.add_command(label="10 Colors", command=self.execute)
+        menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
         #Create a canvas to put the graph on. Set the size of boxes
@@ -218,7 +228,13 @@ class GUI(tk.Tk):
     #Execute algorithm
     def execute(self):
         self.canvas.itemconfig("oval", fill="gray80")
-        #self.search = csp.CSP()
+        for i in self.oval:
+            col = random.choice(color_list)
+            print i
+            #self.canvas.itemconfig(i, fill=col)
+        print color_list
+        print self.oval
+        #self.search = csp_j.CSP()
         #self.redraw()
         return
 
