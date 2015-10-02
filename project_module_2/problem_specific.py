@@ -4,7 +4,7 @@
 import sys
 sys.path.append("..")
 import project_module_1.a_star as a_star
-import csp_j
+from csp import CSP
 import datetime
 import os
 import platform
@@ -171,7 +171,7 @@ class GUI(tk.Tk):
         self.graph = graph
         self.graph_size = 800.0
         self.vertex_size = 10.0
-        
+
         #Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
@@ -222,6 +222,8 @@ class GUI(tk.Tk):
         #self.search = csp_j.CSP()
         #self.redraw()
         return
+
+
 
 #    #Draws the gui with nodes from the open, closed, and complete path list
 #    def redraw(self):

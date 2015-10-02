@@ -10,7 +10,7 @@ def create_map_coloring_csp():
     csp = CSP()
     states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
     edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
-    colors = [ 'red', 'green', 'blue', 'yellow', 'brown' ]
+    colors = [ 'red', 'green', 'blue']
     for state in states:
         csp.add_variable(state, colors)
     for state, other_states in edges.items():
@@ -21,6 +21,9 @@ def create_map_coloring_csp():
 
 csp = create_map_coloring_csp()
 csp.initialize()
+for i, j in csp.constraints.iteritems():
+    for x, y in j.iteritems():
+        print i, j, x, y
 csp.domain_filter_loop()
 if not csp.is_solved():
     # do A-star
