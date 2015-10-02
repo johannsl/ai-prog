@@ -16,6 +16,8 @@ class CSP:
 
         self.queue = []
 
+        self.revised_total = 0
+
     def get_all_possible_pairs(self, a, b):
         """Get a list of all possible pairs (as tuples) of the values in
         the lists 'a' and 'b', where the first component comes from list
@@ -55,19 +57,38 @@ class CSP:
             , envir)
 
     def revise(self, assignment):
+
+        i = assignment[0]
+        j = assignment[1]
+        g = self.makefunc(["x", "y"], "x != y")
+
+        revised = False
+        for x in self.domains[i]:
+            for y in self.domains[j]:
+                if not apply(g, (x, y)):
+                    print "removing", x, "from", self.domains[i]
+                    self.domains[i].remove(x)
+                    if len(self.domains[i]) == 1: self.revised_total += 1
+                    revised = True
+        return revised
+
+        """
         print assignment
         revised = False
-        for i in assignment:
+        for i in self.constraints[assignment[0]][assignment[1]]:
             valid = False
             g = self.makefunc(["x", "y"], "x != y")
-            for j in self.constraints[i]:
-                if apply(g, (i, j)):
+            for j in self.constraints[assignment[1]][assignment[0]]:
+                print "i, j: ", i, j
+                if not apply(g, (i, j)):
                     valid = False
             if not valid:
-                self.domains[i].remove(j)
-                print "LOL: ", i
+                print "domains: ", self.domains[assignment[0]]
+                print "removing: ", j
+                self.domains[assignment[0]].remove(j)
                 revised = True
         return revised
+        """
 
     def initialize(self):
         for i in self.variables:
@@ -80,9 +101,12 @@ class CSP:
             print current
             if self.revise(current):
                 for i in self.constraints[current[0]]:
-                    if i != current[1]: self.queue.append((current[0], i))
+                    if i != current[1]:
+                        print "appending to queue"
+                        self.queue.append((current[0], i))
 
     def rerun(self):
         return
 
-
+    def is_solved(self):
+        return True if self.revised_total == len(self.variables) else False

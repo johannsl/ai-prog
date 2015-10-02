@@ -123,21 +123,6 @@ class Graph:
             self.y_size = y_max
         self.graph = graph
 
-        colors = {"red", "green", "blue", "yellow"}
-        csp = CSP()
-        for g in graph:
-            d = g.index
-            print d
-            csp.variables.append(d)
-            csp.domains[d] = colors
-            csp.constraints[d] = g.edges
-
-        print "VARIABLES: ", csp.variables
-        print "DOMAINS: ", csp.domains
-        print "CONSTRAINTS: ", csp.constraints
-
-        csp.revise(csp, " x != y ")
-
         #for i in graph:
         #    print i.pos_x, i.pos_y
         
