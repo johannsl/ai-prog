@@ -1,5 +1,6 @@
 __author__ = 'iver'
 from csp import CSP
+from a_star import AStar
 
 def create_map_coloring_csp():
     """Instantiate a CSP representing the map coloring problem from the
@@ -7,9 +8,9 @@ def create_map_coloring_csp():
     develop your code.
     """
     csp = CSP()
-    states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA', 'T' ]
+    states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
     edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
-    colors = [ 'red', 'green', 'blue' ]
+    colors = [ 'red', 'green', 'blue', 'yellow', 'brown' ]
     for state in states:
         csp.add_variable(state, colors)
     for state, other_states in edges.items():
@@ -21,4 +22,7 @@ def create_map_coloring_csp():
 csp = create_map_coloring_csp()
 csp.initialize()
 csp.domain_filter_loop()
-print csp.queue
+if not csp.is_solved():
+    # do A-star
+    astar = AStar()
+
