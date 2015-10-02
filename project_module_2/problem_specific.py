@@ -175,15 +175,15 @@ class GUI(tk.Tk):
         #Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
-        execmenu.add_command(label="2 Colors", command=self.execute)
-        execmenu.add_command(label="3 Colors", command=self.execute)
-        execmenu.add_command(label="4 Colors", command=self.execute)
-#        execmenu.add_command(label="5 Colors", command=self.execute)
-#        execmenu.add_command(label="6 Colors", command=self.execute)
-#        execmenu.add_command(label="7 Colors", command=self.execute)
-#        execmenu.add_command(label="8 Colors", command=self.execute)
-#        execmenu.add_command(label="9 Colors", command=self.execute)
-#        execmenu.add_command(label="10 Colors", command=self.execute)
+        execmenu.add_command(label="2 Colors", command=self.execute_2)
+#        execmenu.add_command(label="3 Colors", command=self.execute_3)
+#        execmenu.add_command(label="4 Colors", command=self.execute_4)
+#        execmenu.add_command(label="5 Colors", command=self.execute_5)
+#        execmenu.add_command(label="6 Colors", command=self.execute_6)
+#        execmenu.add_command(label="7 Colors", command=self.execute_7)
+#        execmenu.add_command(label="8 Colors", command=self.execute_8)
+#        execmenu.add_command(label="9 Colors", command=self.execute_9)
+#        execmenu.add_command(label="10 Colors", command=self.execute_10)
         menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
@@ -211,15 +211,12 @@ class GUI(tk.Tk):
         self.canvas.yview_moveto(0)
 
     #Execute algorithm
-    def execute(self):
+    def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")
-        for i in self.oval:
-            col = random.choice(color_list)
-            print i
-            #self.canvas.itemconfig(i, fill=col)
-        print color_list
-        print self.oval
-        #self.search = csp_j.CSP()
+        colors = [color_list[0], color_list[1]]
+        self.search = csp.py
+
+
         #self.redraw()
         return
 
