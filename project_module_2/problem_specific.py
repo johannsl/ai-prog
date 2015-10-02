@@ -176,14 +176,14 @@ class GUI(tk.Tk):
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
         execmenu.add_command(label="2 Colors", command=self.execute_2)
-#        execmenu.add_command(label="3 Colors", command=self.execute_3)
-#        execmenu.add_command(label="4 Colors", command=self.execute_4)
-#        execmenu.add_command(label="5 Colors", command=self.execute_5)
-#        execmenu.add_command(label="6 Colors", command=self.execute_6)
-#        execmenu.add_command(label="7 Colors", command=self.execute_7)
-#        execmenu.add_command(label="8 Colors", command=self.execute_8)
-#        execmenu.add_command(label="9 Colors", command=self.execute_9)
-#        execmenu.add_command(label="10 Colors", command=self.execute_10)
+        execmenu.add_command(label="3 Colors", command=self.execute_3)
+        execmenu.add_command(label="4 Colors", command=self.execute_4)
+        execmenu.add_command(label="5 Colors", command=self.execute_5)
+        execmenu.add_command(label="6 Colors", command=self.execute_6)
+        execmenu.add_command(label="7 Colors", command=self.execute_7)
+        execmenu.add_command(label="8 Colors", command=self.execute_8)
+        execmenu.add_command(label="9 Colors", command=self.execute_9)
+        execmenu.add_command(label="10 Colors", command=self.execute_10)
         menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
@@ -210,13 +210,85 @@ class GUI(tk.Tk):
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
-    #Execute algorithm
+    #Execute algorithm with different amount of colors... This is badly code style
     def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")
-        colors = [color_list[0], color_list[1]]
-        self.search = csp.py
+        colors = []
+        for i in range(2):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
 
-
+    def execute_3(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(3):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_4(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(4):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_5(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(5):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_6(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(6):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_7(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(7):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_8(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(8):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_9(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(9):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_10(self):
+        self.canvas.itemconfig("oval", fill="gray80") 
+        colors = []
+        for i in range(10):
+            colors.append(color_list[i])
+        print colors
         #self.redraw()
         return
 
