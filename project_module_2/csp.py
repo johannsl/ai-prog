@@ -84,7 +84,8 @@ class CSP:
 
 
 
-    def complete_solver()
+    def complete_solver(self):
+        return
 
     def domain_filter_loop(self):
         while self.queue:
