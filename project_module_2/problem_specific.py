@@ -210,6 +210,9 @@ class GUI(tk.Tk):
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
+        csp = CSP(graph)
+
+
     #Execute algorithm
     def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")

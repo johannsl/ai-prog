@@ -3,7 +3,8 @@ import itertools
 
 
 class CSP:
-    def __init__(self):
+    def __init__(self, graph):
+
         # self.variables is a list of the variable names in the CSP
         self.variables = []
 
@@ -16,7 +17,28 @@ class CSP:
 
         self.queue = []
 
-        self.revised_total = 0
+        self.singleton_domains = 0
+
+        states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
+        edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
+        states = []
+        edges = {}
+
+        for vertex in graph.graph:
+            for edge in vertex.edges:
+                print vertex.edges
+                if edge[0] not in edges: edges[edge[0]] = []
+                if edge[0] not in states: states.append(edge[0])
+                edges[edge[0]].append(edge[1])
+                print edges
+                print states
+
+        for state in states:
+            self.add_variable(state, {'red', 'green', 'blue', 'yellow'})
+        for state, other_states in edges.items():
+            for other_state in other_states:
+                self.add_constraint_one_way(state, other_state, lambda i, j: i != j)
+                self.add_constraint_one_way(other_state, state, lambda i, j: i != j)
 
     def get_all_possible_pairs(self, a, b):
         """Get a list of all possible pairs (as tuples) of the values in
@@ -68,7 +90,7 @@ class CSP:
                 if not apply(g, (x, y)):
                     print "removing", x, "from", self.domains[i]
                     self.domains[i].remove(x)
-                    if len(self.domains[i]) == 1: self.revised_total += 1
+                    if len(self.domains[i]) == 1: self.singleton_domains += 1
                     revised = True
         return revised
 
@@ -109,4 +131,4 @@ class CSP:
         return
 
     def is_solved(self):
-        return True if self.revised_total == len(self.variables) else False
+        return True if self.singleton_domains == len(self.variables) else False
