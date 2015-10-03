@@ -55,6 +55,7 @@ class CSP:
 
         for state in states:
             self.add_variable(state, {'red', 'green', 'blue'})
+        print self.variables
         for state, other_states in edges.items():
             for other_state in other_states:
                 self.add_constraint_one_way(state, other_state, lambda i, j: i != j)
@@ -107,7 +108,6 @@ class CSP:
         valid = True
         for xi in self.domains[i]:
             for xj in self.domains[j]:
-                print xj
                 if apply(g, (xi, xj)): break
                 print "removing", xi, "from", self.domains[i]
                 self.domains[i].remove(xi)
