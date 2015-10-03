@@ -57,7 +57,7 @@ class CSP:
             self.add_variable(state, {'red', 'green', 'blue'})
         for state, other_states in edges.items():
             for other_state in other_states:
-                self.add_constraint_one_way(state, other_state, lambda i, j: i == j)
+                self.add_constraint_one_way(state, other_state, lambda i, j: i != j)
                 self.add_constraint_one_way(other_state, state, lambda i, j: i != j)
 
     def get_all_possible_pairs(self, a, b):
