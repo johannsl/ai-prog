@@ -5,99 +5,64 @@ import itertools
 #from problem_specific import Graph
 
 class CSP:
-    def __init__(self, graph):
-
-#    def __init__(self):
-#    #Initiates with a graph object containing the problem information
-#    def __init__(self, graph, domain_size):
-#        self.graph = graph
-#        self.variables = graph.graph
-#        self.domains = {}
-#        self.constraints = {}
-#        for vertex in self.variables:
-#            self.domains[vertex] = []
-#            for i in range(domain_size):
-#                self.domains[vertex].append(i)
-#
-#                
-#            self.constraints[vertex] = {}
-#            for vertex.edges 
-#
-#      #  self.constraints = {}
-#      #  for 
-
-
-        # self.variables is a list of the variable names in the CSP
+    def __init__(self, graph, domain_size):
         self.variables = []
-
-        # self.domains[i] is a list of legal values for variable i
         self.domains = {}
-
-        # self.constraints[i][j] is a list of legal value pairs for
-        # the variable pair (i, j)
         self.constraints = {}
-
         self.queue = []
-
         self.singleton_domains = 0
         self.contradictory = False
-
-        # DATA STRUCTURE
-        #states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
-        #edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
+        
+        #Initialize values
         states = []
-        edges = {}
-
-        # populate graph. use set and convert to list to remove duplicates in edges
+        edges = {} 
         for vertex in graph.graph:
             edges[vertex.index] = vertex.edges
-            states.append(vertex.index)
-
+            states.append(vertex.index) 
         for state in states:
-            self.add_variable(state, {'red', 'green', 'blue'})
+            self.add_variable(state, [x for x in range(domain_size)])
         for state, other_states in edges.items():
             for other_state in other_states:
                 self.add_constraint_one_way(state, other_state, lambda i, j: i != j)
                 self.add_constraint_one_way(other_state, state, lambda i, j: i != j)
 
-    def get_all_possible_pairs(self, a, b):
-        """Get a list of all possible pairs (as tuples) of the values in
-        the lists 'a' and 'b', where the first component comes from list
-        'a' and the second component comes from list 'b'.
-        """
-        return itertools.product(a, b)
+        #Initialize the queue
+        self.initialize()
+
+        print self.variables
+        print self.domains
+        print self.constraints
 
     def add_variable(self, name, domain):
-        """Add a new variable to the CSP. 'name' is the variable name
-        and 'domain' is a list of the legal values for the variable.
-        """
         self.variables.append(name)
         self.domains[name] = list(domain)
         self.constraints[name] = {}
-
+    
     def add_constraint_one_way(self, i, j, filter_function):
-        """Add a new constraint between variables 'i' and 'j'. The legal
-        values are specified by supplying a function 'filter_function',
-        that returns True for legal value pairs and False for illegal
-        value pairs. This function only adds the constraint one way,
-        from i -> j. You must ensure that the function also gets called
-        to add the constraint the other way, j -> i, as all constraints
-        are supposed to be two-way connections!
-        """
         if not j in self.constraints[i]:
             # First, get a list of all possible pairs of values between variables i and j
             self.constraints[i][j] = self.get_all_possible_pairs(self.domains[i], self.domains[j])
 
-        # Next, filter this list of value pairs through the function
-        # 'filter_function', so that only the legal value pairs remain
+        # Next, filter this list of value pairs through the function 'filter_function', so that only the legal value pairs remain
         self.constraints[i][j] = filter(lambda value_pair: filter_function(*value_pair), self.constraints[i][j])
+    
+    def get_all_possible_pairs(self, a, b):
+        return itertools.product(a, b)
 
-    def makefunc(self, var_names, expression, envir=globals()):
-        args = ""
-        for n in var_names: args = args + "," + n
-        return eval("(lambda " + args[1:] + ": " + expression + ")"
-            , envir)
+    def initialize(self):
+        for i in self.variables:
+            for j in self.constraints[i]:
+                self.queue.append((i, j))
 
+    def incremental_solver(self):
+        if self.queue:
+            current = self.queue.pop()
+            if self.revise(current):
+                for i in self.constraints[current[0]]:
+                    if i != current[1]:
+                        print "appending to queue", (current[0], i)
+                        self.queue.append((current[0], i))
+        
     def revise(self, assignment):
         i = assignment[0]
         j = assignment[1]
@@ -116,6 +81,20 @@ class CSP:
                 revised = True
         return revised
 
+
+
+
+
+    def complete_solver()
+
+    def domain_filter_loop(self):
+        while self.queue:
+            current = self.queue.pop()
+            if self.revise(current):
+                for i in self.constraints[current[0]]:
+                    if i != current[1]:
+                        print "appending to queue", (current[0], i)
+                        self.queue.append((current[0], i))
         """
         for xi in self.domains[i]:
             for xj in self.domains[j]:
@@ -148,19 +127,9 @@ class CSP:
         return revised
         """
 
-    def initialize(self):
-        for i in self.variables:
-            for j in self.constraints[i]:
-                self.queue.append((i, j))
 
-    def domain_filter_loop(self):
-        while self.queue:
-            current = self.queue.pop()
-            if self.revise(current):
-                for i in self.constraints[current[0]]:
-                    if i != current[1]:
-                        print "appending to queue", (current[0], i)
-                        self.queue.append((current[0], i))
+
+
 
     def rerun(self):
         return
@@ -168,3 +137,10 @@ class CSP:
     def is_solved(self):
         return True if self.singleton_domains == len(self.variables) else False
 
+
+
+    def makefunc(self, var_names, expression, envir=globals()):
+        args = ""
+        for n in var_names: args = args + "," + n
+        return eval("(lambda " + args[1:] + ": " + expression + ")"
+            , envir)
