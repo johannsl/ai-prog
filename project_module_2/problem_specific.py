@@ -153,7 +153,6 @@ class Graph:
         #successors.append()
         #for domain in node.domain:
 
-
 #        if node.pos_x < self.columns-1:
 #            right = self.graph[node.pos_x+1][node.pos_y]
 #            if right.tag is not "X":
