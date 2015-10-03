@@ -7,8 +7,6 @@ import itertools
 class CSP:
     def __init__(self, graph):
 
-        print graph
-
 #    def __init__(self):
 #    #Initiates with a graph object containing the problem information
 #    def __init__(self, graph, domain_size):
@@ -44,20 +42,16 @@ class CSP:
         self.singleton_domains = 0
         self.contradictory = False
 
-        states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
-        edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
+        # DATA STRUCTURE
+        #states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
+        #edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
         states = []
         edges = {}
 
         # populate graph. use set and convert to list to remove duplicates in edges
         for vertex in graph.graph:
-            for edge in vertex.edges:
-                if edge[0] not in edges: edges[edge[0]] = set()
-                if edge[0] not in states: states.append(edge[0])
-                if edge[1] not in states: states.append(edge[1])
-                edges[edge[0]].add(edge[1])
-        for edge, neighbors in edges.iteritems():
-            edges[edge] = list(neighbors)
+            edges[vertex.index] = vertex.edges
+            states.append(vertex.index)
 
         for state in states:
             self.add_variable(state, {'red', 'green', 'blue'})

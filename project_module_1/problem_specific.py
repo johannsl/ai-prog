@@ -25,7 +25,7 @@ def main():
     f = open("input.txt", "r")
     file_list = []
 
-    #Print welcome message including the premade grid information. Save the grid information as a list
+    #Print welcome message including the premade graph information. Save the graph information as a list
     print ("Project Module #1: \n"
             "A Star \n"
             "\n"
@@ -46,10 +46,10 @@ def main():
     while flag:
         the_input = raw_input(" > ")
         
-        #Run a premade grid
+        #Run a premade graph
         if the_input != "Run new" and the_input.startswith("Run"):
 
-            #Get the correct premade grid and add the numbers to a list
+            #Get the correct premade graph and add the numbers to a list
             number = the_input[4:]
             line_list = map(int, re.findall(r'\d+', file_list[int(number)]))
 
@@ -61,38 +61,38 @@ def main():
                     wall.append(line_list[wall_number])
                 walls.append(wall)
              
-            #Initialize premade grid, and gui; If the grid is not too large
+            #Initialize premade graph, and gui; If the graph is not too large
             if line_list[1] <= max_breadth and line_list[2] <= max_height:
-                premade_grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
+                premade_graph = Graph(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
                 
-                #Scale down the size if the grid is too large
+                #Scale down the size if the graph is too large
                 if line_list[1] > 50 and line_list[2] > 30:
                     size = 25/5
                 else:
                     size = 25
-                premade_grid_gui = GUI(grid=premade_grid, cellsize=size)
-                _run_gui(premade_grid_gui)
-            else: print "Error: Grid too large"
+                premade_graph_gui = GUI(graph=premade_graph, cellsize=size)
+                _run_gui(premade_graph_gui)
+            else: print "Error: graph too large"
 
-        #Run a custom grid
+        #Run a custom graph
         elif the_input == "Run new":
-            size = input("Grid size: ")
+            size = input("graph size: ")
             start = input("Start position: ")
             end = input("End position: ")
             walls = input("Wall positions: ")
 
-            #Initialize custom grid, and gui; If the grid is not too large
+            #Initialize custom graph, and gui; If the graph is not too large
             if size[0] <= max_breadth and size[1] <= max_height:
-                custom_grid = Grid(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
+                custom_graph = Graph(columns=size[0],rows=size[1], a_pos_x=start[0], a_pos_y=start[1], b_pos_x=end[0], b_pos_y=end[1], walls=walls)
 
-                #Scale down the size if the grid is too large
+                #Scale down the size if the graph is too large
                 if size[0] > 50 and size[1] > 30:
                     size = 25/5
                 else:
                     size = 25
-                custom_grid_gui = GUI(grid=custom_grid, cellsize=size)
-                _run_gui(custom_grid_gui)
-            else: print "Error: Grid too large"
+                custom_graph_gui = GUI(graph=custom_graph, cellsize=size)
+                _run_gui(custom_graph_gui)
+            else: print "Error: graph too large"
 
         #Run a speed test for algorithm optimalization purposes
         elif the_input.startswith("Speed test"):
@@ -107,10 +107,10 @@ def main():
                     wall.append(line_list[wall_number])
                 walls.append(wall)
              
-            #Initialize the grid and run AStar
-            grid = Grid(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
+            #Initialize the graph and run AStar
+            graph = graph(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
             for run in range(10):
-                search = a_star.AStar(grid, "best-first", "manhattan distance", max_nodes)
+                search = a_star.AStar(graph, "best-first", "manhattan distance", max_nodes)
                 a = datetime.datetime.now()
                 result = search.complete_solver()
                 b = datetime.datetime.now()
@@ -122,12 +122,12 @@ def main():
             f.close()
         
 #Private run gui function aimed at making the program run more smoothly on Mac OS
-def _run_gui(grid):
+def _run_gui(graph):
     if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-            grid.mainloop()
+            graph.mainloop()
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
-    else: grid.mainloop()
+    else: graph.mainloop()
     return
 
 #Node class
@@ -148,8 +148,8 @@ class Node:
             return self.h < other.h
         return self.f < other.f
 
-#Grid class containing some problem specific help for the AStar class
-class Grid:
+#graph class containing some problem specific help for the AStar class
+class Graph:
     def __init__(self, columns, rows, a_pos_x, a_pos_y, b_pos_x, b_pos_y, walls):
         self.columns = columns
         self.rows = rows
@@ -159,40 +159,40 @@ class Grid:
         self.b_pos_y = b_pos_y
         self.walls = walls
          
-        #Initialize the nodes in the grid
-        grid = []
+        #Initialize the nodes in the graph
+        graph = []
         for c in range(columns):
             row = []
             for r in range(rows):
                 row.append(Node(tag="O", g=None, h=None, f=None, pos_x=c, pos_y=r, parent=None, kids=[]))
-            grid.append(row)
-        self.grid = grid
+            graph.append(row)
+        self.graph = graph
         
         #Set node tags
-        grid[a_pos_x][a_pos_y].tag = "A"
-        grid[b_pos_x][b_pos_y].tag = "B"
+        graph[a_pos_x][a_pos_y].tag = "A"
+        graph[b_pos_x][b_pos_y].tag = "B"
         for wall in walls:
             for c in range(wall[0], wall[0]+wall[2]):
                 for r in range(wall[1], wall[1]+wall[3]):
-                    grid[c][r].tag = "X"
+                    graph[c][r].tag = "X"
        
-    #Find succeessors to a node in the grid and add them to a clockwise list
+    #Find succeessors to a node in the graph and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
         if node.pos_x < self.columns-1:
-            right = self.grid[node.pos_x+1][node.pos_y]
+            right = self.graph[node.pos_x+1][node.pos_y]
             if right.tag is not "X":
                 successors.append(right)
         if node.pos_y < self.rows-1:
-            below = self.grid[node.pos_x][node.pos_y+1]
+            below = self.graph[node.pos_x][node.pos_y+1]
             if below.tag is not "X":
                 successors.append(below)
         if node.pos_x > 0:
-            left = self.grid[node.pos_x-1][node.pos_y]
+            left = self.graph[node.pos_x-1][node.pos_y]
             if left.tag is not "X":
                 successors.append(left)
         if node.pos_y > 0:
-            above = self.grid[node.pos_x][node.pos_y-1]
+            above = self.graph[node.pos_x][node.pos_y-1]
             if above.tag is not "X":
                 successors.append(above)
         return successors
@@ -203,9 +203,9 @@ class Grid:
 
 #GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-    def __init__(self, grid, cellsize):
+    def __init__(self, graph, cellsize):
         tk.Tk.__init__(self)
-        self.grid = grid
+        self.graph = graph
         self.search = None
         
         #Create the menu
@@ -217,34 +217,34 @@ class GUI(tk.Tk):
         menubar.add_cascade(label="Exec", menu=execmenu)
         self.config(menu=menubar)
 
-        #Create a canvas to put the grid on. Set the size of boxes
+        #Create a canvas to put the graph on. Set the size of boxes
         self.cellwidth = cellsize
         self.cellheight = cellsize
-        self.canvas = tk.Canvas(self, width=(grid.columns*self.cellwidth)+5, height=(grid.rows*self.cellheight)+5, borderwidth=10)
+        self.canvas = tk.Canvas(self, width=(graph.columns*self.cellwidth)+5, height=(graph.rows*self.cellheight)+5, borderwidth=10)
         self.canvas.pack(side="top", fill="both", expand="true")
         self.rectangle = {}
         self.oval = {}
 
-        #Loop through the grid and paint boxes. Subtract y values from total rows to simulate the exercice grids
-        for r in range(grid.rows):
-            for c in range(grid.columns):
+        #Loop through the graph and paint boxes. Subtract y values from total rows to simulate the exercice graphs
+        for r in range(graph.rows):
+            for c in range(graph.columns):
                 x1 = c * self.cellwidth
                 y1 = r * self.cellheight
                 x2 = x1 + self.cellwidth
                 y2 = y1 + self.cellheight
-                if grid.grid[c][grid.rows-r-1].tag == "O":
-                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
-                if grid.grid[c][grid.rows-r-1].tag == "X":
+                if graph.graph[c][graph.rows-r-1].tag == "O":
+                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+                if graph.graph[c][graph.rows-r-1].tag == "X":
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
-                if grid.grid[c][grid.rows-r-1].tag == "A":
-                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
+                if graph.graph[c][graph.rows-r-1].tag == "A":
+                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, tag="oval")
                     if cellsize == 25:
                         self.canvas.create_text(x1+12, y1+12, text="A")
-                if grid.grid[c][grid.rows-r-1].tag == "B":
-                    self.rectangle[c, grid.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
-                    self.oval[c, grid.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
+                if graph.graph[c][graph.rows-r-1].tag == "B":
+                    self.rectangle[c, graph.rows-r-1] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="white")
+                    self.oval[c, graph.rows-r-1] = self.canvas.create_oval(x1+1, y1+1, x2-1, y2-1, outline="white", tag="oval")
                     if cellsize == 25:
                         self.canvas.create_text(x1+12, y1+12, text="B")
  
@@ -255,19 +255,19 @@ class GUI(tk.Tk):
     #Run best-first search
     def best_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "best-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, "best-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run breadth-first search
     def breadth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "breadth-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, "breadth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run depth-first search
     def depth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.grid, "depth-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, "depth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Draws the gui with nodes from the open, closed, and complete path list
