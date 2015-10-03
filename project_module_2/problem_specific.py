@@ -3,11 +3,8 @@
 
 import sys
 sys.path.append("..")
-import project_module_1.a_star as a_star
-#from csp import CSP
-#lol
-#import csp
-import csp_j
+from project_module_1.a_star import AStar
+from csp import CSP
 import datetime
 import os
 import platform
@@ -103,6 +100,8 @@ class Graph:
         self.NE = NE
         self.verticies = verticies
         self.edges = edges
+        print verticies
+        print edges
          
         #Find the lower and upper bounds of the x and y values of the verticies. Initialize verticies in the graph list
         x_min = verticies[0][1]
@@ -222,9 +221,30 @@ class GUI(tk.Tk):
         self.canvas.yview_moveto(0)
 
         csp = CSP(graph)
+        print csp.domains
         csp.initialize()
+        print csp.domains
         csp.domain_filter_loop()
         print csp.domains
+        if csp.is_solved():
+            print "solved!"
+            print csp.domains
+        if csp.contradictory:
+            print "no solution can be found"
+            print csp.domains
+            exit()
+        if not csp.is_solved():
+            print "not solved yet, trying astar"
+            print csp.domains
+            #astar = AStar()
+
+
+    def csp_to_graph(self, csp):
+        vertices = []
+        for v in csp.variables:
+            l = [v, 0.0, 0.0]
+            vertices.append(l)
+        graph = Graph()
 
     #Execute algorithm with different amount of colors... This is bad code style
     def execute_2(self):
@@ -234,7 +254,7 @@ class GUI(tk.Tk):
             colors.append(color_list[i])
         
         ###TESTING SPACE####
-        self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
+        #self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
 
         #self.redraw()
         return

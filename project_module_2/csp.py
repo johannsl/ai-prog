@@ -2,6 +2,7 @@
 # http://www.cs.mtu.edu/~nilufer/classes/cs5811/2014-fall/lecture-slides/cs5811-ch06-csp.pdf
 
 import itertools
+#from problem_specific import Graph
 
 class CSP:
     def __init__(self, graph):
@@ -39,24 +40,21 @@ class CSP:
         self.queue = []
 
         self.singleton_domains = 0
+        self.contradictory = False
 
-        states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
-        edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
+        # DATA STRUCTURE
+        #states = [ 'WA', 'NT', 'Q', 'NSW', 'V', 'SA']
+        #edges = { 'SA': [ 'WA', 'NT', 'Q', 'NSW', 'V' ], 'NT': [ 'WA', 'Q' ], 'NSW': [ 'Q', 'V' ] }
         states = []
         edges = {}
 
-        # populate graph. use set and convert to list to remove duplicates
+        # populate graph. use set and convert to list to remove duplicates in edges
         for vertex in graph.graph:
-            for edge in vertex.edges:
-                if edge[0] not in edges: edges[edge[0]] = set()
-                if edge[0] not in states: states.append(edge[0])
-                if edge[1] not in states: states.append(edge[1])
-                edges[edge[0]].add(edge[1])
-        for edge, neighbors in edges.iteritems():
-            edges[edge] = list(neighbors)
+            edges[vertex.index] = vertex.edges
+            states.append(vertex.index)
 
         for state in states:
-            self.add_variable(state, {'red', 'green', 'blue', 'yellow'})
+            self.add_variable(state, {'red', 'green', 'blue'})
         for state, other_states in edges.items():
             for other_state in other_states:
                 self.add_constraint_one_way(state, other_state, lambda i, j: i != j)
@@ -101,20 +99,36 @@ class CSP:
             , envir)
 
     def revise(self, assignment):
-
         i = assignment[0]
         j = assignment[1]
         g = self.makefunc(["x", "y"], "x != y")
 
         revised = False
-        for x in self.domains[i]:
-            for y in self.domains[j]:
-                if not apply(g, (x, y)):
-                    print "removing", x, "from", self.domains[i]
-                    self.domains[i].remove(x)
-                    if len(self.domains[i]) == 1: self.singleton_domains += 1
-                    revised = True
+        valid = True
+        for xi in self.domains[i]:
+            for xj in self.domains[j]:
+                print xj
+                if apply(g, (xi, xj)): break
+                print "removing", xi, "from", self.domains[i]
+                self.domains[i].remove(xi)
+                if len(self.domains[i]) == 1: self.singleton_domains += 1
+                if len(self.domains[i]) == 0: self.contradictory = True
+                revised = True
         return revised
+
+        """
+        for xi in self.domains[i]:
+            for xj in self.domains[j]:
+                if apply(g, (xi, xj)): break
+                print "removing", xi, "from", self.constraints[i][j]
+                for c in self.constraints[i][j]:
+                    if c[0] == xi: self.constraints[i][j].remove(c)
+                if len(self.domains[i]) == 1: self.singleton_domains += 1
+                if len(self.domains[i]) == 0: self.contradictory = True
+                revised = True
+        return revised
+        """
+
 
         """
         print assignment
@@ -142,11 +156,10 @@ class CSP:
     def domain_filter_loop(self):
         while self.queue:
             current = self.queue.pop()
-            print current
             if self.revise(current):
                 for i in self.constraints[current[0]]:
                     if i != current[1]:
-                        print "appending to queue"
+                        print "appending to queue", (current[0], i)
                         self.queue.append((current[0], i))
 
     def rerun(self):
@@ -154,3 +167,4 @@ class CSP:
 
     def is_solved(self):
         return True if self.singleton_domains == len(self.variables) else False
+
