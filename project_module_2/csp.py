@@ -72,7 +72,6 @@ class CSP:
         valid = True
         for xi in self.domains[i]:
             for xj in self.domains[j]:
-                print xj
                 if apply(g, (xi, xj)): break
                 print "removing", xi, "from", self.domains[i]
                 self.domains[i].remove(xi)
