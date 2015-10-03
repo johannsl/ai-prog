@@ -5,6 +5,8 @@ import sys
 sys.path.append("..")
 import project_module_1.a_star as a_star
 from csp import CSP
+#lol
+#import csp
 import datetime
 import os
 import platform
@@ -72,7 +74,8 @@ def main():
             premade_graph = Graph(NV=number_of_verticies, NE=number_of_edges, verticies=verticies, edges=edges)
             premade_graph_gui = GUI(graph=premade_graph)
             _run_gui(premade_graph_gui)
- 
+            flag = False
+
         #Exit the loop
         elif the_input == "Exit":
             flag = False
@@ -210,13 +213,14 @@ class GUI(tk.Tk):
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
-    #Execute algorithm with different amount of colors... This is badly code style
+    #Execute algorithm with different amount of colors... This is bad code style
     def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")
         colors = []
         for i in range(2):
             colors.append(color_list[i])
-        print colors
+
+        self.csp_search = csp.CSP(graph=self.graph, domain_size=len(colors))
         #self.redraw()
         return
 

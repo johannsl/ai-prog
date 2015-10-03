@@ -1,9 +1,30 @@
+#Written by johannsl and iverasp 2015
 # http://www.cs.mtu.edu/~nilufer/classes/cs5811/2014-fall/lecture-slides/cs5811-ch06-csp.pdf
+
 import itertools
 
-
 class CSP:
+    
     def __init__(self):
+#    #Initiates with a graph object containing the problem information
+#    def __init__(self, graph, domain_size):
+#        self.graph = graph
+#        self.variables = graph.graph
+#        self.domains = {}
+#        self.constraints = {}
+#        for vertex in self.variables:
+#            self.domains[vertex] = []
+#            for i in range(domain_size):
+#                self.domains[vertex].append(i)
+#
+#                
+#            self.constraints[vertex] = {}
+#            for vertex.edges 
+#
+#      #  self.constraints = {}
+#      #  for 
+
+
         # self.variables is a list of the variable names in the CSP
         self.variables = []
 
