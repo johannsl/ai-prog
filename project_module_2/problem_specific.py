@@ -258,7 +258,7 @@ class GUI(tk.Tk):
         self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
         #self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
 
-        #self.redraw()
+        self.redraw()
         return
 
     def execute_3(self):
@@ -335,10 +335,10 @@ class GUI(tk.Tk):
 
 
 
-#    #Draws the gui with nodes from the open, closed, and complete path list
-#    def redraw(self):
-#        result = self.search.incremental_solver()
-#
+    #Draws the gui with nodes from the open, closed, and complete path list
+    def redraw(self):
+        result = self.csp_search.incremental_solver()
+
 #        #Check whether some error has been encountered
 #        if not result[0] and not result[1] and not result[2]:
 #            print result[3]
