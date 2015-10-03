@@ -143,8 +143,6 @@ class Graph:
         successors = []
         helper = [(key, len(node.domain[key])) for key in node.domain.keys()]
         helper.sort(key=lambda x: x[1])
-        successors.append()
-        for domain in node.domain:
 
 
 #        if node.pos_x < self.columns-1:

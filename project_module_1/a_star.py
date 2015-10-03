@@ -149,7 +149,7 @@ class AStar:
             raise NotImplementedError
         elif self.distance_type == "csp":
             h = 0
-            for i, j in self.n0.domains.iteritems():
+            for i, j in self.node.domains.iteritems():
                 h += len(j)
             print "H:", h
             return h
