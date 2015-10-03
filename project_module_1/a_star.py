@@ -148,7 +148,11 @@ class AStar:
         elif self.distance_type == "euclidian distance":
             raise NotImplementedError
         elif self.distance_type == "csp":
-            print self.graph.verticies
+            h = 0
+            for i, j in self.n0.domains.iteritems():
+                h += len(j)
+            print "H:", h
+            return h
         else:
             raise NotImplementedError
     

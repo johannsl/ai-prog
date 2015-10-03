@@ -64,6 +64,8 @@ class CSP:
                     if i != current[1]:
                         print "appending to queue", (current[0], i)
                         self.queue.append((current[0], i))
+        else:
+            return [["HALT: dfq stuck"], self.domains]
         
     def revise(self, assignment):
         i = assignment[0]
@@ -84,10 +86,11 @@ class CSP:
         return revised
 
 
-    def heuristic(self):
+    def calc_heuristic(self):
         h = 0
-        for i in self.domains:
-            h += len(i)
+        for i, j in self.domains.iteritems():
+            print i, j
+            h += len(j)
         return h
 
 

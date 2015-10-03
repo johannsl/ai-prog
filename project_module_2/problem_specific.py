@@ -43,7 +43,7 @@ def main():
     while flag:
 
         ###TESTING SPACE###
-        the_input = "Run 1"
+        the_input = "Run 0"
 
         #the_input = raw_input(" > ")
         
@@ -135,10 +135,18 @@ class Graph:
         ###TESTING ZONE####
         #for i in graph:
         #    print i, i.edges
-        
-#    #Find succeessors to a node in the graph and add them to a clockwise list
-#    def generate_all_successors(self, node):
-#        successors = []
+    def goal_found(self, node):
+        return False
+
+    #Find succeessors to a node in the graph and add them to a clockwise list
+    def generate_all_successors(self, node):
+        successors = []
+        helper = [(key, len(node.domain[key])) for key in node.domain.keys()]
+        helper.sort(key=lambda x: x[1])
+        successors.append()
+        for domain in node.domain:
+
+
 #        if node.pos_x < self.columns-1:
 #            right = self.graph[node.pos_x+1][node.pos_y]
 #            if right.tag is not "X":
@@ -162,6 +170,12 @@ class Graph:
 #        return 1
 
 
+class State:
+    def __init__(self, csp, h):
+        self.domains = csp.domains
+        #self.g = 1
+        #self.h = h
+
 #Node class
 class Vertex:
     def __init__(self, index, pos_x, pos_y, edges, color):
@@ -170,7 +184,6 @@ class Vertex:
         self.pos_y = pos_y
         self.edges = edges
         self.color = color
-    
 
 ##GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
@@ -269,6 +282,8 @@ class GUI(tk.Tk):
             colors.append(color_list[i])
         ###TESTING SPACE####
         self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
+        n0 = State(self.csp_search, self.csp_search.calc_heuristic())
+        self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
         self.redraw()
         return
     
@@ -344,6 +359,7 @@ class GUI(tk.Tk):
         if (len(self.csp_search.queue)) == 0:
             if not self.csp_search.is_solved():
                 print "use a star"
+                self.astar_search.incremental_solver()
                 exit()
         if self.csp_search.contradictory:
             print "unsolvable"
@@ -369,7 +385,7 @@ class GUI(tk.Tk):
 #            print result[3]
 #            print self.search.search_type, ": Shortest path found: ", len(result[2]), "Nodes generated: ", len(result[0]) + len(result[1])
 #            return
-#        
+#
 #        #Draws the open node list
 #        for i in result[0]:
 #            column = i.pos_x
@@ -383,7 +399,7 @@ class GUI(tk.Tk):
 #            row = j.pos_y
 #            item_id = self.oval[column, row]
 #            self.canvas.itemconfig(item_id, outline="black", fill="gray15")
-#        
+#
 #        #Draws the current best path
 #        for k in result[2]:
 #            column = k.pos_x
@@ -393,7 +409,6 @@ class GUI(tk.Tk):
 
         #Delay before next drawing phase
         self.after(self.update_speed, lambda: self.redraw())
-
 
 #Run the main function
 main()
