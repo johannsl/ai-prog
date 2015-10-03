@@ -59,6 +59,8 @@ class CSP:
             current = self.queue.pop()
             if self.revise(current):
                 for i in self.constraints[current[0]]:
+                    print "i", i
+                    print "current[0]", current[0]
                     if i != current[1]:
                         print "appending to queue", (current[0], i)
                         self.queue.append((current[0], i))
@@ -70,6 +72,7 @@ class CSP:
 
         revised = False
         valid = True
+
         for xi in self.domains[i]:
             for xj in self.domains[j]:
                 if apply(g, (xi, xj)): break
@@ -81,7 +84,11 @@ class CSP:
         return revised
 
 
-
+    def heuristic(self):
+        h = 0
+        for i in self.domains:
+            h += len(i)
+        return h
 
 
     def complete_solver(self):
@@ -92,7 +99,7 @@ class CSP:
             current = self.queue.pop()
             if self.revise(current):
                 for i in self.constraints[current[0]]:
-                    if i != current[1]:
+                    if i is not current[1]:
                         print "appending to queue", (current[0], i)
                         self.queue.append((current[0], i))
         """
@@ -126,10 +133,6 @@ class CSP:
                 revised = True
         return revised
         """
-
-
-
-
 
     def rerun(self):
         return

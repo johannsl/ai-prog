@@ -43,7 +43,7 @@ def main():
     while flag:
 
         ###TESTING SPACE###
-        the_input = "Run 0"
+        the_input = "Run 1"
 
         #the_input = raw_input(" > ")
         
@@ -179,6 +179,7 @@ class GUI(tk.Tk):
         self.graph = graph
         self.graph_size = 800.0
         self.vertex_size = 10.0
+        self.update_speed = 5
 
         #Create the menu
         menubar = tk.Menu(self)
@@ -219,7 +220,7 @@ class GUI(tk.Tk):
         self.canvas.yview_moveto(0)
 
         ###TESTINT ZONE###
-        self.execute_2()
+        self.execute_3()
 
 #        csp = CSP(graph)
 #        print csp.domains
@@ -266,8 +267,9 @@ class GUI(tk.Tk):
         colors = []
         for i in range(3):
             colors.append(color_list[i])
-        print colors
-        #self.redraw()
+        ###TESTING SPACE####
+        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
+        self.redraw()
         return
     
     def execute_4(self):
@@ -338,6 +340,14 @@ class GUI(tk.Tk):
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
         result = self.csp_search.incremental_solver()
+        print self.csp_search.domains
+        if (len(self.csp_search.queue)) == 0:
+            if not self.csp_search.is_solved():
+                print "use a star"
+                exit()
+        if self.csp_search.contradictory:
+            print "unsolvable"
+            exit()
 
 #        #Check whether some error has been encountered
 #        if not result[0] and not result[1] and not result[2]:
@@ -380,9 +390,9 @@ class GUI(tk.Tk):
 #            row = k.pos_y
 #            item_id = self.oval[column, row]
 #            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
-#
-#        #Delay before next drawing phase
-#        self.after(update_speed, lambda: self.redraw())
+
+        #Delay before next drawing phase
+        self.after(self.update_speed, lambda: self.redraw())
 
 
 #Run the main function
