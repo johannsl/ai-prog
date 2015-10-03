@@ -4,9 +4,10 @@
 import sys
 sys.path.append("..")
 import project_module_1.a_star as a_star
-from csp import CSP
+#from csp import CSP
 #lol
 #import csp
+import csp_j
 import datetime
 import os
 import platform
@@ -43,7 +44,11 @@ def main():
 
     #This is the mainloop - It reads input from the user and executes the commands
     while flag:
-        the_input = raw_input(" > ")
+
+        ###TESTING SPACE###
+        the_input = "Run 0"
+
+        #the_input = raw_input(" > ")
         
         #Run a premade graph
         if the_input != "Run new" and the_input.startswith("Run"):
@@ -91,7 +96,7 @@ def _run_gui(graph):
     return
 
 
-#Graph class containing some problem specific help for the AStar class
+#Graph class containing some problem specific help for the CSP and AStar class
 class Graph:
     def __init__(self,NV, NE, verticies, edges):
         self.NV = NV
@@ -108,8 +113,10 @@ class Graph:
         for vertex in verticies:
             vertex_edges = []
             for edge in edges:
-                if vertex[0] in edge:
-                    vertex_edges.append(edge)
+                if vertex[0] == edge[0]:
+                    vertex_edges.append(edge[1]) 
+                elif vertex[0] == edge[1]:
+                    vertex_edges.append(edge[0])
             graph.append(Vertex(index=vertex[0], pos_x=vertex[1], pos_y=vertex[2], edges=vertex_edges, color=None))
             if vertex[1] > x_max: x_max = vertex[1]
             elif vertex[1] < x_min: x_min = vertex[1]
@@ -127,9 +134,10 @@ class Graph:
             self.x_size = x_max
             self.y_size = y_max
         self.graph = graph
-
+        
+        ###TESTING ZONE####
         #for i in graph:
-        #    print i.pos_x, i.pos_y
+        #    print i, i.edges
         
 #    #Find succeessors to a node in the graph and add them to a clockwise list
 #    def generate_all_successors(self, node):
@@ -219,8 +227,10 @@ class GUI(tk.Tk):
         colors = []
         for i in range(2):
             colors.append(color_list[i])
+        
+        ###TESTING SPACE####
+        self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
 
-        self.csp_search = csp.CSP(graph=self.graph, domain_size=len(colors))
         #self.redraw()
         return
 

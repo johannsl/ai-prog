@@ -1,12 +1,31 @@
 #Written by johannsl and iverasp 2015
+# http://www.cs.mtu.edu/~nilufer/classes/cs5811/2014-fall/lecture-slides/cs5811-ch06-csp.pdf
 #This file contains the general use CSP class, and the methods that it uses
 
 import itertools
 
-class CSP:
-    def __init__(self, graph, ):
-        
 
+class CSP:
+    
+    #Initiates with a graph object containing the problem information
+    def __init__(self, graph, domain_size):
+        self.graph = graph
+        self.variables = graph.graph
+        self.domains = {}
+        self.constraints = {}
+        for vertex in self.variables:
+            self.domains[vertex] = []
+            for i in range(domain_size):
+                self.domains[vertex].append(i)
+
+        print self.domains    
+           
+            #self.constraints[vertex] = {}
+            #for vertex.edges 
+            
+            
+      #  self.constraints = {}
+      #  for 
 
 
 

@@ -29,6 +29,6 @@ for i, j in csp.constraints.iteritems():
 csp.domain_filter_loop()
 if not csp.is_solved():
     # do A-star
-    astar = AStar(graph=None, search_type="best-first", distance_type="csp", max_nodes=1000)
+    #astar = AStar(graph=None, search_type="best-first", distance_type="csp", max_nodes=1000)
     #AStar.
 
