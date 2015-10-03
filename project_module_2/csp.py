@@ -45,14 +45,15 @@ class CSP:
         states = []
         edges = {}
 
+        # populate graph. use set and convert to list to remove duplicates
         for vertex in graph.graph:
             for edge in vertex.edges:
-                print vertex.edges
-                if edge[0] not in edges: edges[edge[0]] = []
+                if edge[0] not in edges: edges[edge[0]] = set()
                 if edge[0] not in states: states.append(edge[0])
-                edges[edge[0]].append(edge[1])
-                print edges
-                print states
+                if edge[1] not in states: states.append(edge[1])
+                edges[edge[0]].add(edge[1])
+        for edge, neighbors in edges.iteritems():
+            edges[edge] = list(neighbors)
 
         for state in states:
             self.add_variable(state, {'red', 'green', 'blue', 'yellow'})

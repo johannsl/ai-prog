@@ -214,6 +214,9 @@ class GUI(tk.Tk):
         self.canvas.yview_moveto(0)
 
         csp = CSP(graph)
+        csp.initialize()
+        csp.domain_filter_loop()
+        print csp.domains
 
     #Execute algorithm with different amount of colors... This is bad code style
     def execute_2(self):
