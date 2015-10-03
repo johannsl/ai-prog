@@ -267,7 +267,7 @@ class GUI(tk.Tk):
 #            vertices.append(l)
 #        graph = Graph()
 
-    #Execute algorithm with different amount of colors... This is bad code style
+    #Execute algorithm with different amount of colors... Bad style, should rewrites
     def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")
         colors = []
@@ -288,8 +288,8 @@ class GUI(tk.Tk):
             colors.append(color_list[i])
         ###TESTING SPACE####
         self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
-        n0 = State(self.csp_search, self.csp_search.calc_heuristic())
-        self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
+        #n0 = State(self.csp_search, self.csp_search.calc_heuristic())
+        #self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
         self.redraw()
         return
     
