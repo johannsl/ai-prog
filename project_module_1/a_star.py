@@ -146,7 +146,10 @@ class AStar:
             manhattan_distance = x_distance + y_distance
             return manhattan_distance
         elif self.distance_type == "euclidian distance":
-            raise NotImplementedError 
+            raise NotImplementedError
+        elif self.distance_type == "csp":
+            
+            raise NotImplementedError
         else:
             raise NotImplementedError
     

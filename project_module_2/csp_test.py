@@ -1,6 +1,8 @@
 __author__ = 'iver'
 from csp import CSP
-from a_star import AStar
+import sys
+sys.path.append("..")
+from project_module_1.a_star import AStar
 
 def create_map_coloring_csp():
     """Instantiate a CSP representing the map coloring problem from the
@@ -27,5 +29,6 @@ for i, j in csp.constraints.iteritems():
 csp.domain_filter_loop()
 if not csp.is_solved():
     # do A-star
-    astar = AStar()
+    astar = AStar(graph=None, search_type="best-first", distance_type="csp", max_nodes=1000)
+    #AStar.
 

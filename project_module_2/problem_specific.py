@@ -5,6 +5,8 @@ import sys
 sys.path.append("..")
 import project_module_1.a_star as a_star
 from csp import CSP
+#lol
+#import csp
 import datetime
 import os
 import platform
@@ -72,7 +74,8 @@ def main():
             premade_graph = Graph(NV=number_of_verticies, NE=number_of_edges, verticies=verticies, edges=edges)
             premade_graph_gui = GUI(graph=premade_graph)
             _run_gui(premade_graph_gui)
- 
+            flag = False
+
         #Exit the loop
         elif the_input == "Exit":
             flag = False
@@ -176,14 +179,14 @@ class GUI(tk.Tk):
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
         execmenu.add_command(label="2 Colors", command=self.execute_2)
-#        execmenu.add_command(label="3 Colors", command=self.execute_3)
-#        execmenu.add_command(label="4 Colors", command=self.execute_4)
-#        execmenu.add_command(label="5 Colors", command=self.execute_5)
-#        execmenu.add_command(label="6 Colors", command=self.execute_6)
-#        execmenu.add_command(label="7 Colors", command=self.execute_7)
-#        execmenu.add_command(label="8 Colors", command=self.execute_8)
-#        execmenu.add_command(label="9 Colors", command=self.execute_9)
-#        execmenu.add_command(label="10 Colors", command=self.execute_10)
+        execmenu.add_command(label="3 Colors", command=self.execute_3)
+        execmenu.add_command(label="4 Colors", command=self.execute_4)
+        execmenu.add_command(label="5 Colors", command=self.execute_5)
+        execmenu.add_command(label="6 Colors", command=self.execute_6)
+        execmenu.add_command(label="7 Colors", command=self.execute_7)
+        execmenu.add_command(label="8 Colors", command=self.execute_8)
+        execmenu.add_command(label="9 Colors", command=self.execute_9)
+        execmenu.add_command(label="10 Colors", command=self.execute_10)
         menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
@@ -212,14 +215,86 @@ class GUI(tk.Tk):
 
         csp = CSP(graph)
 
-
-    #Execute algorithm
+    #Execute algorithm with different amount of colors... This is bad code style
     def execute_2(self):
         self.canvas.itemconfig("oval", fill="gray80")
-        colors = [color_list[0], color_list[1]]
-        self.search = csp.py
+        colors = []
+        for i in range(2):
+            colors.append(color_list[i])
 
+        self.csp_search = csp.CSP(graph=self.graph, domain_size=len(colors))
+        #self.redraw()
+        return
 
+    def execute_3(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(3):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_4(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(4):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_5(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(5):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_6(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(6):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_7(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(7):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_8(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(8):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_9(self):
+        self.canvas.itemconfig("oval", fill="gray80")
+        colors = []
+        for i in range(9):
+            colors.append(color_list[i])
+        print colors
+        #self.redraw()
+        return
+    
+    def execute_10(self):
+        self.canvas.itemconfig("oval", fill="gray80") 
+        colors = []
+        for i in range(10):
+            colors.append(color_list[i])
+        print colors
         #self.redraw()
         return
 
