@@ -15,7 +15,10 @@ class AStar:
         self.open_set = set()
         self.open_heap = []
         self.closed_set = set()
-        n0 = graph.grid[graph.a_pos_x][graph.a_pos_y]
+        n0 = graph.graph[graph.a_pos_x][graph.a_pos_y]
+        #n0 = graph.graph[graph.start][graph.start]
+        #ide: csp; graph.graph = [[{...
+        #print graph.graph[0]
         n0.g = 0
         n0.h = self.calculate_h(n0)
         n0.f = n0.g + n0.h
