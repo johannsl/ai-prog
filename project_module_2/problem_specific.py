@@ -141,10 +141,17 @@ class Graph:
     #Find succeessors to a node in the graph and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
-        helper = [(key, len(node.domain[key])) for key in node.domain.keys()]
+        helper = [(key, len(node.domains[key])) for key in node.domains.keys()]
         helper.sort(key=lambda x: x[1])
-        successors.append()
-        for domain in node.domain:
+        print "lol", node.domains[helper[0][0]]
+        
+        print len(node.domains[helper[0][0]])
+
+        #for value in range(len(node.domains[helper[0]])):
+
+        
+        #successors.append()
+        #for domain in node.domain:
 
 
 #        if node.pos_x < self.columns-1:
