@@ -147,12 +147,12 @@ class AStar:
             return manhattan_distance
         elif self.distance_type == "euclidian distance":
             raise NotImplementedError
-        elif self.distance_type == "csp":
-            h = 0
-            for i, j in self.node.domains.iteritems():
-                h += len(j)
-            print "H:", h
-            return h
+        #elif self.distance_type == "csp":
+        #    h = 0
+        #    for i, j in self.node.domains.iteritems():
+        #        h += len(j)
+        #    print "H:", h
+        #    return h
         else:
             raise NotImplementedError
     
