@@ -108,9 +108,9 @@ def main():
                 walls.append(wall)
              
             #Initialize the graph and run AStar
-            graph = graph(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
+            graph = Graph(columns=line_list[1], rows=line_list[2], a_pos_x=line_list[3], a_pos_y=line_list[4], b_pos_x=line_list[5], b_pos_y=line_list[6], walls= walls)
             for run in range(10):
-                search = a_star.AStar(graph, "best-first", "manhattan distance", max_nodes)
+                search = a_star.AStar(graph, graph.graph[graph.a_pos_x][graph.a_pos_y], "best-first", "manhattan distance", max_nodes)
                 a = datetime.datetime.now()
                 result = search.complete_solver()
                 b = datetime.datetime.now()
@@ -175,7 +175,19 @@ class Graph:
             for c in range(wall[0], wall[0]+wall[2]):
                 for r in range(wall[1], wall[1]+wall[3]):
                     graph[c][r].tag = "X"
-       
+
+    #Check wether a node is the start
+    def start_found(self, node):
+        if node.tag == "A":
+            return True
+        return False
+
+    #Check wether a node is the goal
+    def goal_found(self, node):
+        if node.tag == "B":
+            return True
+        return False
+           
     #Find succeessors to a node in the graph and add them to a clockwise list
     def generate_all_successors(self, node):
         successors = []
@@ -255,19 +267,19 @@ class GUI(tk.Tk):
     #Run best-first search
     def best_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.graph, "best-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, self.graph.graph[self.graph.a_pos_x][self.graph.a_pos_y], "best-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run breadth-first search
     def breadth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.graph, "breadth-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, self.graph.graph[self.graph.a_pos_x][self.graph.a_pos_y], "breadth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Run depth-first search
     def depth_first_search(self):
         self.canvas.itemconfig("oval", fill="white", outline="white")
-        self.search = a_star.AStar(self.graph, "depth-first", "manhattan distance", max_nodes)
+        self.search = a_star.AStar(self.graph, self.graph.graph[self.graph.a_pos_x][self.graph.a_pos_y], "depth-first", "manhattan distance", max_nodes)
         self.redraw()
 
     #Draws the gui with nodes from the open, closed, and complete path list

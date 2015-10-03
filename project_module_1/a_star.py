@@ -5,8 +5,9 @@ import heapq
 
 #A star class
 class AStar:
-    def __init__(self, graph, search_type, distance_type, max_nodes):
+    def __init__(self, graph, n0, search_type, distance_type, max_nodes):
         self.graph = graph
+        self.n0 = n0
         self.search_type = search_type
         self.distance_type = distance_type
         self.max_nodes = max_nodes
@@ -15,10 +16,6 @@ class AStar:
         self.open_set = set()
         self.open_heap = []
         self.closed_set = set()
-        n0 = graph.graph[graph.a_pos_x][graph.a_pos_y]
-        #n0 = graph.graph[graph.start][graph.start]
-        #ide: csp; graph.graph = [[{...
-        #print graph.graph[0]
         n0.g = 0
         n0.h = self.calculate_h(n0)
         n0.f = n0.g + n0.h
@@ -47,7 +44,7 @@ class AStar:
         self.closed_set.add(X)
 
         #Look for end properties
-        if X.tag == "B":
+        if self.graph.goal_found(node=X):
             path = self.retrace_path(X, [X])
             return [self.open_set, self.closed_set, path, ["SUCCESS: path found"]]
 
@@ -104,7 +101,7 @@ class AStar:
             self.closed_set.add(X)
 
             #Look for end properties
-            if X.tag == "B":
+            if self.graph.goal_found(node=X):
                 path = self.retrace_path(X, [X])
                 return [path, ["SUCCESS: path found"]]
 
@@ -151,8 +148,7 @@ class AStar:
         elif self.distance_type == "euclidian distance":
             raise NotImplementedError
         elif self.distance_type == "csp":
-            
-            raise NotImplementedError
+            print self.graph.verticies
         else:
             raise NotImplementedError
     
@@ -174,7 +170,7 @@ class AStar:
                 
     #This method recursively finds the path from B to A and returns it as a list
     def retrace_path(self, N, path):
-        if N.tag == "A":
+        if self.graph.start_found(node=N):
             return path
         else:
             path.append(N.parent)
