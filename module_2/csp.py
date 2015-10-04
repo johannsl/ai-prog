@@ -33,12 +33,17 @@ class CSP:
                 self.queue.append((i, j))
  
     def domain_filtering_loop(self):
+        print self.constraints
         while self.queue:
+            print len(self.queue)
             todo_revise = self.queue.pop()
             if self.revise(todo_revise):
-                for i in self.constraints[todo_revise[0]]:
-                    if i != todo_revise[1]:
-                        self.queue.append((todo_revise[0], i))
+
+                for constraint in self.constraints[todo_revise[0]]:
+                    if todo_revise not in constraint:
+                        self.queue.append((todo_revise[0], constraint))
+                    else: print "lol"
+            else: print "lol2"
         return ["HALT: dfl complete", self.domains]
 
     def revise(self, assignment):
@@ -56,26 +61,11 @@ class CSP:
                     revised = True
             return revised
 
-
-#    def revise(self, assignment):
-#        return True
-#        i = assignment[0]
-#        j = assignment[1]
-#        g = self.makefunc(["x", "y"], "x != y")
-#
-#        revised = False
-#        valid = True
-#
-#        for xi in self.domains[i]:
-#            for xj in self.domains[j]:
-#                if apply(g, (xi, xj)): break
-#                #print "removing", xi, "from", self.domains[i]
-#                self.domains[i].remove(xi)
-#                if len(self.domains[i]) == 1: self.singleton_domains += 1
-#                if len(self.domains[i]) == 0: self.contradictory = True
-#                revised = True
-#        return revised
-
+    def rerun(self, node):
+        for i in self.constraints[node.domains[0]]:
+            if i != todo_revise[1]:
+                self.queue.append((todo_revise[0], i))
+        return
 
     def calc_heuristic(self):
         h = 0
@@ -84,49 +74,11 @@ class CSP:
             h += len(j)
         return h
 
-
     def complete_solver(self):
-        return
-
-        """
-        for xi in self.domains[i]:
-            for xj in self.domains[j]:
-                if apply(g, (xi, xj)): break
-                print "removing", xi, "from", self.constraints[i][j]
-                for c in self.constraints[i][j]:
-                    if c[0] == xi: self.constraints[i][j].remove(c)
-                if len(self.domains[i]) == 1: self.singleton_domains += 1
-                if len(self.domains[i]) == 0: self.contradictory = True
-                revised = True
-        return revised
-        """
-
-
-        """
-        print assignment
-        revised = False
-        for i in self.constraints[assignment[0]][assignment[1]]:
-            valid = False
-            g = self.makefunc(["x", "y"], "x != y")
-            for j in self.constraints[assignment[1]][assignment[0]]:
-                print "i, j: ", i, j
-                if not apply(g, (i, j)):
-                    valid = False
-            if not valid:
-                print "domains: ", self.domains[assignment[0]]
-                print "removing: ", j
-                self.domains[assignment[0]].remove(j)
-                revised = True
-        return revised
-        """
-
-    def rerun(self):
         return
 
     def is_solved(self):
         return True if self.singleton_domains == len(self.variables) else False
-
-
 
     def makefunc(self, var_names, expression, envir=globals()):
         args = ""

@@ -79,6 +79,8 @@ class GUI(tk.Tk):
         print result
         if result[0] == "HALT: dfl complete":
             print self.astar.incremental_solver()
+            for node in self.astar.open_queue:
+                self.csp.rerun(node)
 
         #if result[0] == "HALT: unsolvable":
         #    return
