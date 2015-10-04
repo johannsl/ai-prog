@@ -7,6 +7,7 @@ class GUI(tk.Tk):
         self.graph = graph
         self.csp = csp
         self.astar = astar
+        self.astar.distance_type = "csp"
 
         #constants
         self.graph_size = 600.0
@@ -71,6 +72,11 @@ class GUI(tk.Tk):
     def redraw(self):
         result = self.csp.domain_filtering_loop()
         print result
+        if result[0] == "HALT: dfl complete":
+            self.astar.complete_solver()
+
+        if result[0] == "HALT: unsolvable":
+            return
 
 
 
