@@ -13,16 +13,17 @@ class Node:
         self.domains = {}
 
     def generate_successors(self):
+        successors = []
         shortest_vertex = min(self.domains, key=lambda k: len(self.domains[k]))
         for domain in self.domains[shortest_vertex]:
-            kid = Node(g=self.g + 1,
+            successor = Node(g=self.g + 1,
                      h=self.h - (len(self.domains[shortest_vertex]) - 1),
                      parent=self,
                      kids=None)
-            kid.domains = deepcopy(self.domains)
-            kid.domains[shortest_vertex] = [domain]
-            self.kids.append(kid)
-        return self.kids
+            successor.domains = deepcopy(self.domains)
+            successor.domains[shortest_vertex] = [domain]
+            successors.append(successor)
+        return successors
 
     def __lt__(self, other):
         if self.f == other.f: return self.h < other.h

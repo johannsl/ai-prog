@@ -53,6 +53,11 @@ class Graph:
     def goal_found(self, node):
         return False
 
+    def start_found(self, node):
+        if node == self.n0:
+            return True
+        return False
+
     # Find the distance between a node C
     def calculate_arc_cost(self, C, P):
         return 1
