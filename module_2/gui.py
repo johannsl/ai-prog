@@ -65,6 +65,8 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
                 self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
         self.csp.initialize()
+        self.astar.n0.domains = self.csp.domains
+        self.astar.initialize(distance_type="csp")
         self.redraw()
         return
 

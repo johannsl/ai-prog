@@ -9,5 +9,10 @@ class Node:
         self.childs = childs
 
         self.domains = {}
+
+        def __lt__(self, other):
+            if self.f == other.f: return self.h < other.h
+            return self.f < other.f
+
         def __hash__(self):
             return uuid.uuid4()
