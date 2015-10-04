@@ -37,12 +37,12 @@ class GUI(tk.Tk):
 
         #Loop through the graph and create a two dimensional grid with circles and lines
         for edge in graph.edges:
-            x1 = (graph.verticies[edge[0]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
-            x2 = (graph.verticies[edge[0]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
-            y1 = (graph.verticies[edge[1]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
-            y2 = (graph.verticies[edge[1]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
+            x1 = (graph.vertices[edge[0]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
+            x2 = (graph.vertices[edge[0]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
+            y1 = (graph.vertices[edge[1]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
+            y2 = (graph.vertices[edge[1]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
             self.canvas.create_line(x1, x2, y1, y2)
-        for vertex in graph.verticies:
+        for vertex in graph.vertices:
             x1 = vertex[1] * (self.graph_size / graph.x_size)
             y1 = vertex[2] * (self.graph_size / graph.y_size)
             x2 = x1 + self.vertex_size
@@ -52,6 +52,8 @@ class GUI(tk.Tk):
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
+
+        self.execute(3)
 
     def execute(self, domain_size):
         self.canvas.itemconfig("oval", fill="gray80")
@@ -75,7 +77,7 @@ class GUI(tk.Tk):
         result = self.csp.domain_filtering_loop()
         print result
         if result[0] == "HALT: dfl complete":
-            self.astar.complete_solver()
+            self.astar.incremental_solver()
 
         if result[0] == "HALT: unsolvable":
             return

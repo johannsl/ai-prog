@@ -16,7 +16,7 @@ class AStar:
         self.distance_type = distance_type
         self.n0.g = 0
         self.n0.h = self.calculate_h(self.n0)
-        self.n0.f = self.n0.g + self.n0.h
+        #self.n0.f = self.n0.g + self.n0.h
         self.open_set = set()
         self.open_heap = []
         self.closed_set = set()
@@ -26,6 +26,9 @@ class AStar:
     # This method incrementally solves the problem
     def incremental_solver(self):
 
+        print self.open_heap
+        print self.open_set
+
         # Check whether a path can be found
         if not self.open_set:
             return ["FAIL: no path found", [], [], []]
@@ -33,6 +36,8 @@ class AStar:
         # Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
         if self.search_type == "best-first":
             X = heapq.heappop(self.open_heap)
+            print self.open_heap
+            print self.open_set
             self.open_set.remove(X)
         elif self.search_type == "breadth-first":
             X = self.open_heap.pop(0)
@@ -50,7 +55,7 @@ class AStar:
             return ["SUCCESS: path found", self.open_set, self.closed_set, path]
 
         # Generate a list of successor nodes to a node X
-        successors = self.graph.generate_all_successors(X)
+        successors = X.generate_successors()
 
         # Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
         for S in successors:
