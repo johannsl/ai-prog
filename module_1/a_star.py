@@ -5,22 +5,23 @@ import heapq
 
 #A star class
 class AStar:
-    def __init__(self, graph, n0, search_type, distance_type, max_nodes):
+    def __init__(self, graph):
         self.graph = graph
-        self.n0 = n0
-        self.search_type = search_type
-        self.distance_type = distance_type
-        self.max_nodes = max_nodes
-
-        #Initialize the algorithm
-        self.open_set = set()
-        self.open_heap = []
-        self.closed_set = set()
-        n0.g = 0
-        n0.h = self.calculate_h(n0)
-        n0.f = n0.g + n0.h
-        self.open_set.add(n0)
-        heapq.heappush(self.open_heap, n0)
+#        self.n0 = n0
+#        self.search_type = search_type
+#        self.distance_type = distance_type
+#        self.max_nodes = max_nodes
+#
+#        #Initialize the algorithm
+#        self.open_set = set()
+#        self.open_heap = []
+#        self.closed_set = set()
+#        n0.g = 0
+#        n0.h = self.calculate_h(n0)
+#        n0.f = n0.g + n0.h
+#        self.open_set.add(n0)
+#        heapq.heappush(self.open_heap, n0)
+        a = 0
 
     #This method incrementally solves the problem
     def incremental_solver(self):

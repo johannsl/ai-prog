@@ -1,24 +1,31 @@
+import Tkinter as tk
+
 ##GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-    def __init__(self, graph):
+    def __init__(self, graph, csp, astar):
         tk.Tk.__init__(self)
         self.graph = graph
-        self.graph_size = 800.0
+        self.csp = csp
+        self.astar = astar
+
+        #constants
+        self.graph_size = 600.0
         self.vertex_size = 10.0
         self.update_speed = 5
+        color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")  
 
         #Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
-        execmenu.add_command(label="2 Colors", command=self.execute_2)
-        execmenu.add_command(label="3 Colors", command=self.execute_3)
-        execmenu.add_command(label="4 Colors", command=self.execute_4)
-        execmenu.add_command(label="5 Colors", command=self.execute_5)
-        execmenu.add_command(label="6 Colors", command=self.execute_6)
-        execmenu.add_command(label="7 Colors", command=self.execute_7)
-        execmenu.add_command(label="8 Colors", command=self.execute_8)
-        execmenu.add_command(label="9 Colors", command=self.execute_9)
-        execmenu.add_command(label="10 Colors", command=self.execute_10)
+        execmenu.add_command(label="2 Colors", command= lambda: self.execute(2))
+        execmenu.add_command(label="3 Colors", command= lambda: self.execute(3))
+        execmenu.add_command(label="4 Colors", command= lambda: self.execute(4))
+        execmenu.add_command(label="5 Colors", command= lambda: self.execute(5))
+        execmenu.add_command(label="6 Colors", command= lambda: self.execute(6))
+        execmenu.add_command(label="7 Colors", command= lambda: self.execute(7))
+        execmenu.add_command(label="8 Colors", command= lambda: self.execute(8))
+        execmenu.add_command(label="9 Colors", command= lambda: self.execute(9))
+        execmenu.add_command(label="10 Colors", command= lambda: self.execute(10))
         menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
@@ -29,142 +36,69 @@ class GUI(tk.Tk):
 
         #Loop through the graph and create a two dimensional grid with circles and lines
         for edge in graph.edges:
-            x1 = (graph.graph[edge[0]].pos_x * (self.graph_size / graph.x_size)) + (self.vertex_size / 2)
-            x2 = (graph.graph[edge[0]].pos_y * (self.graph_size / graph.y_size)) + (self.vertex_size / 2)
-            y1 = (graph.graph[edge[1]].pos_x * (self.graph_size / graph.x_size)) + (self.vertex_size / 2)
-            y2 = (graph.graph[edge[1]].pos_y * (self.graph_size / graph.y_size)) + (self.vertex_size / 2)
+            x1 = (graph.verticies[edge[0]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
+            x2 = (graph.verticies[edge[0]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
+            y1 = (graph.verticies[edge[1]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
+            y2 = (graph.verticies[edge[1]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
             self.canvas.create_line(x1, x2, y1, y2)
-        for vertex in graph.graph:
-            x1 = vertex.pos_x * (self.graph_size / graph.x_size)
-            y1 = vertex.pos_y * (self.graph_size / graph.y_size)
+        for vertex in graph.verticies:
+            x1 = vertex[1] * (self.graph_size / graph.x_size)
+            y1 = vertex[2] * (self.graph_size / graph.y_size)
             x2 = x1 + self.vertex_size
             y2 = y1 + self.vertex_size
-            self.oval[vertex.pos_x, vertex.pos_y] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", fill="gray80", tag="oval")
+            self.oval[vertex[1], vertex[2]] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", fill="gray80", tag="oval")
         
         #Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
-        ###TESTINT ZONE###
-        self.execute_3()
+    def execute(self, domain_size):
+        self.canvas.itemconfig("oval", fill="gray80")
+        domain = []
+        for i in range(domain_size):
+            domain.append(i)
+        for i in range(self.graph.nv):
+            self.csp.add_variable(name=i, domain=domain)
+        for vertex, other_vertex in self.graph.edges_dict.iteritems():
+            for other_vertex in other_vertex:
+                self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
+                self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
+        for edge in self.graph.edges:
+            self.csp.queue.append(edge)
+        self.csp.domain_filtering_loop()
 
-#        csp = CSP(graph)
-#        print csp.domains
-#        csp.initialize()
-#        print csp.domains
-#        csp.domain_filter_loop()
-#        print csp.domains
-#        if csp.is_solved():
-#            print "solved!"
-#            print csp.domains
-#        if csp.contradictory:
-#            print "no solution can be found"
-#            print csp.domains
-#            exit()
-#        if not csp.is_solved():
-#            print "not solved yet, trying astar"
-#            print csp.domains
-#            #astar = AStar()
-
-
-#    def csp_to_graph(self, csp):
-#        vertices = []
-#        for v in csp.variables:
-#            l = [v, 0.0, 0.0]
-#            vertices.append(l)
-#        graph = Graph()
-
-    #Execute algorithm with different amount of colors... Bad style, should rewrites
-    def execute_2(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(2):
-            colors.append(color_list[i])
-        
-        ###TESTING SPACE####
-        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
-        #self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
-
-        self.redraw()
-        return
-
-    def execute_3(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(3):
-            colors.append(color_list[i])
-        ###TESTING SPACE####
-        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
-        #n0 = State(self.csp_search, self.csp_search.calc_heuristic())
-        #self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
-        self.redraw()
-        return
-    
-    def execute_4(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(4):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_5(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(5):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_6(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(6):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_7(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(7):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_8(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(8):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_9(self):
-        self.canvas.itemconfig("oval", fill="gray80")
-        colors = []
-        for i in range(9):
-            colors.append(color_list[i])
-        print colors
-        #self.redraw()
-        return
-    
-    def execute_10(self):
-        self.canvas.itemconfig("oval", fill="gray80") 
-        colors = []
-        for i in range(10):
-            colors.append(color_list[i])
-        print colors
+        #print self.csp.variables
+        #print self.csp.domains
+        #print self.csp.constraints
         #self.redraw()
         return
 
-
-
+#    #Execute algorithm with different amount of colors... Bad style, should rewrites
+#    def execute_2(self):
+#        self.canvas.itemconfig("oval", fill="gray80")
+#        colors = []
+#        for i in range(2):
+#            colors.append(color_list[i])
+#        
+#        ###TESTING SPACE####
+#        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
+#        #self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
+#
+#        self.redraw()
+#        return
+#
+#    def execute_3(self):
+#        self.canvas.itemconfig("oval", fill="gray80")
+#        colors = []
+#        for i in range(3):
+#            colors.append(color_list[i])
+#        ###TESTING SPACE####
+#        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
+#        #n0 = State(self.csp_search, self.csp_search.calc_heuristic())
+#        #self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
+#        self.redraw()
+#        return
+#    
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
         result = self.csp_search.incremental_solver()

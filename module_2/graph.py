@@ -1,17 +1,28 @@
-#Graph class containing some problem specific help for the CSP and AStar class
+from node import Node
+
 class Graph:
-    def __init__(self,NV, NE, verticies, edges):
-        self.NV = NV
-        self.NE = NE
+    def __init__(self, nv, ne, verticies, edges):
+        self.nv = nv
+        self.ne = ne
         self.verticies = verticies
         self.edges = edges
-         
-        #Find the lower and upper bounds of the x and y values of the verticies. Initialize verticies in the graph list
-        x_min = verticies[0][1]
-        x_max = verticies[0][1]
-        y_min = verticies[0][2]
-        y_max = verticies[0][2]
-        graph = []
+        
+        #grid
+        self.node_list = []
+        self.x_size = 0
+        self.y_size = 0
+        x_min = 0
+        x_max = 0
+        y_min = 0
+        y_max = 0
+
+        #csp
+        self.variables = []
+        self.domains = {}
+        self.constraints = {}
+        self.edges_dict = {}
+        
+        #Create an edge dictionary
         for vertex in verticies:
             vertex_edges = []
             for edge in edges:
@@ -19,40 +30,50 @@ class Graph:
                     vertex_edges.append(edge[1]) 
                 elif vertex[0] == edge[1]:
                     vertex_edges.append(edge[0])
-            graph.append(Vertex(index=vertex[0], pos_x=vertex[1], pos_y=vertex[2], edges=vertex_edges, color=None))
+                self.edges_dict[int(vertex[0])] = vertex_edges
+            
+            #Find the lowest x any y values among nodes
             if vertex[1] > x_max: x_max = vertex[1]
             elif vertex[1] < x_min: x_min = vertex[1]
             if vertex[2] > y_max: y_max = vertex[2]
             elif vertex[2] < y_min: y_min = vertex[2]
         
-        #Make all x and y values positive to ease the creation of a two dimensional gui grid. Decide the total x and y sizes
+        #Make all coordinates positive. Decide grid size
         if x_min < 0 or y_min < 0:
             self.x_size = x_max + abs(x_min)
             self.y_size = y_max + abs(y_min)
-            for vertex in graph:
-                vertex.pos_x = vertex.pos_x + abs(x_min)
-                vertex.pos_y = vertex.pos_y + abs(y_min)
+            for vertex in verticies:
+                vertex[1] = vertex[1] + abs(x_min)
+                vertex[2] = vertex[2] + abs(y_min)
         else:
             self.x_size = x_max
             self.y_size = y_max
-        self.graph = graph
+       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+       
         
-        ###TESTING ZONE####
-        #for i in graph:
-        #    print i, i.edges
     def goal_found(self, node):
         return False
 
-    #Find succeessors to a node in the graph and add them to a clockwise list
-    def generate_all_successors(self, node):
-        successors = []
-        helper = [(key, len(node.domains[key])) for key in node.domains.keys()]
-        helper.sort(key=lambda x: x[1])
-        print "lol", node.domains[helper[0][0]]
-        
-        print len(node.domains[helper[0][0]])
-
-        #for value in range(len(node.domains[helper[0]])):
+#    #Find succeessors to a node in the graph and add them to a clockwise list
+#    def generate_all_successors(self, node):
+#        successors = []
+#        helper = [(key, len(node.domains[key])) for key in node.domains.keys()]
+#        helper.sort(key=lambda x: x[1])
+#        print "lol", node.domains[helper[0][0]]
+#        
+#        print len(node.domains[helper[0][0]])
+#
+#        #for value in range(len(node.domains[helper[0]])):
 
         
         #successors.append()
