@@ -33,22 +33,20 @@ class CSP:
                 self.queue.append((i, j))
  
     def domain_filtering_loop(self):
-        print self.constraints
         while self.queue:
-            print len(self.queue)
+            print self.queue
             todo_revise = self.queue.pop()
             if self.revise(todo_revise):
-
                 for constraint in self.constraints[todo_revise[0]]:
-                    if todo_revise not in constraint:
-                        self.queue.append((todo_revise[0], constraint))
-                    else: print "lol"
-            else: print "lol2"
+                    if constraint is not todo_revise[1]:
+                        if (todo_revise[0], constraint) not in self.queue:
+                            self.queue.append((todo_revise[0], constraint))
         return ["HALT: dfl complete", self.domains]
 
     def revise(self, assignment):
             i = assignment[0]
             j = assignment[1]
+
             # Check compabilities.
             revised = False
             for x in self.domains[i]:
@@ -59,13 +57,16 @@ class CSP:
                 if flag == False:
                     self.domains[i].remove(x)
                     revised = True
+            print self.domains
             return revised
 
     def rerun(self, node):
-        for i in self.constraints[node.domains[0]]:
-            if i != todo_revise[1]:
-                self.queue.append((todo_revise[0], i))
-        return
+        self.initialize()
+        print self.queue
+        return self.domain_filtering_loop()
+
+
+
 
     def calc_heuristic(self):
         h = 0

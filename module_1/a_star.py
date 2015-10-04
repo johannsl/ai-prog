@@ -51,7 +51,6 @@ class AStar:
 
         # Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
         for S in successors:
-            print S
             X.kids.append(S)
             if S not in self.closed_set:
                 if S not in self.open_set:

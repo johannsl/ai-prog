@@ -68,6 +68,7 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
                 self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
         self.csp.initialize()
+        self.csp.domains[0] = [0]
         self.astar.n0.domains = self.csp.domains
         self.astar.initialize(distance_type="csp")
         self.redraw()
@@ -79,8 +80,12 @@ class GUI(tk.Tk):
         print result
         if result[0] == "HALT: dfl complete":
             print self.astar.incremental_solver()
-            for node in self.astar.open_queue:
+            for node in self.astar.open_heap:
+                self.csp.domains = node.domains
                 self.csp.rerun(node)
+                print self.csp.domains
+                print node.domains
+                break
 
         #if result[0] == "HALT: unsolvable":
         #    return

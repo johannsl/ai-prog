@@ -14,14 +14,18 @@ class Node:
 
     def generate_successors(self):
         successors = []
-        shortest_vertex = min(self.domains, key=lambda k: len(self.domains[k]))
-        for domain in self.domains[shortest_vertex]:
+        helper = [(key, len(self.domains[key])) for key in self.domains.keys()]
+        helper.sort(key=lambda x: x[1])
+        for h in helper:
+            if h[0] == 0: helper.remove(h)
+        if len(helper)  == 0: return []
+        for domain in self.domains[helper[0][0]]:
             successor = Node(g=self.g + 1,
-                     h=self.h - (len(self.domains[shortest_vertex]) - 1),
+                     h=self.h - (len(self.domains[helper[0][0]]) - 1),
                      parent=self,
                      kids=None)
             successor.domains = deepcopy(self.domains)
-            successor.domains[shortest_vertex] = [domain]
+            successor.domains[helper[0][0]] = [domain]
             successors.append(successor)
         return successors
 
