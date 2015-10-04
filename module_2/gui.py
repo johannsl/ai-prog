@@ -94,7 +94,7 @@ class GUI(tk.Tk):
 #        if not result[0] and not result[1] and not result[2]:
 #            print result[3]
 #            return
-             
+#                    
 #        #Clears the last optimal path and draws the new optimal path, then returns
 #        if result[3][0].startswith("SUCCESS: path"):
 #            for i in result[1]:
