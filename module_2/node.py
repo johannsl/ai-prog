@@ -29,5 +29,5 @@ class Node:
         if self.f == other.f: return self.h < other.h
         return self.f < other.f
 
-    #def __hash__(self):
-    #    return uuid.uuid4().int
+    def __hash__(self):
+        return uuid.uuid4().int

@@ -1,5 +1,6 @@
 from node import Node
 
+
 class Graph:
     def __init__(self, nv, ne, vertices, edges):
         self.nv = nv
@@ -19,7 +20,7 @@ class Graph:
         # csp
         self.edges_dict = {}
 
-        #ai
+        # ai
         self.n0 = Node(g=0, h=0, parent=None, kids=[])
 
         # Create an edge dictionary

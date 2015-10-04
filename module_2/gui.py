@@ -1,6 +1,7 @@
 import Tkinter as tk
 
-##GUI is an interface subclass of Tkinter
+
+# GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
     def __init__(self, graph, csp, astar):
         tk.Tk.__init__(self)
@@ -9,13 +10,13 @@ class GUI(tk.Tk):
         self.astar = astar
         self.astar.distance_type = "csp"
 
-        #constants
+        # constants
         self.graph_size = 600.0
         self.vertex_size = 10.0
         self.update_speed = 5
         color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")  
 
-        #Create the menu
+        # Create the menu
         menubar = tk.Menu(self)
         execmenu = tk.Menu(menubar)
         execmenu.add_command(label="2 Colors", command= lambda: self.execute(2))
@@ -30,12 +31,12 @@ class GUI(tk.Tk):
         menubar.add_cascade(label="Colors", menu=execmenu)
         self.config(menu=menubar)
 
-        #Create a canvas to put the graph on. Set the size of boxes
+        # Create a canvas to put the graph on. Set the size of boxes
         self.canvas = tk.Canvas(self, width=self.graph_size+50, height=self.graph_size+50, borderwidth=10)
         self.canvas.pack(side="top", fill="both", expand="true")
         self.oval = {}
 
-        #Loop through the graph and create a two dimensional grid with circles and lines
+        # Loop through the graph and create a two dimensional grid with circles and lines
         for edge in graph.edges:
             x1 = (graph.vertices[edge[0]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
             x2 = (graph.vertices[edge[0]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
@@ -49,7 +50,7 @@ class GUI(tk.Tk):
             y2 = y1 + self.vertex_size
             self.oval[vertex[1], vertex[2]] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", fill="gray80", tag="oval")
         
-        #Place the window in the topmost left corner to prevent glitches in the gui
+        # Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
@@ -72,7 +73,7 @@ class GUI(tk.Tk):
         self.redraw()
         return
 
-    #Draws the gui with nodes from the open, closed, and complete path list
+    # Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
         result = self.csp.domain_filtering_loop()
         print result
@@ -136,5 +137,5 @@ class GUI(tk.Tk):
 #            item_id = self.oval[column, row]
 #            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
 
-        #Delay before next drawing phase
+        # Delay before next drawing phase
         self.after(self.update_speed, lambda: self.redraw())

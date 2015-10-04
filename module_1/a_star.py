@@ -1,9 +1,10 @@
-#Written by johannsl and iverasp 2015
-#This file contains the general use AStar class, and the methods that it uses
+# Written by johannsl and iverasp 2015
+# This file contains the general use AStar class, and the methods that it uses
 
 import heapq
 
-#A star class
+
+# A star class
 class AStar:
     def __init__(self, graph):
         self.graph = graph
@@ -78,19 +79,19 @@ class AStar:
             elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                 self.attach_and_eval(S, X)
 
-        #Return the current iteration results if the max number of generated nodes is not reached
+        # Return the current iteration results if the max number of generated nodes is not reached
         if len(self.open_set) + len(self.closed_set) > self.max_nodes:
-            return ["ABORD: max number of nodes", [], [], []]
+            return ["ABORT: max number of nodes", [], [], []]
         path = self.retrace_path(X, [X])
-        return ["SUCCES: lists updated", self.open_set, self.closed_set, path]
+        return ["SUCCESS: lists updated", self.open_set, self.closed_set, path]
 
-    #This method completely solves the problem
+    # This method completely solves the problem
     def complete_solver(self):
 
-        #Initiate agenda loop
+        # Initiate agenda loop
         while self.open_set:
 
-            #Remove the next promising node from open_heap and open_set, then add it to closed_set
+            # Remove the next promising node from open_heap and open_set, then add it to closed_set
             if self.search_type == "best-first":
                 X = heapq.heappop(self.open_heap)
                 self.open_set.remove(X)
@@ -104,15 +105,16 @@ class AStar:
                 return ["ERROR: search_type", []]
             self.closed_set.add(X)
 
-            #Look for end properties
+            # Look for end properties
             if self.graph.goal_found(node=X):
                 path = self.retrace_path(X, [X])
                 return ["SUCCESS: path found", []]
 
-            #Generate a list of successor nodes to a node X
+            # Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X)
 
-            #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
+            # Check whether nodes have been visited before.
+            # Update the ones that has. Add the rest to open_set and open_heap
             for S in successors:
                 X.kids.append(S)
                 if S not in self.closed_set:
@@ -133,7 +135,7 @@ class AStar:
                 elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                     self.attach_and_eval(S, X)
 
-            #Check if the max number of generated nodes is reached
+            # Check if the max number of generated nodes is reached
             if len(self.open_set) + len(self.closed_set) > self.max_nodes:
                 return ["ABORT: max number of nodes", []]
 
