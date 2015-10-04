@@ -5,3 +5,5 @@ class Node:
         self.f = f
         self.parent = parent
         self.childs = childs
+
+        self.domains = {}

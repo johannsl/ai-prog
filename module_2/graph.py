@@ -17,10 +17,10 @@ class Graph:
         y_max = 0
 
         #csp
-        self.variables = []
-        self.domains = {}
-        self.constraints = {}
         self.edges_dict = {}
+
+        #ai
+        self.n0 = Node(g=0, h=0, f=0, parent=None, childs=[])
         
         #Create an edge dictionary
         for vertex in verticies:
