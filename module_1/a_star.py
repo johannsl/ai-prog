@@ -1,5 +1,5 @@
-#Written by johannsl and iverasp 2015
 import heapq
+
 
 # A star class
 class AStar:
@@ -75,7 +75,7 @@ class AStar:
         if len(self.open_set) + len(self.closed_set) > self.max_nodes:
             return ["ABORT: max number of nodes", [], [], []]
         path = self.retrace_path(X, [X])
-        return ["SUCCES: lists updated", self.open_set, self.closed_set, path]
+        return ["SUCCESS: lists updated", self.open_set, self.closed_set, path]
 
     # This method completely solves the problem
     def complete_solver(self):
@@ -105,7 +105,8 @@ class AStar:
             # Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X)
 
-            # Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
+            # Check whether nodes have been visited before.
+            # Update the ones that has. Add the rest to open_set and open_heap
             for S in successors:
                 X.kids.append(S)
                 if S not in self.closed_set:
