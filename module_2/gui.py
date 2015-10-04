@@ -63,32 +63,32 @@ class GUI(tk.Tk):
             for other_vertex in other_vertex:
                 self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
                 self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
-        for edge in self.graph.edges:
-            self.csp.queue.append(edge)
-        #self.csp.domain_filtering_loop()
-
-        #self.redraw()
+        self.csp.initialize()
+        self.redraw()
         return
 
-#    
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
-        result = self.csp_search.incremental_solver()
-        print self.csp_search.domains
-        if (len(self.csp_search.queue)) == 0:
-            if not self.csp_search.is_solved():
-                print "use a star"
-                self.astar_search.incremental_solver()
-                exit()
-        if self.csp_search.contradictory:
-            print "unsolvable"
-            exit()
+        result = self.csp.domain_filtering_loop()
+        print result
+
+
+
+
+#        if (len(self.csp_search.queue)) == 0:
+#            if not self.csp_search.is_solved():
+#                print "use a star"
+#                self.astar_search.incremental_solver()
+#                exit()
+#        if self.csp_search.contradictory:
+#            print "unsolvable"
+#            exit()
 
 #        #Check whether some error has been encountered
 #        if not result[0] and not result[1] and not result[2]:
 #            print result[3]
 #            return
-#                    
+             
 #        #Clears the last optimal path and draws the new optimal path, then returns
 #        if result[3][0].startswith("SUCCESS: path"):
 #            for i in result[1]:
