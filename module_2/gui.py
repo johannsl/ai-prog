@@ -67,9 +67,6 @@ class GUI(tk.Tk):
             self.csp.queue.append(edge)
         self.csp.domain_filtering_loop()
 
-        #print self.csp.variables
-        #print self.csp.domains
-        #print self.csp.constraints
         #self.redraw()
         return
 
