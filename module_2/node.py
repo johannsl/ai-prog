@@ -1,3 +1,5 @@
+import uuid
+
 class Node:
     def __init__(self, g, h, f, parent, childs):
         self.g = g
@@ -7,3 +9,5 @@ class Node:
         self.childs = childs
 
         self.domains = {}
+        def __hash__(self):
+            return uuid.uuid4()
