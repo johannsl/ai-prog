@@ -31,38 +31,38 @@ class CSP:
         while self.queue:
             print self.queue
             current = self.queue.pop()
-            if self.revisei(':
+            #if self.revisei(
 
 
-                for i in self.constraints[current[0]]:
-                    #print "i", i
-                    #print "current[0]", current[0]
-                    if i != current[1]:
-                        #print "appending to queue", (current[0], i)
-                        self.queue.append([current[0], i])
-        else:
-            return [["HALT: dfq stuck"], self.domains]
+#                for i in self.constraints[current[0]]:
+#                    #print "i", i
+#                    #print "current[0]", current[0]
+#                    if i != current[1]:
+#                        #print "appending to queue", (current[0], i)
+#                        self.queue.append([current[0], i])
+#        else:
+#            return [["HALT: dfq stuck"], self.domains]
 
-    def revise(self, assignment, i, j):
-            """The function 'Revise' from the pseudocode in the textbook.
-            'assignment' is the current partial assignment, that contains
-            the lists of legal values for each undecided variable. 'i' and
-            'j' specifies the arc that should be visited. If a value is
-            found in variable i's domain that doesn't satisfy the constraint
-            between i and j, the value should be deleted from i's list of
-            legal values in 'assignment'.
-            """
-            # Check compabilities.
-            revised = False
-            for x in assignment[i]:
-                flag = False
-                for y in assignment[j]:
-                    if (x, y) in self.constraints[i][j]:
-                        flag = True
-                if flag == False:
-                    assignment[i].remove(x)
-                    revised = True
-            return revised
+#    def revise(self, assignment, i, j):
+#            """The function 'Revise' from the pseudocode in the textbook.
+#            'assignment' is the current partial assignment, that contains
+#            the lists of legal values for each undecided variable. 'i' and
+#            'j' specifies the arc that should be visited. If a value is
+#            found in variable i's domain that doesn't satisfy the constraint
+#            between i and j, the value should be deleted from i's list of
+#            legal values in 'assignment'.
+#            """
+#            # Check compabilities.
+#            revised = False
+#            for x in assignment[i]:
+#                flag = False
+#                for y in assignment[j]:
+#                    if (x, y) in self.constraints[i][j]:
+#                        flag = True
+#                if flag == False:
+#                    assignment[i].remove(x)
+#                    revised = True
+#            return revised
 
     def revise(self, assignment):
         i = assignment[0]

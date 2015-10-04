@@ -65,36 +65,11 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
         for edge in self.graph.edges:
             self.csp.queue.append(edge)
-        self.csp.domain_filtering_loop()
+        #self.csp.domain_filtering_loop()
 
         #self.redraw()
         return
 
-#    #Execute algorithm with different amount of colors... Bad style, should rewrites
-#    def execute_2(self):
-#        self.canvas.itemconfig("oval", fill="gray80")
-#        colors = []
-#        for i in range(2):
-#            colors.append(color_list[i])
-#        
-#        ###TESTING SPACE####
-#        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
-#        #self.csp_search = csp_j.CSP(graph=self.graph, domain_size=len(colors))
-#
-#        self.redraw()
-#        return
-#
-#    def execute_3(self):
-#        self.canvas.itemconfig("oval", fill="gray80")
-#        colors = []
-#        for i in range(3):
-#            colors.append(color_list[i])
-#        ###TESTING SPACE####
-#        self.csp_search = CSP(graph=self.graph, domain_size=len(colors))
-#        #n0 = State(self.csp_search, self.csp_search.calc_heuristic())
-#        #self.astar_search = AStar(graph=self.graph, n0=n0, search_type="best-first", distance_type="csp", max_nodes=1000)
-#        self.redraw()
-#        return
 #    
     #Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
