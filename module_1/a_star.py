@@ -1,9 +1,7 @@
 #Written by johannsl and iverasp 2015
-#This file contains the general use AStar class, and the methods that it uses
-
 import heapq
 
-#A star class
+# A star class
 class AStar:
     def __init__(self, graph):
         self.graph = graph
@@ -16,7 +14,6 @@ class AStar:
         self.distance_type = distance_type
         self.n0.g = 0
         self.n0.h = self.calculate_h(self.n0)
-        #self.n0.f = self.n0.g + self.n0.h
         self.open_set = set()
         self.open_heap = []
         self.closed_set = set()
@@ -26,9 +23,6 @@ class AStar:
     # This method incrementally solves the problem
     def incremental_solver(self):
 
-        print self.open_heap
-        print self.open_set
-
         # Check whether a path can be found
         if not self.open_set:
             return ["FAIL: no path found", [], [], []]
@@ -36,8 +30,6 @@ class AStar:
         # Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
         if self.search_type == "best-first":
             X = heapq.heappop(self.open_heap)
-            print self.open_heap
-            print self.open_set
             self.open_set.remove(X)
         elif self.search_type == "breadth-first":
             X = self.open_heap.pop(0)
@@ -59,6 +51,7 @@ class AStar:
 
         # Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
         for S in successors:
+            print S
             X.kids.append(S)
             if S not in self.closed_set:
                 if S not in self.open_set:
@@ -78,19 +71,19 @@ class AStar:
             elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                 self.attach_and_eval(S, X)
 
-        #Return the current iteration results if the max number of generated nodes is not reached
+        # Return the current iteration results if the max number of generated nodes is not reached
         if len(self.open_set) + len(self.closed_set) > self.max_nodes:
-            return ["ABORD: max number of nodes", [], [], []]
+            return ["ABORT: max number of nodes", [], [], []]
         path = self.retrace_path(X, [X])
         return ["SUCCES: lists updated", self.open_set, self.closed_set, path]
 
-    #This method completely solves the problem
+    # This method completely solves the problem
     def complete_solver(self):
 
-        #Initiate agenda loop
+        # Initiate agenda loop
         while self.open_set:
 
-            #Remove the next promising node from open_heap and open_set, then add it to closed_set
+            # Remove the next promising node from open_heap and open_set, then add it to closed_set
             if self.search_type == "best-first":
                 X = heapq.heappop(self.open_heap)
                 self.open_set.remove(X)
@@ -104,15 +97,15 @@ class AStar:
                 return ["ERROR: search_type", []]
             self.closed_set.add(X)
 
-            #Look for end properties
+            # Look for end properties
             if self.graph.goal_found(node=X):
                 path = self.retrace_path(X, [X])
                 return ["SUCCESS: path found", []]
 
-            #Generate a list of successor nodes to a node X
+            # Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X)
 
-            #Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
+            # Check whether nodes have been visited before. Update the ones that has. Add the rest to open_set and open_heap
             for S in successors:
                 X.kids.append(S)
                 if S not in self.closed_set:
@@ -133,7 +126,7 @@ class AStar:
                 elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                     self.attach_and_eval(S, X)
 
-            #Check if the max number of generated nodes is reached
+            # Check if the max number of generated nodes is reached
             if len(self.open_set) + len(self.closed_set) > self.max_nodes:
                 return ["ABORT: max number of nodes", []]
 
@@ -153,7 +146,6 @@ class AStar:
             h = 0
             for vertex, domain in node.domains.iteritems():
                 h += len(domain) - 1
-            print "h:", h
             return h
         else:
             raise NotImplementedError

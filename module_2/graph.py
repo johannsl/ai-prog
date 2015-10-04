@@ -55,39 +55,3 @@ class Graph:
     # Find the distance between a node C
     def calculate_arc_cost(self, C, P):
         return 1
-
-#    #Find succeessors to a node in the graph and add them to a clockwise list
-#    def generate_all_successors(self, node):
-#        successors = []
-#        helper = [(key, len(node.domains[key])) for key in node.domains.keys()]
-#        helper.sort(key=lambda x: x[1])
-#        print "lol", node.domains[helper[0][0]]
-#
-#        print len(node.domains[helper[0][0]])
-#
-#        #for value in range(len(node.domains[helper[0]])):
-
-
-        #successors.append()
-        #for domain in node.domain:
-
-#        if node.pos_x < self.columns-1:
-#            right = self.graph[node.pos_x+1][node.pos_y]
-#            if right.tag is not "X":
-#                successors.append(right)
-#        if node.pos_y < self.rows-1:
-#            below = self.graph[node.pos_x][node.pos_y+1]
-#            if below.tag is not "X":
-#                successors.append(below)
-#        if node.pos_x > 0:
-#            left = self.graph[node.pos_x-1][node.pos_y]
-#            if left.tag is not "X":
-#                successors.append(left)
-#        if node.pos_y > 0:
-#            above = self.graph[node.pos_x][node.pos_y-1]
-#            if above.tag is not "X":
-#                successors.append(above)
-#        return successors
-#
-
-

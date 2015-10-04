@@ -21,8 +21,6 @@ class Node:
             kid.domains = deepcopy(self.domains)
             kid.domains[shortest_vertex] = [domain]
             self.kids.append(kid)
-            print kid.domains
-        print self.kids
         return self.kids
 
     def __lt__(self, other):

@@ -77,10 +77,10 @@ class GUI(tk.Tk):
         result = self.csp.domain_filtering_loop()
         print result
         if result[0] == "HALT: dfl complete":
-            self.astar.incremental_solver()
+            print self.astar.incremental_solver()
 
-        if result[0] == "HALT: unsolvable":
-            return
+        #if result[0] == "HALT: unsolvable":
+        #    return
 
 
 
@@ -137,4 +137,4 @@ class GUI(tk.Tk):
 #            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
 
         #Delay before next drawing phase
-        self.after(self.update_speed, lambda: self.redraw())
+        #self.after(self.update_speed, lambda: self.redraw())
