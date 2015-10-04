@@ -1,6 +1,7 @@
 import uuid
 from copy import deepcopy
 
+
 class Node:
     def __init__(self, g, h, parent, kids):
         self.g = g
@@ -28,4 +29,4 @@ class Node:
         return self.f < other.f
 
     def __hash__(self):
-        return uuid.uuid4().int
+        return hash(str(uuid.uuid4))
