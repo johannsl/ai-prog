@@ -1,5 +1,5 @@
 import Tkinter as tk
-from a_star_gac import AStarGAC
+from a_star_gac_custom import AStarGACCustom
 
 
 # GUI is an interface subclass of Tkinter
@@ -55,7 +55,7 @@ class GUI(tk.Tk):
 
     def execute(self, domain_size):
         self.canvas.itemconfig("oval", fill="gray80")
-        self.astargac = AStarGAC(self.graph, domain_size)
+        self.astargac = AStarGACCustom(self.graph, domain_size)
         result = self.astargac.initialize()
         if result == "SOL":
             self.draw()
@@ -75,7 +75,6 @@ class GUI(tk.Tk):
 
         # Delay before next drawing phase
         self.after(self.update_speed, lambda: self.run_agac())
-
 
     def draw(self):
         for domain in self.astargac.csp.domains:

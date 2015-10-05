@@ -1,5 +1,3 @@
-__author__ = 'iver'
-
 from a_star_csp import AStarCSP
 from csp import CSP
 from copy import deepcopy
@@ -18,42 +16,11 @@ class AStarGAC:
         self.nodes_checked = set()
         self.goal_node = None
 
-
     def makefunc(self, var_names, expression, envir=globals()):
         args = ""
         for n in var_names: args = args + "," + n
         return eval("(lambda " + args[1:] + ": " + expression + ")"
                     , envir)
-
-    def initialize(self):
-        # Initiate csp
-        domain = []
-        g = self.makefunc(["x", "y"], "x != y")
-        for i in range(self.domain_size):
-            domain.append(i)
-        for i in range(self.graph.nv):
-            self.csp.add_variable(name=i, domain=domain)
-        for vertex, other_vertex in self.graph.edges_dict.iteritems():
-            for other_vertex in other_vertex:
-                self.csp.add_constraint_one_way(vertex, other_vertex, g)
-                self.csp.add_constraint_one_way(other_vertex, vertex, g)
-
-        self.csp.initialize()
-        self.astar.initialize(distance_type=None)
-
-        # Refine n0
-        csp_result = self.csp.domain_filtering_loop()
-        print csp_result[0]
-        if self.csp.contradictory:
-            print "Error in problem"
-            return
-        elif self.csp.is_solved():
-            print "Solution found"
-            return "SOL"
-        else:
-            self.astar.n0.domains = deepcopy(self.csp.domains)
-            return "SOL"
-        return
 
     # Return
     # "MOD" if we modified the domain
@@ -64,6 +31,8 @@ class AStarGAC:
         if self.csp.is_solved():
             print "Solution found!"
             return "SOL"
+
+        # From the pseudocode in the task description
         astar_result = self.astar.incremental_solver()
         if astar_result[0].startswith("SUCCESS"):
             current_csp_domains = deepcopy(self.csp.domains)
@@ -101,6 +70,5 @@ class AStarGAC:
 
             heapq.heapify(self.astar.open_heap)
             return "NON"
-
 
         else: return "NON"

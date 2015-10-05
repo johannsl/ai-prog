@@ -1,7 +1,7 @@
-__author__ = 'iver'
 import sys
 sys.path.append("..")
 from module_1.a_star import AStar
+
 
 class AStarCSP(AStar):
     def __init__(self, graph):
