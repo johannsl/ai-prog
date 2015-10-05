@@ -69,7 +69,6 @@ class GUI(tk.Tk):
             , envir)
 
     def execute(self, domain_size):
-        print "execute"
         self.canvas.itemconfig("oval", fill="gray80")
         self.astar = AStar(self.graph)
         self.csp = csp.CSP(self.graph)
@@ -87,10 +86,7 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(vertex, other_vertex, g)
                 self.csp.add_constraint_one_way(other_vertex, vertex, g)
         self.csp.initialize()
-        #self.csp.domains[0] = [0]
-        #self.csp.domains[1] = [1]
-        #self.csp.singleton_domains = 2
-
+        
         # Initiate astar
         self.astar.initialize(distance_type="csp")
 
@@ -127,17 +123,15 @@ class GUI(tk.Tk):
                     print csp_rerun_result
                     if csp_rerun_result[0].startswith("ABORT"):
                         #self.csp.domains = current_csp_domains
-                        #node.set_f(g=9000, h=9000)
-                        self.astar.open_heap.remove(node)
-                        self.astar.open_set.remove(node)
+                        node.set_f(g=9000, h=9000)
                         break
-                    elif csp_rerun_result[0].startswith("SUCCESS"):
-                        print "solution found"
-                        return
+                    elif csp_rerun_result[0].startswith("HALT"):
+                        print "FOUND BETTER"
+                        node.set_f(g=0, h=self.astar.calculate_h(node))
+                        found_better = True
                     else:
                         # fix node
                         #node.domains = self.csp.domains
-                        found_better = True
                         print "ELSE"
                         node.set_f(g=0, h=self.astar.calculate_h(node))
                 if found_better:
@@ -149,10 +143,6 @@ class GUI(tk.Tk):
                 # fix open heap
                 heapq.heapify(self.astar.open_heap)
                 print self.astar.open_heap[0].domains
-
-                # update graph in GUI
-
-                
 
                 # Delay before next drawing phase
                 self.after(self.update_speed, lambda: self.redraw())
