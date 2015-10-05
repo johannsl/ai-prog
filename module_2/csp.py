@@ -10,6 +10,7 @@ class CSP:
         self.queue = []
         self.singleton_domains = 0
         self.contradictory = False
+        self.constraint = ""
        
     def add_variable(self, name, domain):
         self.variables.append(name)

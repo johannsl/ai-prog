@@ -58,6 +58,12 @@ class GUI(tk.Tk):
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
+    def makefunc(self, var_names, expression, envir=globals()):
+        args = ""
+        for n in var_names: args = args + "," + n
+        return eval("(lambda " + args[1:] + ": " + expression + ")"
+            , envir)
+
     def execute(self, domain_size):
         print "execute"
         self.canvas.itemconfig("oval", fill="gray80")
@@ -67,14 +73,15 @@ class GUI(tk.Tk):
 
         # Initiate csp
         domain = []
+        g = self.makefunc(["x", "y"], "x != y")
         for i in range(domain_size):
             domain.append(i)
         for i in range(self.graph.nv):
             self.csp.add_variable(name=i, domain=domain)
         for vertex, other_vertex in self.graph.edges_dict.iteritems():
             for other_vertex in other_vertex:
-                self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
-                self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
+                self.csp.add_constraint_one_way(vertex, other_vertex, g)
+                self.csp.add_constraint_one_way(other_vertex, vertex, g)
         self.csp.initialize()
         #self.csp.domains[0] = [0]
         #self.csp.domains[1] = [1]
