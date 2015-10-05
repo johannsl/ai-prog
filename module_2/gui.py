@@ -61,7 +61,7 @@ class GUI(tk.Tk):
             self.draw()
         self.run_agac()
 
-    # Draws the gui with nodes from the open, closed, and complete path list
+    # Runs the algorithm and updates the GUI if needed
     def run_agac(self):
         result = self.astargac.increment()
         if result == "SOL":
@@ -79,85 +79,25 @@ class GUI(tk.Tk):
 
     def draw(self):
         for domain in self.astargac.csp.domains:
-                if len(self.astargac.csp.domains[domain]) == 1:
-                    vertex = self.graph.vertices[domain]
-                    item_id = self.oval[vertex[1], vertex[2]]
-                    self.canvas.itemconfig(item_id, fill=self.color_list[self.astargac.csp.domains[domain][0]])
+            if len(self.astargac.csp.domains[domain]) == 1:
+                vertex = self.graph.vertices[domain]
+                item_id = self.oval[vertex[1], vertex[2]]
+                self.canvas.itemconfig(item_id, fill=self.color_list[self.astargac.csp.domains[domain][0]])
 
     def print_solution(self):
         null_vertices = 0
-        unsatisfied_vertices = 0
+        unsatisfied_constraints = 0
         for i, domain in self.astargac.csp.domains.iteritems():
             if len(domain) == 0: null_vertices += 1
-            if len(domain) > 1: unsatisfied_vertices += 1
+            if len(domain) > 1: unsatisfied_constraints += 1
         parent = self.astargac.goal_node.parent
         parent_nodes = 0
         while parent:
             parent = parent.parent
             parent_nodes += 1
 
-        print "Unsatisfied constraints:", unsatisfied_vertices
+        print "Unsatisfied constraints:", unsatisfied_constraints
         print "Vertices without color:", null_vertices
         print "Nodes in the search tree:", len(self.astargac.astar.open_heap)
         print "Nodes that were expanded:", len(self.astargac.astar.closed_set)
         print "Length of path from start to goal:", parent_nodes
-
-
-        #if result[0] == "HALT: unsolvable":
-        #    return
-
-
-
-
-#        if (len(self.csp_search.queue)) == 0:
-#            if not self.csp_search.is_solved():
-#                print "use a star"
-#                self.astar_search.incremental_solver()
-#                exit()
-#        if self.csp_search.contradictory:
-#            print "unsolvable"
-#            exit()
-
-#        #Check whether some error has been encountered
-#        if not result[0] and not result[1] and not result[2]:
-#            print result[3]
-#            return
-#                    
-#        #Clears the last optimal path and draws the new optimal path, then returns
-#        if result[3][0].startswith("SUCCESS: path"):
-#            for i in result[1]:
-#                column = i.pos_x
-#                row = i.pos_y
-#                item_id = self.oval[column, row]
-#                self.canvas.itemconfig(item_id, fill="gray15")
-#            for j in result[2]:
-#                column = j.pos_x
-#                row = j.pos_y
-#                item_id = self.oval[column, row]
-#                self.canvas.itemconfig(item_id, fill="green")
-#            print result[3]
-#            print self.search.search_type, ": Shortest path found: ", len(result[2]), "Nodes generated: ", len(result[0]) + len(result[1])
-#            return
-#
-#        #Draws the open node list
-#        for i in result[0]:
-#            column = i.pos_x
-#            row = i.pos_y
-#            item_id = self.oval[column, row]
-#            self.canvas.itemconfig(item_id, outline="black", fill="gray50")
-#
-#        #Draws the closed node list
-#        for j in result[1]:
-#            column = j.pos_x
-#            row = j.pos_y
-#            item_id = self.oval[column, row]
-#            self.canvas.itemconfig(item_id, outline="black", fill="gray15")
-#
-#        #Draws the current best path
-#        for k in result[2]:
-#            column = k.pos_x
-#            row = k.pos_y
-#            item_id = self.oval[column, row]
-#            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
-
-
