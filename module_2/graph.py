@@ -20,7 +20,7 @@ class Graph:
         # csp
         self.edges_dict = {}
 
-        # ai
+        # astar
         self.n0 = Node(g=0, h=0, parent=None, kids=[])
 
         # Create an edge dictionary

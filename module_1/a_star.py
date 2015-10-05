@@ -12,8 +12,7 @@ class AStar:
     def initialize(self, distance_type):
         # Initialize the algorithm
         self.distance_type = distance_type
-        self.n0.g = 0
-        self.n0.h = self.calculate_h(self.n0)
+        self.n0.set_f(g=0, h=self.calculate_h(self.n0))
         self.open_set = set()
         self.open_heap = []
         self.closed_set = set()
@@ -25,7 +24,7 @@ class AStar:
 
         # Check whether a path can be found
         if not self.open_set:
-            return ["FAIL: no path found", [], [], []]
+            return ["FAIL: no path found"]
 
         # Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
         if self.search_type == "best-first":
@@ -38,13 +37,13 @@ class AStar:
             X = self.open_heap.pop()
             self.open_set.remove(X)
         else:
-            return ["ERROR: search_type", [], [], []]
+            return ["ERROR: search_type"]
         self.closed_set.add(X)
-
+        
         # Look for end properties
         if self.graph.goal_found(node=X):
             path = self.retrace_path(X, [X])
-            return ["SUCCESS: path found", self.open_set, self.closed_set, path]
+            return ["SUCCESS: path found", X.domains]
 
         # Generate a list of successor nodes to a node X
         successors = X.generate_successors()
@@ -63,7 +62,7 @@ class AStar:
                     elif self.search_type == "depth-first":
                         self.open_heap.append(S)
                     else:
-                        return ["ERROR: search_type", [], [], []]
+                        return ["ERROR: search_type"]
                 elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                     self.attach_and_eval(S, X)
                     self.propagate_path_improvements(S)
@@ -72,9 +71,9 @@ class AStar:
 
         # Return the current iteration results if the max number of generated nodes is not reached
         if len(self.open_set) + len(self.closed_set) > self.max_nodes:
-            return ["ABORT: max number of nodes", [], [], []]
+            return ["ABORT: max number of nodes"]
         path = self.retrace_path(X, [X])
-        return ["SUCCESS: lists updated", self.open_set, self.closed_set, path]
+        return ["SUCCESS: lists updated", self.open_heap[0].domains]
 
     # This method completely solves the problem
     def complete_solver(self):
@@ -93,13 +92,13 @@ class AStar:
                 X = self.open_list.pop()
                 self.open_set.remove(X)
             else:
-                return ["ERROR: search_type", []]
+                return ["ERROR: search_type"]
             self.closed_set.add(X)
 
             # Look for end properties
             if self.graph.goal_found(node=X):
                 path = self.retrace_path(X, [X])
-                return ["SUCCESS: path found", []]
+                return ["SUCCESS: path found"]
 
             # Generate a list of successor nodes to a node X
             successors = self.graph.generate_all_successors(X)
@@ -119,7 +118,7 @@ class AStar:
                         elif self.search_type == "depth-first":
                             self.open_heap.append(S)
                         else:
-                            return ["ERROR: search_type", []]
+                            return ["ERROR: search_type"]
                     elif X.g + self.graph.calculate_arc_cost(X, S) < S.g:
                         self.attach_and_eval(S, X)
                         self.propagate_path_improvements(S)
@@ -128,10 +127,10 @@ class AStar:
 
             # Check if the max number of generated nodes is reached
             if len(self.open_set) + len(self.closed_set) > self.max_nodes:
-                return ["ABORT: max number of nodes", []]
+                return ["ABORT: max number of nodes"]
 
         # If there are no more nodes in open_set, there is no solution
-        return ["FAIL: no path found", []]
+        return ["FAIL: no path found"]
 
     # This method calculates the h value depending on distance_type
     def calculate_h(self, node):
@@ -153,17 +152,14 @@ class AStar:
     # This method sets the parent, g, h, and f value of a node C
     def attach_and_eval(self, C, P):
         C.parent = P
-        C.g = P.g + self.graph.calculate_arc_cost(P, C)
-        C.h = self.calculate_h(C)
-        C.f = C.g + C.h
+        C.set_f(g=P.g + self.graph.calculate_arc_cost(P, C), h=self.calculate_h(C))
 
     # This method recursively improves the path of all kid nodes of node P
     def propagate_path_improvements(self, P):
         for C in P.kids:
             if P.g + self.graph.calculate_arc_cost(P, C) < C.g:
                 C.parent = P
-                C.g = P.g + self.graph.calculate_arc_cost(P, C)
-                C.f = C.g + C.h
+                C.set_f(g=P.g + self.graph.calculate_arc_cost(P, C), h=None)
                 self.propagate_path_improvements(C)
 
     # This method recursively finds the path from B to A and returns it as a list

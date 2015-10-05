@@ -1,19 +1,21 @@
+import copy
+import heapq
 import Tkinter as tk
 
 
 # GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-    def __init__(self, graph, csp, astar):
+    def __init__(self, graph, astar, csp):
         tk.Tk.__init__(self)
         self.graph = graph
-        self.csp = csp
         self.astar = astar
+        self.csp = csp
         self.astar.distance_type = "csp"
 
         # constants
-        self.graph_size = 600.0
+        self.graph_size = 200.0
         self.vertex_size = 10.0
-        self.update_speed = 5
+        self.update_speed = 100
         color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")  
 
         # Create the menu
@@ -54,10 +56,14 @@ class GUI(tk.Tk):
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
 
-        self.execute(3)
-
     def execute(self, domain_size):
+        print "execute"
         self.canvas.itemconfig("oval", fill="gray80")
+        
+        if domain_size > len(self.oval):
+            return
+
+        # Initiate csp
         domain = []
         for i in range(domain_size):
             domain.append(i)
@@ -68,24 +74,59 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(vertex, other_vertex, lambda i, j: i != j)
                 self.csp.add_constraint_one_way(other_vertex, vertex, lambda i, j: i != j)
         self.csp.initialize()
-        self.csp.domains[0] = [0]
-        self.astar.n0.domains = self.csp.domains
+        #self.csp.domains[0] = [0]
+        #self.csp.domains[1] = [1]
+        #self.csp.singleton_domains = 2
+
+        # Initiate astar
         self.astar.initialize(distance_type="csp")
-        self.redraw()
+
+        # Refine n0
+        csp_result = self.csp.domain_filtering_loop()
+        print csp_result
+        if csp_result[0].startswith("ABORT"):
+            return
+        elif csp_result[0].startswith("SUCCESS"):
+            return
+        else:
+            self.astar.n0.domains = copy.deepcopy(self.csp.domains) 
+            self.redraw()
         return
 
     # Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
-        result = self.csp.domain_filtering_loop()
-        print result
-        if result[0] == "HALT: dfl complete":
-            print self.astar.incremental_solver()
-            for node in self.astar.open_heap:
-                self.csp.domains = node.domains
-                self.csp.rerun(node)
-                print self.csp.domains
-                print node.domains
-                break
+
+            # run astar
+            astar_result = self.astar.incremental_solver()
+            print astar_result
+            if astar_result[0].startswith("SUCCESS"):
+                self.csp.singleton_domains =+1
+                for node in self.astar.open_heap:
+                    
+                    # rerun csp
+                    self.csp.domains = node.domains
+                    csp_rerun_result = self.csp.rerun()
+                    print csp_rerun_result
+                    if csp_rerun_result[0].startswith("ABORT"):
+                        return
+                    elif csp_rerun_result[0].startswith("SUCCESS"):
+                        return
+                    else:
+                    
+                        # fix node
+                        node.domains = self.csp.domains
+                        node.set_f(g=0, h=self.astar.calculate_h(node))
+
+                # fix open heap
+                heapq.heapify(self.astar.open_heap)
+                print self.astar.open_heap[0].domains
+
+                # Delay before next drawing phase
+                self.after(self.update_speed, lambda: self.redraw())
+
+            else: return
+
+
 
         #if result[0] == "HALT: unsolvable":
         #    return
@@ -144,5 +185,4 @@ class GUI(tk.Tk):
 #            item_id = self.oval[column, row]
 #            self.canvas.itemconfig(item_id, outline="black", fill="yellow")
 
-        # Delay before next drawing phase
-        #self.after(self.update_speed, lambda: self.redraw())
+

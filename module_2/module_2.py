@@ -34,7 +34,7 @@ def main():
 
     # This is the mainloop - It reads input from the user and executes the commands
     while flag:
-        the_input = "Run 0" #raw_input(" > ")
+        the_input = raw_input(" > ")
         
         # Run a premade graph
         if the_input != "Run new" and the_input.startswith("Run"):
@@ -63,11 +63,10 @@ def main():
              
             # Initialize run
             graph = Graph(nv=number_of_vertices, ne=number_of_edges, vertices=vertices, edges=edges)
-            csp = CSP(graph)
             astar = AStar(graph)
-            graph_gui = GUI(graph=graph, csp=csp, astar=astar)
+            csp = CSP(graph)
+            graph_gui = GUI(graph=graph, astar=astar, csp=csp)
             _run_gui(graph_gui)
-            flag = False
 
         # Exit the loop
         elif the_input == "Exit":

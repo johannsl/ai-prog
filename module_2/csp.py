@@ -33,17 +33,29 @@ class CSP:
                 self.queue.append((i, j))
  
     def domain_filtering_loop(self):
+        self.singleton_domains = 0
+        self.contradictory = False
         while self.queue:
-            print self.queue
             todo_revise = self.queue.pop()
+            print self.singleton_domains
             if self.revise(todo_revise):
+                print "lol", self.singleton_domains
+                print "singletons: ", self.singleton_domains
+                print "domain: ", self.domains
                 for constraint in self.constraints[todo_revise[0]]:
-                    if constraint is not todo_revise[1]:
-                        if (todo_revise[0], constraint) not in self.queue:
+                    if constraint is not todo_revise[1] and (todo_revise[0], constraint) not in self.queue:
                             self.queue.append((todo_revise[0], constraint))
-        return ["HALT: dfl complete", self.domains]
+                if self.contradictory:
+                    self.queue = []
+                    return ["ABORT: contradictory"]
+        
+         
+        if self.singleton_domains == len(self.domains):
+            return ["SUCCESS: solution found"]
+        return ["HALT: domain filtering loop complete", self.domains]
 
     def revise(self, assignment):
+            print "assignment: ", assignment 
             i = assignment[0]
             j = assignment[1]
 
@@ -56,14 +68,35 @@ class CSP:
                         flag = True
                 if flag == False:
                     self.domains[i].remove(x)
+                    if len(self.domains[i]) == 1: self.singleton_domains += 1
+                    if len(self.domains[i]) == 0: 
+                        self.contradictory = True
                     revised = True
-            print self.domains
             return revised
 
-    def rerun(self, node):
+    def rerun(self):
         self.initialize()
-        print self.queue
         return self.domain_filtering_loop()
+
+
+
+#    def revise(self, assignment):
+#        i = assignment[0]
+#        j = assignment[1]
+#        g = self.makefunc(["x", "y"], "x != y")
+#
+#        revised = False
+#        valid = True
+#
+#        for xi in self.domains[i]:
+#            for xj in self.domains[j]:
+#                if apply(g, (xi, xj)): break
+#                print "removing", xi, "from", self.domains[i]
+#                self.domains[i].remove(xi)
+#                if len(self.domains[i]) == 1: self.singleton_domains += 1
+#                if len(self.domains[i]) == 0: self.contradictory = True
+#                revised = True
+#        return revised
 
 
 
