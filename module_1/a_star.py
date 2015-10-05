@@ -26,6 +26,8 @@ class AStar:
         if not self.open_set:
             return ["FAIL: no path found"]
 
+        print self.open_set
+
         # Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
         if self.search_type == "best-first":
             X = heapq.heappop(self.open_heap)
@@ -73,6 +75,7 @@ class AStar:
         if len(self.open_set) + len(self.closed_set) > self.max_nodes:
             return ["ABORT: max number of nodes"]
         path = self.retrace_path(X, [X])
+        if not self.open_set: return ["FAIL: no path found"]
         return ["SUCCESS: lists updated", self.open_heap[0].domains]
 
     # This method completely solves the problem

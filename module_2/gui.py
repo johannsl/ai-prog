@@ -74,9 +74,7 @@ class GUI(tk.Tk):
         self.astar = AStar(self.graph)
         self.csp = csp.CSP(self.graph)
         self.astar.distance_type = "csp"
- 
-        if domain_size > len(self.oval):
-            return
+
 
         # Initiate csp
         domain = []
@@ -130,15 +128,17 @@ class GUI(tk.Tk):
                     print csp_rerun_result
                     if csp_rerun_result[0].startswith("ABORT"):
                         #self.csp.domains = current_csp_domains
-                        node.set_f(g=9000, h=9000)
+                        #node.set_f(g=9000, h=9000)
+                        self.astar.open_heap.remove(node)
+                        self.astar.open_set.remove(node)
                         break
-                    elif csp_rerun_result[0].startswith("HALT"):
-                        print "FOUND BETTER"
-                        node.set_f(g=0, h=self.astar.calculate_h(node))
-                        found_better = True
+                    elif csp_rerun_result[0].startswith("SUCCESS"):
+                        print "solution found"
+                        return
                     else:
                         # fix node
                         #node.domains = self.csp.domains
+                        found_better = True
                         print "ELSE"
                         node.set_f(g=0, h=self.astar.calculate_h(node))
                 if found_better:
@@ -150,6 +150,10 @@ class GUI(tk.Tk):
                 # fix open heap
                 heapq.heapify(self.astar.open_heap)
                 print self.astar.open_heap[0].domains
+
+                # update graph in GUI
+
+                
 
                 # Delay before next drawing phase
                 self.after(self.update_speed, lambda: self.redraw())
