@@ -1,6 +1,5 @@
-from csp import CSP
-from gui import GUI
 from graph import Graph
+import gui
 import os
 import platform
 import re
@@ -63,9 +62,7 @@ def main():
              
             # Initialize run
             graph = Graph(nv=number_of_vertices, ne=number_of_edges, vertices=vertices, edges=edges)
-            astar = AStar(graph)
-            csp = CSP(graph)
-            graph_gui = GUI(graph=graph, astar=astar, csp=csp)
+            graph_gui = gui.GUI(graph=graph)
             _run_gui(graph_gui)
 
         # Exit the loop

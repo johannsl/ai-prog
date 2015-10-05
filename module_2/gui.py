@@ -1,18 +1,22 @@
 import copy
+import csp
 import heapq
 import Tkinter as tk
 from copy import deepcopy
 from operator import attrgetter
+import sys
+sys.path.append("..")
+from module_1.a_star import AStar
+
 
 
 # GUI is an interface subclass of Tkinter
 class GUI(tk.Tk):
-    def __init__(self, graph, astar, csp):
+    def __init__(self, graph):
         tk.Tk.__init__(self)
         self.graph = graph
-        self.astar = astar
-        self.csp = csp
-        self.astar.distance_type = "csp"
+        self.astar = None
+        self.csp = None
 
         # constants
         self.graph_size = 200.0
@@ -61,7 +65,10 @@ class GUI(tk.Tk):
     def execute(self, domain_size):
         print "execute"
         self.canvas.itemconfig("oval", fill="gray80")
-        
+        self.astar = AStar(self.graph)
+        self.csp = csp.CSP(self.graph)
+        self.astar.distance_type = "csp"
+ 
         if domain_size > len(self.oval):
             return
 
