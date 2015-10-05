@@ -51,6 +51,7 @@ class GUI(tk.Tk):
             y1 = (graph.vertices[edge[1]][1] * self.graph_size / graph.x_size) + (self.vertex_size / 2)
             y2 = (graph.vertices[edge[1]][2] * self.graph_size / graph.y_size) + (self.vertex_size / 2)
             self.canvas.create_line(x1, x2, y1, y2)
+        print graph.vertices
         for vertex in graph.vertices:
             x1 = vertex[1] * (self.graph_size / graph.x_size)
             y1 = vertex[2] * (self.graph_size / graph.y_size)
@@ -153,7 +154,10 @@ class GUI(tk.Tk):
 
                 # update graph in GUI
 
-                
+                #for domain in self.csp.domains:
+                #    if len(domain) == 1:
+                #        vertex = self.graph.vertices[domain]
+                #        self.oval[vertex[1], vertex[2]]
 
                 # Delay before next drawing phase
                 self.after(self.update_speed, lambda: self.redraw())
