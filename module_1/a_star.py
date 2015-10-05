@@ -26,8 +26,6 @@ class AStar:
         if not self.open_set:
             return ["FAIL: no path found"]
 
-        print self.open_set
-
         # Remove the next promising node, X, from open_heap and open_set, then add it to closed_set
         if self.search_type == "best-first":
             X = heapq.heappop(self.open_heap)
@@ -145,7 +143,7 @@ class AStar:
         elif self.distance_type == "euclidian distance":
             raise NotImplementedError
         elif self.distance_type == "csp":
-            h = 1
+            h = 0
             for vertex, domain in node.domains.iteritems():
                 h += len(domain) - 1
             return h

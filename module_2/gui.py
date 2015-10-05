@@ -4,10 +4,7 @@ import heapq
 import Tkinter as tk
 from copy import deepcopy
 from operator import attrgetter
-import sys
-sys.path.append("..")
-from module_1.a_star import AStar
-
+from a_star_csp import AStarCSP
 
 
 # GUI is an interface subclass of Tkinter
@@ -19,10 +16,13 @@ class GUI(tk.Tk):
         self.csp = None
 
         # constants
-        self.graph_size = 200.0
-        self.vertex_size = 10.0
-        self.update_speed = 5
-        color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")  
+        self.graph_size = 800.0
+        self.vertex_size = 15.0
+        self.update_speed = 1
+        self.color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "white", "black", "violet")
+
+        self.nodes_checked = set()
+        self.goal_node = None
 
         # Create the menu
         menubar = tk.Menu(self)
@@ -58,7 +58,7 @@ class GUI(tk.Tk):
             x2 = x1 + self.vertex_size
             y2 = y1 + self.vertex_size
             self.oval[vertex[1], vertex[2]] = self.canvas.create_oval(x1, y1, x2, y2, outline="black", fill="gray80", tag="oval")
-        
+
         # Place the window in the topmost left corner to prevent glitches in the gui
         self.canvas.xview_moveto(0)
         self.canvas.yview_moveto(0)
@@ -67,11 +67,11 @@ class GUI(tk.Tk):
         args = ""
         for n in var_names: args = args + "," + n
         return eval("(lambda " + args[1:] + ": " + expression + ")"
-            , envir)
+                    , envir)
 
     def execute(self, domain_size):
         self.canvas.itemconfig("oval", fill="gray80")
-        self.astar = AStar(self.graph)
+        self.astar = AStarCSP(self.graph)
         self.csp = csp.CSP(self.graph)
         self.astar.distance_type = "csp"
 
@@ -87,77 +87,111 @@ class GUI(tk.Tk):
                 self.csp.add_constraint_one_way(vertex, other_vertex, g)
                 self.csp.add_constraint_one_way(other_vertex, vertex, g)
         self.csp.initialize()
-        
+
         # Initiate astar
         self.astar.initialize(distance_type="csp")
 
         # Refine n0
         csp_result = self.csp.domain_filtering_loop()
-        print csp_result
-        if csp_result[0].startswith("ABORT"):
+        print csp_result[0]
+        if self.csp.contradictory:
+            print "Error in problem"
             return
-        elif csp_result[0].startswith("SUCCESS"):
+        elif self.csp.is_solved():
+            print "Solution found"
+            self.draw()
             return
         else:
-            self.astar.n0.domains = copy.deepcopy(self.csp.domains) 
+            self.astar.n0.domains = copy.deepcopy(self.csp.domains)
             self.redraw()
         return
 
     # Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
-            if self.csp.is_solved(): return
+        #print self.csp.domains
 
-            # run astar
-            astar_result = self.astar.incremental_solver()
-            print astar_result
-            if astar_result[0].startswith("SUCCESS"):
-                self.csp.singleton_domains =+1
-                current_csp_domains = deepcopy(self.csp.domains)
-                found_better = False
-                for node in self.astar.open_heap:
+        # run astar
+        #astar_result = self.astar.incremental_solver()
+        #self.csp.domains = astar_result[1]
+        if self.csp.is_solved():
+            print "Solution found!"
+            self.draw()
+            self.print_solution()
+            return
+        astar_result = self.astar.incremental_solver()
+        #print astar_result
+        if astar_result[0].startswith("SUCCESS"):
+            current_csp_domains = deepcopy(self.csp.domains)
+            found_better = False
 
-                    print "node domains", node.domains
+            for node in self.astar.open_heap:
+                if node not in self.nodes_checked: self.nodes_checked.add(node)
+                else: continue
+                self.csp.contradictory = False
+                # rerun csp and find best guess
+                self.csp.domains = node.domains
+                csp_rerun_result = self.csp.rerun()
+                #print csp_rerun_result[0]
+                if self.csp.is_solved():
+                    print "Solution found"
+                    self.draw()
+                    self.print_solution()
+                    self.goal_node = node
+                    return
+                if self.csp.contradictory:
+                    #print "CONTRADICTORY"
+                    self.astar.open_heap.remove(node)
+                    self.astar.open_set.remove(node)
+                    continue
+                else:
+                    # fix node
+                    node.domains = deepcopy(self.csp.domains)
+                    found_better = True
+                    node.set_f(g=0, h=self.astar.calculate_h(node))
+                    self.draw()
+            if found_better:
+                node = min(self.astar.open_heap, key=attrgetter('f'))
+                #node = self.astar.open_heap[0]
+                #print "best f", node.f
+                self.csp.domains = node.domains
+                self.goal_node = node
 
-                    # rerun csp and find best guess
-                    self.csp.domains = node.domains
-                    csp_rerun_result = self.csp.rerun()
-                    print csp_rerun_result
-                    if csp_rerun_result[0].startswith("ABORT"):
-                        #self.csp.domains = current_csp_domains
-                        self.astar.open_heap.remove(node)
-                        self.astar.open_set.remove(node)
-                        break
-                    elif csp_rerun_result[0].startswith("SUCCESS"):
-                        print "solution found"
-                        return
-                    else:
-                        # fix node
-                        #node.domains = self.csp.domains
-                        found_better = True
-                        print "ELSE"
-                        node.set_f(g=0, h=self.astar.calculate_h(node))
-                if found_better:
-                    node = min(self.astar.open_heap, key=attrgetter('f'))
-                    print "best f", node.f
-                    self.csp.domains = node.domains
-                else: self.csp.domains = current_csp_domains
+            else:
+                self.csp.domains = current_csp_domains
 
-                # fix open heap
-                heapq.heapify(self.astar.open_heap)
-                print self.astar.open_heap[0].domains
+            heapq.heapify(self.astar.open_heap)
 
-                # update graph in GUI
+            # Delay before next drawing phase
 
-                #for domain in self.csp.domains:
-                #    if len(domain) == 1:
-                #        vertex = self.graph.vertices[domain]
-                #        self.oval[vertex[1], vertex[2]]
+            self.after(self.update_speed, lambda: self.redraw())
+        else: return
 
-                # Delay before next drawing phase
-                self.after(self.update_speed, lambda: self.redraw())
+    def draw(self):
+        for domain in self.csp.domains:
+                if len(self.csp.domains[domain]) == 1:
+                #if True:
+                    vertex = self.graph.vertices[domain]
+                    item_id = self.oval[vertex[1], vertex[2]]
+                    #print self.csp.domains[domain][0]]
+                    self.canvas.itemconfig(item_id, fill=self.color_list[self.csp.domains[domain][0]])
 
-            else: return
+    def print_solution(self):
+        null_vertices = 0
+        unsatisfied_vertices = 0
+        for i, domain in self.csp.domains.iteritems():
+            if len(domain) == 0: null_vertices += 1
+            if len(domain) > 1: unsatisfied_vertices += 1
+        parent = self.goal_node.parent
+        parent_nodes = 0
+        while parent:
+            parent = parent.parent
+            parent_nodes += 1
 
+        print "Unsatisfied constraints:", unsatisfied_vertices
+        print "Vertices without color:", null_vertices
+        print "Nodes in the search tree:", len(self.astar.open_heap)
+        print "Nodes that were expanded:", len(self.astar.closed_set)
+        print "Length of path from start to goal:", parent_nodes
 
 
         #if result[0] == "HALT: unsolvable":
