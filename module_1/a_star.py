@@ -7,7 +7,7 @@ class AStar:
         self.graph = graph
         self.n0 = graph.n0
         self.search_type = "best-first"
-        self.max_nodes = 1000
+        self.max_nodes = 100000
 
     def initialize(self, distance_type):
         # Initialize the algorithm
@@ -142,7 +142,7 @@ class AStar:
         elif self.distance_type == "euclidian distance":
             raise NotImplementedError
         elif self.distance_type == "csp":
-            h = 0
+            h = 1
             for vertex, domain in node.domains.iteritems():
                 h += len(domain) - 1
             return h

@@ -1,5 +1,6 @@
 import uuid
 from copy import deepcopy
+from random import choice
 
 
 class Node:
@@ -17,13 +18,22 @@ class Node:
         successors = []
         helper = [(key, len(self.domains[key])) for key in self.domains.keys()]
         helper.sort(key=lambda x: x[1])
-        print helper
-        for h in helper:
-            if h[1] == 1: helper.remove(h)
-        if len(helper)  == 0: return []
-        for domain in self.domains[helper[0][0]]:
+        #helper.reverse()
+
+        #for h in helper:
+        #    print "H", h
+        #    print "H1", h[1]
+        #    if h[1] == 1:
+        #        print "removed", h
+        #        helper.remove(h)
+        helper = [x for x in helper if x[1] != 1]
+        print "HELPER", helper
+        if len(helper) == 0: return []
+        current_domain = helper[0][0]
+        #current_domain = choice(helper)[0]
+        for domain in self.domains[current_domain]:
             successor = Node(g=0,
-                     h=self.h - (len(self.domains[helper[0][0]]) - 1),
+                     h=self.h - (len(self.domains[current_domain]) - 1),
                      parent=self,
                      kids=[])
             successor.domains = deepcopy(self.domains)

@@ -1,6 +1,8 @@
 import copy
 import heapq
 import Tkinter as tk
+from copy import deepcopy
+from operator import attrgetter
 
 
 # GUI is an interface subclass of Tkinter
@@ -15,7 +17,7 @@ class GUI(tk.Tk):
         # constants
         self.graph_size = 200.0
         self.vertex_size = 10.0
-        self.update_speed = 100
+        self.update_speed = 5
         color_list = ("red", "medium blue", "yellow", "orange", "sea green", "brown", "purple", "pink", "cyan", "violet")  
 
         # Create the menu
@@ -95,27 +97,41 @@ class GUI(tk.Tk):
 
     # Draws the gui with nodes from the open, closed, and complete path list
     def redraw(self):
+            if self.csp.is_solved(): return
 
             # run astar
             astar_result = self.astar.incremental_solver()
             print astar_result
             if astar_result[0].startswith("SUCCESS"):
                 self.csp.singleton_domains =+1
+                current_csp_domains = deepcopy(self.csp.domains)
+                found_better = False
                 for node in self.astar.open_heap:
-                    
-                    # rerun csp
+
+                    print "node domains", node.domains
+
+                    # rerun csp and find best guess
                     self.csp.domains = node.domains
                     csp_rerun_result = self.csp.rerun()
                     print csp_rerun_result
                     if csp_rerun_result[0].startswith("ABORT"):
-                        return
-                    elif csp_rerun_result[0].startswith("SUCCESS"):
-                        return
-                    else:
-                    
-                        # fix node
-                        node.domains = self.csp.domains
+                        #self.csp.domains = current_csp_domains
+                        node.set_f(g=9000, h=9000)
+                        break
+                    elif csp_rerun_result[0].startswith("HALT"):
+                        print "FOUND BETTER"
                         node.set_f(g=0, h=self.astar.calculate_h(node))
+                        found_better = True
+                    else:
+                        # fix node
+                        #node.domains = self.csp.domains
+                        print "ELSE"
+                        node.set_f(g=0, h=self.astar.calculate_h(node))
+                if found_better:
+                    node = min(self.astar.open_heap, key=attrgetter('f'))
+                    print "best f", node.f
+                    self.csp.domains = node.domains
+                else: self.csp.domains = current_csp_domains
 
                 # fix open heap
                 heapq.heapify(self.astar.open_heap)

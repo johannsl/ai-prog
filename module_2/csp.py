@@ -37,9 +37,7 @@ class CSP:
         self.contradictory = False
         while self.queue:
             todo_revise = self.queue.pop()
-            print self.singleton_domains
             if self.revise(todo_revise):
-                print "lol", self.singleton_domains
                 print "singletons: ", self.singleton_domains
                 print "domain: ", self.domains
                 for constraint in self.constraints[todo_revise[0]]:
@@ -55,7 +53,6 @@ class CSP:
         return ["HALT: domain filtering loop complete", self.domains]
 
     def revise(self, assignment):
-            print "assignment: ", assignment 
             i = assignment[0]
             j = assignment[1]
 
@@ -104,7 +101,6 @@ class CSP:
     def calc_heuristic(self):
         h = 0
         for i, j in self.domains.iteritems():
-            print i, j
             h += len(j)
         return h
 
@@ -112,7 +108,12 @@ class CSP:
         return
 
     def is_solved(self):
-        return True if self.singleton_domains == len(self.variables) else False
+        singletons = 0
+        for i, domain in self.domains.iteritems():
+            if len(domain) == 1: singletons += 1
+        return singletons == len(self.variables)
+        #return len(self.variables) == len([x for x in self.domains if len(x[0]) == 1])
+        #return True if self.singleton_domains == len(self.variables) else False
 
     def makefunc(self, var_names, expression, envir=globals()):
         args = ""
