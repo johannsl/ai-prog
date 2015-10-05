@@ -46,9 +46,7 @@ class CSP:
                             self.queue.append((todo_revise[0], constraint))
                 if self.contradictory:
                     self.queue = []
-                    return ["ABORT: contradictory"]
-        
-         
+                    return ["ABORT: contradictory"]         
         if self.singleton_domains == len(self.domains):
             return ["SUCCESS: solution found"]
         return ["HALT: domain filtering loop complete", self.domains]
