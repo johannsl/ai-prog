@@ -74,9 +74,6 @@ class GUI(tk.Tk):
         self.astar = AStar(self.graph)
         self.csp = csp.CSP(self.graph)
         self.astar.distance_type = "csp"
- 
-        if domain_size > len(self.oval):
-            return
 
         # Initiate csp
         domain = []
