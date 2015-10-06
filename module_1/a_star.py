@@ -1,8 +1,8 @@
 import heapq
 
-
-# A star class
 class AStar:
+
+    # Initialization in two steps for easier variable control
     def __init__(self, graph):
         self.graph = graph
         self.n0 = graph.n0
@@ -43,7 +43,7 @@ class AStar:
         # Look for end properties
         if self.graph.goal_found(node=X):
             path = self.retrace_path(X, [X])
-            return ["SUCCESS: path found", X.domains]
+            return ["SUCCESS: path found", path]
 
         # Generate a list of successor nodes to a node X
         successors = X.generate_successors()
@@ -74,7 +74,7 @@ class AStar:
             return ["ABORT: max number of nodes"]
         path = self.retrace_path(X, [X])
         if not self.open_set: return ["FAIL: no path found"]
-        return ["SUCCESS: lists updated", self.open_heap[0].domains]
+        return ["SUCCESS: lists updated", path]
 
     # This method completely solves the problem
     def complete_solver(self):
@@ -169,4 +169,4 @@ class AStar:
             return path
         else:
             path.append(N.parent)
-            return self.retrace_path(N.parent, path)         
+            return self.retrace_path(N.parent, path)
