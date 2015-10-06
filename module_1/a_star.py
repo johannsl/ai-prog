@@ -160,7 +160,8 @@ class AStar:
         for C in P.kids:
             if P.g + self.graph.calculate_arc_cost(P, C) < C.g:
                 C.parent = P
-                C.set_f(g=P.g + self.graph.calculate_arc_cost(P, C), h=None)
+                #C.set_f(g=P.g + self.graph.calculate_arc_cost(P, C), h=None)
+                C.set_f(g=P.g + self.graph.calculate_arc_cost(P, C), h=0)
                 self.propagate_path_improvements(C)
 
     # This method recursively finds the path from B to A and returns it as a list

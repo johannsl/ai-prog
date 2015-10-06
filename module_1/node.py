@@ -35,6 +35,7 @@ class Node:
     def set_f(self, g, h):
         self.g = g
         self.h = h
+        #self.f = g + h if h is not None else g
         self.f = g + h
     
     #The nodes are to be sorted after their f value, or if they are similar, their h value
