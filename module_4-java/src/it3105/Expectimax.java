@@ -25,12 +25,66 @@ public class Expectimax {
     }
 
     public Direction nextDirection() {
+        int[][] grid = gameGridToArray();
+        if (hDown(grid) > hRight(grid)) return Direction.DOWN;
+        return Direction.RIGHT;
+        /*
         if (down) {
             down = false;
             return  Direction.RIGHT;
         }
         down = true;
         return Direction.DOWN;
+        */
+    }
+
+    public int heuristic(int[][] grid) {
+        int h = 0;
+        h = mergableMoves(grid);
+        System.out.println("Heuristic: " + h);
+        System.out.println(gameManager.mergesAvailable());
+        return h;
+    }
+
+    public int mergableMoves(int[][] grid) {
+        int result = 0;
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid.length - 1; x++) {
+                if (grid[x][y] == 0) continue;
+                if (grid[x][y] == grid[x + 1][y]) result++;
+            }
+        }
+
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length - 1; y++) {
+                if (grid[x][y] == 0) continue;
+                if (grid[x][y] == grid[x][y + 1]) result++;
+            }
+        }
+
+        return result;
+    }
+
+    private int hDown(int[][] grid) {
+        int result = 0;
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length - 1; y++) {
+                if (grid[x][y] == 0) continue;
+                if (grid[x][y] == grid[x][y + 1]) result += grid[x][y] * 2;
+            }
+        }
+        return result;
+    }
+
+    private int hRight(int[][] grid) {
+        int result = 0;
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid.length - 1; x++) {
+                if (grid[x][y] == 0) continue;
+                if (grid[x][y] == grid[x + 1][y]) result += grid[x][y] * 2;
+            }
+        }
+        return result;
     }
 
     public int[][] gameGridToArray() {
@@ -39,17 +93,18 @@ public class Expectimax {
         if (gameGrid == null) System.out.println("grid is null");
         for (Map.Entry<Location, Tile> entry : gameGrid.entrySet()) {
             if (entry.getValue() != null) {
-                System.out.println(entry.getValue());
                 myGrid[entry.getValue().getLocation().getX()][entry.getValue().getLocation().getY()] = entry.getValue().getValue();
             }
         }
+        /*
         for (int i = 0; i < myGrid.length; i++) {
             for (int j = 0; j < myGrid.length; j++) {
-                System.out.print(myGrid[i][j]);
+                System.out.print(myGrid[j][i]);
             }
             System.out.println();
         }
         System.out.println("--------");
+        */
         return myGrid;
     }
 

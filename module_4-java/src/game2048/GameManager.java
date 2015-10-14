@@ -36,9 +36,9 @@ public class GameManager extends Group {
 
     public static final int FINAL_VALUE_TO_WIN = 2048;
     
-    private static final Duration ANIMATION_EXISTING_TILE = Duration.millis(65);
-    private static final Duration ANIMATION_NEWLY_ADDED_TILE = Duration.millis(125);
-    private static final Duration ANIMATION_MERGED_TILE = Duration.millis(80);
+    private static final Duration ANIMATION_EXISTING_TILE = Duration.millis(15); // 65
+    private static final Duration ANIMATION_NEWLY_ADDED_TILE = Duration.millis(15); // 125
+    private static final Duration ANIMATION_MERGED_TILE = Duration.millis(15); // 80
     
     private volatile boolean movingTiles = false;
     private final List<Location> locations = new ArrayList<>();
