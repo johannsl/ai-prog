@@ -1,5 +1,7 @@
 package game2048;
 
+import javafx.concurrent.Task;
+import it3105.Expectimax;
 import javafx.application.Application;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
@@ -7,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -18,10 +21,13 @@ public class Game2048 extends Application {
     public static final String VERSION = "1.0.4";
     
     private GamePane root;
+    private GameManager gameManager;
+    private Expectimax expectimax;
 
     @Override
     public void start(Stage primaryStage) {
         root = new GamePane();
+        gameManager = root.getGameManager();
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("game2048/game.css");
@@ -52,10 +58,16 @@ public class Game2048 extends Application {
             root.getGameManager().quitGame();
         });
         primaryStage.show();
+        addKeyHandler(scene);
+        expectimax = new Expectimax(gameManager);
     }
 
     private boolean isARMDevice() {
         return System.getProperty("os.arch").toUpperCase().contains("ARM");
+    }
+
+    public GamePane getGamePane() {
+        return root;
     }
 
     @Override
@@ -68,6 +80,57 @@ public class Game2048 extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void addKeyHandler(Scene scene) {
+        scene.setOnKeyPressed(key -> {
+            KeyCode keyCode = key.getCode();
+
+            if (keyCode.equals(KeyCode.P)) {
+                gameManager.pauseGame();
+                return;
+            }
+            if (keyCode.equals(KeyCode.Q) || keyCode.equals(KeyCode.ESCAPE)) {
+                gameManager.quitGame();
+                return;
+            }
+            if (keyCode.isArrowKey()) {
+                Direction direction = Direction.valueFor(keyCode);
+                gameManager.move(direction);
+            }
+            //expectimax does one step
+            if(keyCode.equals(KeyCode.I)){
+                int[][] oldGrid = expectimax.gameGridToArray().clone();
+                gameManager.move(expectimax.nextDirection());
+                if (expectimax.compareGridArrays(expectimax.gameGridToArray(), oldGrid))
+                    gameManager.move(Direction.LEFT);
+            }
+            //expectimax tries to finish the game
+            if(keyCode.equals(KeyCode.M)){
+                //counter++;
+                runAI();
+            }
+        });
+    }
+
+    private void runAI() {
+
+        Task task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                while(gameManager.isMovingTiles());
+                return null;
+            }
+        };
+        task.setOnSucceeded(event -> {
+            int[][] oldGrid = expectimax.gameGridToArray().clone();
+            gameManager.move(expectimax.nextDirection());
+            if (expectimax.compareGridArrays(expectimax.gameGridToArray(), oldGrid))
+                gameManager.move(Direction.LEFT);
+            runAI();
+        });
+        new Thread(task).start();
     }
 
 }

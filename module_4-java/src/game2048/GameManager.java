@@ -471,4 +471,16 @@ public class GameManager extends Group {
     public void setHostServices(HostServices hostServices){
         board.setHostServices(hostServices);
     }
+
+    public boolean isMovingTiles() {
+        return movingTiles;
+    }
+
+    public int mergesAvailable() {
+        return mergeMovementsAvailable();
+    }
+
+    public Map<Location, Tile> getGameGrid() {
+        return gameGrid;
+    }
 }
