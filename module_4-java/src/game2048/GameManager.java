@@ -53,7 +53,7 @@ public class GameManager extends Group {
     }
     
     /**
-     * GameManager is a Group containing a Board that holds a grid and the score
+     * GameManager is a Group containing a BoardExperimental that holds a grid and the score
      * a Map holds the location of the tiles in the grid
      * 
      * The purpose of the game is sum the value of the tiles up to 2048 points

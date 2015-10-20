@@ -1,5 +1,6 @@
 package game2048;
 
+import it3105.Expectimax;
 import javafx.concurrent.Task;
 import it3105.Ivermax;
 import javafx.application.Application;
@@ -23,6 +24,7 @@ public class Game2048 extends Application {
     private GamePane root;
     private GameManager gameManager;
     private Ivermax ivermax;
+    private Expectimax expectimax;
 
     @Override
     public void start(Stage primaryStage) {
@@ -60,6 +62,7 @@ public class Game2048 extends Application {
         primaryStage.show();
         addKeyHandler(scene);
         ivermax = new Ivermax(gameManager);
+        expectimax = new Expectimax(gameManager);
     }
 
     private boolean isARMDevice() {
@@ -99,12 +102,16 @@ public class Game2048 extends Application {
                 gameManager.move(direction);
             }
             if(keyCode.equals(KeyCode.I)){
-                iverMax();
+                expectiMax();
             }
             if(keyCode.equals(KeyCode.M)){
                 runAI();
             }
         });
+    }
+
+    private void expectiMax() {
+        gameManager.move(expectimax.nextDirection());
     }
 
     private void iverMax() {
@@ -127,7 +134,7 @@ public class Game2048 extends Application {
             }
         };
         task.setOnSucceeded(event -> {
-            iverMax();
+            expectiMax();
             runAI();
         });
         new Thread(task).start();
