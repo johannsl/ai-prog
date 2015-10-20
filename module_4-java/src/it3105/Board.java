@@ -18,7 +18,7 @@ public class Board {
         this.grid = grid;
         this.myDirection = direction;
         directions = new ArrayList<>();
-        ///directions.add(Direction.UP);
+        directions.add(Direction.UP);
         //directions.add(Direction.DOWN);
         directions.add(Direction.LEFT);
         directions.add(Direction.RIGHT);
@@ -67,8 +67,9 @@ public class Board {
         int highestValue = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (grid[i][j] != 0) {
+                if (grid[i][j] == 0) {
                     h++;
+                } else {
                     highestValue = (highestValue > grid[i][j]) ? highestValue : grid[i][j];
                 }
             }
@@ -88,9 +89,15 @@ public class Board {
         int[][] newGrid = copyGrid(grid);
         switch (direction) {
             case UP:
-                for (int row = 3; row >= 0; row--) {
-                    int[] line = grid[row];
-                    newGrid[row] = moveLine(line);
+                for (int i = 0; i < 4; i++) {
+                    int[] line = new int[4];
+                    for (int j = 0; j < 4; j++) {
+                        line[j] = grid[j][i];
+                    }
+                    line = moveLine(line);
+                    for (int j = 0; j < 4; j++) {
+                        newGrid[j][i] = line[j];
+                    }
                 }
                 break;
             case DOWN:
