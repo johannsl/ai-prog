@@ -15,6 +15,7 @@ public class Expectimax {
     private GameManager gameManager;
     private int[][] grid;
     private Direction nextDirection;
+    private Board nextBoard;
 
     public Expectimax(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -25,7 +26,7 @@ public class Expectimax {
     public Direction nextDirection() {
         System.out.println(miniMax(
                 new Board(gameGridToArray(), null),
-                3,
+                1,
                 true
         ));
         System.out.println(nextDirection);
@@ -41,6 +42,7 @@ public class Expectimax {
                 if (bestValue < value) {
                     bestValue = value;
                     nextDirection = child.getMyDirection();
+                    nextBoard = child;
                 }
             }
 
@@ -51,7 +53,6 @@ public class Expectimax {
                 int value = miniMax(child, depth - 1, true);
                 if (bestValue > value) {
                     bestValue = value;
-                    nextDirection = child.getMyDirection();
                 }
             }
             return bestValue;
