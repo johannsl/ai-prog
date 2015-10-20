@@ -17,6 +17,7 @@ public class Tile extends Label {
     public static Tile newRandomTile() {
         int value = new Random().nextDouble() < 0.9 ? 2 : 4;
         return new Tile(value);
+        //return new Tile(2048); // hack for winning the game
     }
 
     public static Tile newTile(int value) {

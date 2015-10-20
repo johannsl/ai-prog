@@ -1,7 +1,7 @@
 package game2048;
 
 import javafx.concurrent.Task;
-import it3105.Expectimax;
+import it3105.Ivermax;
 import javafx.application.Application;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
@@ -22,7 +22,7 @@ public class Game2048 extends Application {
     
     private GamePane root;
     private GameManager gameManager;
-    private Expectimax expectimax;
+    private Ivermax ivermax;
 
     @Override
     public void start(Stage primaryStage) {
@@ -59,7 +59,7 @@ public class Game2048 extends Application {
         });
         primaryStage.show();
         addKeyHandler(scene);
-        expectimax = new Expectimax(gameManager);
+        ivermax = new Ivermax(gameManager);
     }
 
     private boolean isARMDevice() {
@@ -98,19 +98,22 @@ public class Game2048 extends Application {
                 Direction direction = Direction.valueFor(keyCode);
                 gameManager.move(direction);
             }
-            //expectimax does one step
             if(keyCode.equals(KeyCode.I)){
-                int[][] oldGrid = expectimax.gameGridToArray().clone();
-                gameManager.move(expectimax.nextDirection());
-                if (expectimax.compareGridArrays(expectimax.gameGridToArray(), oldGrid))
-                    gameManager.move(Direction.LEFT);
+                iverMax();
             }
-            //expectimax tries to finish the game
             if(keyCode.equals(KeyCode.M)){
-                //counter++;
                 runAI();
             }
         });
+    }
+
+    private void iverMax() {
+        int[][] oldGrid = ivermax.gameGridToArray().clone();
+        gameManager.move(ivermax.nextDirection());
+        if (ivermax.compareGridArrays(ivermax.gameGridToArray(), oldGrid) && !ivermax.canMoveDown(ivermax.gameGridToArray()))
+            gameManager.move(Direction.LEFT);
+        else
+            gameManager.move(Direction.DOWN);
     }
 
     private void runAI() {
@@ -124,10 +127,7 @@ public class Game2048 extends Application {
             }
         };
         task.setOnSucceeded(event -> {
-            int[][] oldGrid = expectimax.gameGridToArray().clone();
-            gameManager.move(expectimax.nextDirection());
-            if (expectimax.compareGridArrays(expectimax.gameGridToArray(), oldGrid))
-                gameManager.move(Direction.LEFT);
+            iverMax();
             runAI();
         });
         new Thread(task).start();
