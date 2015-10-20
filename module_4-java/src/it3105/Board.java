@@ -101,17 +101,29 @@ public class Board {
                 break;
             case LEFT:
                 for (int col = 0; col < 4; col++) {
-                    int[] line = grid[col];
-                    newGrid[col] = moveLine(line);
+                    int[] line = grid[col].clone();
+                    line = moveLine(reverseLine(line));
+                    line = reverseLine(line);
+                    newGrid[col] = line;
                 }
                 break;
             case RIGHT:
-                for (int col = 3; col >= 0; col--) {
-                    int[] line = grid[col];
+                for (int col = 0; col < 4; col++) {
+                    int[] line = grid[col].clone();
                     newGrid[col] = moveLine(line);
                 }
         }
         return newGrid;
+    }
+
+    private int[] reverseLine(int[] line) {
+        for(int i = 0; i < line.length / 2; i++)
+        {
+            int temp = line[i];
+            line[i] = line[line.length - i - 1];
+            line[line.length - i - 1] = temp;
+        }
+        return line;
     }
 
     // moves elements in line left to right
