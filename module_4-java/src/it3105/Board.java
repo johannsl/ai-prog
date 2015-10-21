@@ -4,6 +4,7 @@ import game2048.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by iver on 20/10/15.
@@ -19,7 +20,7 @@ public class Board {
         this.myDirection = direction;
         directions = new ArrayList<>();
         directions.add(Direction.UP);
-        //directions.add(Direction.DOWN);
+        directions.add(Direction.DOWN);
         directions.add(Direction.LEFT);
         directions.add(Direction.RIGHT);
     }
@@ -35,7 +36,7 @@ public class Board {
                     new Board(getNewGridFromDirection(direction), direction)
             );
         }
-        printChildren(children);
+        //printChildren(children);
         return children;
     }
 
@@ -65,20 +66,58 @@ public class Board {
     private int calculateHeuristicValue() {
         int h = 0;
         int highestValue = 0;
+        int boardScore = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (grid[i][j] == 0) {
                     h++;
                 } else {
-                    highestValue = (highestValue > grid[i][j]) ? highestValue : grid[i][j];
+                    highestValue = (highestValue > grid[j][i]) ? highestValue : grid[j][i];
+                    boardScore += grid[j][i];
                 }
             }
         }
-        return -1 * (h + highestValue);
+        //return -1 * (h + highestValue + totalValue);
+        int score = (int) (boardScore+Math.log(boardScore) * findEmptyCells() + (16 - calcMergableTiles()));
+        return Math.max(score, boardScore);
+        //return (h + (highestValue/100) + calcMergableTiles());
+        /* why not random?
+        int min = 0;
+        int max = 100;
+        return new Random().nextInt((max - min) + 1) + min;
+        */
+    }
+
+    private int findEmptyCells() {
+        int empty = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (grid[j][i] == 0) empty++;
+            }
+        }
+        return empty;
     }
 
     private int calcMergableTiles() {
-        return 0;
+        int mergable = 0;
+
+
+        for (int i = 0; i < 4; i++) {
+            // y axis
+            int[] lineY = grid[i];
+            lineY = shiftEmptyCells(lineY);
+            // x axis
+            int[] lineX = new int[4];
+            for (int j = 0; j < 4; j++) {
+                lineX[j] = grid[j][i];
+            }
+            lineX = shiftEmptyCells(lineX);
+            for (int j = 0; j < 3; j++) {
+                if (lineY[j] == lineY[j + 1]) mergable++;
+                if (lineX[j] == lineX[j + 1]) mergable++;
+            }
+        }
+        return mergable;
     }
 
     public int getHeuristicValue() {
@@ -88,11 +127,12 @@ public class Board {
     private int[][] getNewGridFromDirection(Direction direction) {
         int[][] newGrid = copyGrid(grid);
         switch (direction) {
-            case UP:
+            case RIGHT:
+                int[][] rightGrid = copyGrid(grid);
                 for (int i = 0; i < 4; i++) {
                     int[] line = new int[4];
                     for (int j = 0; j < 4; j++) {
-                        line[j] = grid[j][i];
+                        line[j] = rightGrid[j][i];
                     }
                     line = moveLine(line);
                     for (int j = 0; j < 4; j++) {
@@ -100,13 +140,22 @@ public class Board {
                     }
                 }
                 break;
-            case DOWN:
-                for (int row = 0; row < 4; row++) {
-                    int[] line = grid[row];
-                    newGrid[row] = moveLine(line);
+            case LEFT:
+                int[][] leftGrid = copyGrid(grid);
+                for (int i = 0; i < 4; i++) {
+                    int[] line = new int[4];
+                    for (int j = 0; j < 4; j++) {
+                        line[j] = leftGrid[j][i];
+                    }
+                    line = reverseLine(line);
+                    line = moveLine(line);
+                    line = reverseLine(line);
+                    for (int j = 0; j < 4; j++) {
+                        newGrid[j][i] = line[j];
+                    }
                 }
                 break;
-            case LEFT:
+            case DOWN:
                 for (int col = 0; col < 4; col++) {
                     int[] line = grid[col].clone();
                     line = moveLine(reverseLine(line));
@@ -114,7 +163,7 @@ public class Board {
                     newGrid[col] = line;
                 }
                 break;
-            case RIGHT:
+            case UP:
                 for (int col = 0; col < 4; col++) {
                     int[] line = grid[col].clone();
                     newGrid[col] = moveLine(line);
