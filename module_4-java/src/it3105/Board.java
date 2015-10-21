@@ -4,7 +4,6 @@ import game2048.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by iver on 20/10/15.
@@ -29,6 +28,7 @@ public class Board {
 
         // generate children of board based
         // on the four legal directions we can move
+        // (skip boards that are equal to our state)
 
         for (Direction direction : directions) {
             Board child = new Board(getNewGridFromDirection(direction), direction);
@@ -56,6 +56,7 @@ public class Board {
         return generateChildren();
     }
 
+    // board is a solution if it contains a 2048 tile
     public boolean isSolution() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -82,7 +83,7 @@ public class Board {
         if (highestValue == grid[0][0]) highestValue *= 2;
         //return -1 * (h + highestValue + totalValue);
         if (h == 1) return -999;
-        return findEmptyCells() + calcMergableTiles() + highestValue;
+        return findEmptyTiles() + calcMergableTiles() + highestValue;
 
         //return (h + (highestValue/100) + calcMergableTiles());
         /* why not random?
@@ -92,7 +93,8 @@ public class Board {
         */
     }
 
-    private int findEmptyCells() {
+    // counts empty tiles
+    private int findEmptyTiles() {
         int empty = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -125,7 +127,7 @@ public class Board {
     }
 
     public int getEmptyTiles() {
-        return findEmptyCells();
+        return findEmptyTiles();
     }
 
     public int getMergableTiles() {
@@ -136,6 +138,7 @@ public class Board {
         return calculateHeuristicValue();
     }
 
+    // breaks the grid into lines that should be read left to right
     private int[][] getNewGridFromDirection(Direction direction) {
         int[][] newGrid = copyGrid(grid);
         switch (direction) {

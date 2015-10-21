@@ -22,38 +22,41 @@ public class Expectimax {
     }
 
     public Direction nextDirection() {
-        miniMax(
+        Result result = miniMax(
                 new Board(gameGridToArray(), null),
                 1,
                 true
         );
         System.out.println(nextBoard);
-        return nextDirection;
+        return result.getDirection();
     }
 
-    private int miniMax(Board node, int depth, boolean isMaximizingPlayer) {
-        if (depth == 0 || node.isSolution()) return node.getHeuristicValue();
+    private Result miniMax(Board node, int depth, boolean isMaximizingPlayer) {
+        if (depth == 0 || node.isSolution())
+            return new Result(node.getHeuristicValue(), node.getMyDirection());
+
         if (isMaximizingPlayer) {
             int bestValue = Integer.MIN_VALUE;
+            Direction direction = null;
             for (Board child : node.getChildren()) {
-                int value = miniMax(child, depth - 1, false);
+                int value = miniMax(child, depth - 1, false).getResult();
                 if (bestValue < value) {
                     bestValue = value;
-                    nextDirection = child.getMyDirection();
+                    direction = child.getMyDirection();
                     nextBoard = child;
                 }
             }
 
-            return bestValue;
+            return new Result(bestValue, direction);
         } else {
             int bestValue = Integer.MAX_VALUE;
             for (Board child : node.getChildren()) {
-                int value = miniMax(child, depth - 1, true);
+                int value = miniMax(child, depth - 1, true).getResult();
                 if (bestValue > value) {
                     bestValue = value;
                 }
             }
-            return bestValue;
+            return new Result(bestValue, null);
         }
     }
 
