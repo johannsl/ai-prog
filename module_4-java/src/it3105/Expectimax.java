@@ -13,23 +13,21 @@ import java.util.Map;
 public class Expectimax {
 
     private GameManager gameManager;
-    private int[][] grid;
     private Direction nextDirection;
     private Board nextBoard;
 
     public Expectimax(GameManager gameManager) {
         this.gameManager = gameManager;
         // TODO: set grid size dynamically
-        this.grid = new int[4][4];
     }
 
     public Direction nextDirection() {
-        System.out.println(miniMax(
+        miniMax(
                 new Board(gameGridToArray(), null),
                 1,
                 true
-        ));
-        System.out.println(nextDirection);
+        );
+        System.out.println(nextBoard);
         return nextDirection;
     }
 
@@ -62,7 +60,6 @@ public class Expectimax {
     public int[][] gameGridToArray() {
         int[][] myGrid = new int[4][4];
         Map<Location, Tile> gameGrid = gameManager.getGameGrid();
-        if (gameGrid == null) System.out.println("grid is null");
         for (Map.Entry<Location, Tile> entry : gameGrid.entrySet()) {
             if (entry.getValue() != null) {
                 myGrid[entry.getValue().getLocation().getY()][entry.getValue().getLocation().getX()] = entry.getValue().getValue();

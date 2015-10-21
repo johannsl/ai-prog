@@ -31,9 +31,8 @@ public class Board {
         // on the four legal directions we can move
 
         for (Direction direction : directions) {
-            children.add(
-                    new Board(getNewGridFromDirection(direction), direction)
-            );
+            Board child = new Board(getNewGridFromDirection(direction), direction);
+            if (!this.equals(child)) children.add(child);
         }
         //printChildren(children);
         return children;
@@ -41,6 +40,10 @@ public class Board {
 
     public Direction getMyDirection() {
         return myDirection;
+    }
+
+    public int[][] getGrid() {
+        return  grid;
     }
 
     private void printChildren(List<Board> children) {
@@ -76,9 +79,11 @@ public class Board {
                 }
             }
         }
+        if (highestValue == grid[0][0]) highestValue *= 2;
         //return -1 * (h + highestValue + totalValue);
-        int score = (int) (boardScore+Math.log(boardScore) * findEmptyCells() + (16 - calcMergableTiles()));
-        return Math.max(score, boardScore);
+        if (h == 1) return -999;
+        return findEmptyCells() + calcMergableTiles() + highestValue;
+
         //return (h + (highestValue/100) + calcMergableTiles());
         /* why not random?
         int min = 0;
@@ -99,24 +104,32 @@ public class Board {
 
     private int calcMergableTiles() {
         int mergable = 0;
-
+        int[][] copy = copyGrid(grid);
 
         for (int i = 0; i < 4; i++) {
             // y axis
-            int[] lineY = grid[i];
+            int[] lineY = copy[i];
             lineY = shiftEmptyCells(lineY);
             // x axis
             int[] lineX = new int[4];
             for (int j = 0; j < 4; j++) {
-                lineX[j] = grid[j][i];
+                lineX[j] = copy[j][i];
             }
             lineX = shiftEmptyCells(lineX);
             for (int j = 0; j < 3; j++) {
-                if (lineY[j] == lineY[j + 1]) mergable++;
-                if (lineX[j] == lineX[j + 1]) mergable++;
+                if (lineY[j] != 0 && lineY[j] == lineY[j + 1]) mergable++;
+                if (lineX[j] != 0 && lineX[j] == lineX[j + 1]) mergable++;
             }
         }
         return mergable;
+    }
+
+    public int getEmptyTiles() {
+        return findEmptyCells();
+    }
+
+    public int getMergableTiles() {
+        return calcMergableTiles();
     }
 
     public int getHeuristicValue() {
@@ -209,11 +222,9 @@ public class Board {
         }
         int[] tmp = new int[4];
         int pos = 0;
-        if (count != 4) {
-            for (int i = 4-count; i < 4; i++) {
-                tmp[i] = newLine[pos];
-                pos++;
-            }
+        for (int i = 4-count; i < 4; i++) {
+            tmp[i] = newLine[pos];
+            pos++;
         }
         return tmp;
     }
@@ -230,6 +241,9 @@ public class Board {
     public String toString() {
         String result = "\n";
         result += this.getMyDirection() + "\n";
+        result += "Mergable tiles: " + this.getMergableTiles() + "\n";
+        result += "Empty tiles: " + this.getEmptyTiles() + "\n";
+        result += "Heuristic: " + this.getHeuristicValue() + "\n";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 result += grid[i][j] + " ";
@@ -237,5 +251,18 @@ public class Board {
             result += "\n";
         }
         return result;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (this.grid[i][j] != ((Board) other).getGrid()[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
