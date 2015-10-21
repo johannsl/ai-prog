@@ -65,7 +65,7 @@ public class Expectimax {
         if (gameGrid == null) System.out.println("grid is null");
         for (Map.Entry<Location, Tile> entry : gameGrid.entrySet()) {
             if (entry.getValue() != null) {
-                myGrid[entry.getValue().getLocation().getX()][entry.getValue().getLocation().getY()] = entry.getValue().getValue();
+                myGrid[entry.getValue().getLocation().getY()][entry.getValue().getLocation().getX()] = entry.getValue().getValue();
             }
         }
         return myGrid;

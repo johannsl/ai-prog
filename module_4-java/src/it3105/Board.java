@@ -19,10 +19,9 @@ public class Board {
         this.grid = grid;
         this.myDirection = direction;
         directions = new ArrayList<>();
-        directions.add(Direction.UP);
-        directions.add(Direction.DOWN);
-        directions.add(Direction.LEFT);
-        directions.add(Direction.RIGHT);
+        for (Direction dir : Direction.values()) {
+            directions.add(dir);
+        }
     }
 
     private List<Board> generateChildren() {
@@ -92,7 +91,7 @@ public class Board {
         int empty = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (grid[j][i] == 0) empty++;
+                if (grid[i][j] == 0) empty++;
             }
         }
         return empty;
@@ -127,7 +126,7 @@ public class Board {
     private int[][] getNewGridFromDirection(Direction direction) {
         int[][] newGrid = copyGrid(grid);
         switch (direction) {
-            case RIGHT:
+            case DOWN:
                 int[][] rightGrid = copyGrid(grid);
                 for (int i = 0; i < 4; i++) {
                     int[] line = new int[4];
@@ -140,7 +139,7 @@ public class Board {
                     }
                 }
                 break;
-            case LEFT:
+            case UP:
                 int[][] leftGrid = copyGrid(grid);
                 for (int i = 0; i < 4; i++) {
                     int[] line = new int[4];
@@ -155,19 +154,20 @@ public class Board {
                     }
                 }
                 break;
-            case DOWN:
-                for (int col = 0; col < 4; col++) {
-                    int[] line = grid[col].clone();
+            case LEFT:
+                for (int row = 0; row < 4; row++) {
+                    int[] line = grid[row].clone();
                     line = moveLine(reverseLine(line));
                     line = reverseLine(line);
-                    newGrid[col] = line;
+                    newGrid[row] = line;
                 }
                 break;
-            case UP:
-                for (int col = 0; col < 4; col++) {
-                    int[] line = grid[col].clone();
-                    newGrid[col] = moveLine(line);
+            case RIGHT:
+                for (int row = 0; row < 4; row++) {
+                    int[] line = grid[row].clone();
+                    newGrid[row] = moveLine(line);
                 }
+                break;
         }
         return newGrid;
     }
@@ -185,10 +185,12 @@ public class Board {
     // moves elements in line left to right
     private int[] moveLine(int[] line) {
         line = shiftEmptyCells(line);
-        for (int i = 0; i < 3; i++) {
-            if (line[i] == line[i+1]) {
-                line[i+1] = line[i] * 2;
-                if (i - 1 >= 0) line[i] = 0;
+        int changedPos = -1;
+        for (int i = 3; i > 0; i--) {
+            if (line[i] == line[i-1] && i+1 != changedPos) {
+                changedPos = i;
+                line[i-1] *= 2;
+                line[i] = 0;
             }
         }
         line = shiftEmptyCells(line);
@@ -207,7 +209,7 @@ public class Board {
         }
         int[] tmp = new int[4];
         int pos = 0;
-        if (count != 3) {
+        if (count != 4) {
             for (int i = 4-count; i < 4; i++) {
                 tmp[i] = newLine[pos];
                 pos++;
@@ -226,7 +228,8 @@ public class Board {
 
     @Override
     public String toString() {
-        String result = "";
+        String result = "\n";
+        result += this.getMyDirection() + "\n";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 result += grid[i][j] + " ";
