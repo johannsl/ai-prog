@@ -33,6 +33,6 @@ public class BoardTest {
         Board equalBoard = new Board(equalGrid, null);
         System.out.println("Equals? " + board.equals(equalBoard));
 
-        System.out.println(board.getChildren());
+        System.out.println(board.getChildren(true));
     }
 }
