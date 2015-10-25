@@ -36,7 +36,7 @@ public class ExpectiMax {
             return new Result(node.getHeuristicValue(), node.getMyDirection());
 
         if (isMaximizingPlayer) {
-            int bestValue = Integer.MIN_VALUE;
+            int bestValue = 0;
             Direction direction = null;
             for (Board child : node.getChildren(isMaximizingPlayer)) {
                 int value = runExpectiMax(child, depth - 1, false).getResult();
@@ -53,7 +53,7 @@ public class ExpectiMax {
             return new Result(bestValue, direction);
 
         } else {
-            int bestValue = Integer.MIN_VALUE;
+            int bestValue = 0;
             for (Board child : node.getChildren(isMaximizingPlayer)) {
                 int value = runExpectiMax(child, depth - 1, true).getResult();
                 if (bestValue < value) {
@@ -62,7 +62,7 @@ public class ExpectiMax {
             }
             System.out.println("CHANCE BESTVALUE: " + bestValue);
             System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
-            return new Result(bestValue+2, node.getMyDirection());
+            return new Result(bestValue, node.getMyDirection());
         }
     }
 
