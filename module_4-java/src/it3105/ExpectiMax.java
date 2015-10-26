@@ -7,6 +7,7 @@ import game2048.Tile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by iver on 15/10/15.
@@ -34,6 +35,10 @@ public class ExpectiMax {
         );
         //System.out.println(result.getDirection());
         return result.getDirection();
+    }
+
+    private void generateStatistics() {
+
     }
 
     private Result runExpectiMax(Board node, int depth, boolean isMaximizingPlayer) {

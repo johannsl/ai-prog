@@ -234,9 +234,12 @@ public class Board extends Group {
     }
     
     public void tryAgain(){
+        doResetGame();
+        /*
         if(!gameTryAgainProperty.get()){
             gameTryAgainProperty.set(true);
         }
+        */
     }
     
     private void btnTryAgain(){
@@ -680,5 +683,8 @@ public class Board extends Group {
         RecordManager recordManager = new RecordManager(gridOperator.getGridSize());
         gameBestProperty.set(recordManager.restoreRecord());
     }
-    
+
+    public boolean getGameOver() {
+        return this.gameOverProperty.get();
+    }
 }

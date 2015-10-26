@@ -34,7 +34,7 @@ import javafx.util.Duration;
  */
 public class GameManager extends Group {
 
-    public static final int FINAL_VALUE_TO_WIN = 2048;
+    public static final int FINAL_VALUE_TO_WIN = Integer.MAX_VALUE;
     
     private static final Duration ANIMATION_EXISTING_TILE = Duration.millis(15); // 65
     private static final Duration ANIMATION_NEWLY_ADDED_TILE = Duration.millis(15); // 125
@@ -47,6 +47,8 @@ public class GameManager extends Group {
 
     private final Board board;
     private final GridOperator gridOperator;
+
+    private int highestValue = 0;
 
     public GameManager() {
         this(GridOperator.DEFAULT_GRID_SIZE);
@@ -184,6 +186,7 @@ public class GameManager extends Group {
                         if (t.getValue() == FINAL_VALUE_TO_WIN) {
                             board.setGameWin(true);
                         }
+                        if (t.getValue() > highestValue) highestValue = t.getValue();
                         result.set(1);
                     });
             if (result.get()==0 && opTile.isPresent() && !farthestLocation.equals(thisloc)) {
@@ -482,5 +485,17 @@ public class GameManager extends Group {
 
     public Map<Location, Tile> getGameGrid() {
         return gameGrid;
+    }
+
+    public boolean isGameOver() {
+        return board.getGameOver();
+    }
+
+    public int getHighestTile() {
+        return highestValue;
+    }
+
+    public void resetHighestTile() {
+        this.highestValue = 0;
     }
 }

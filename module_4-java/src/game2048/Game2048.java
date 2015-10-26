@@ -1,6 +1,7 @@
 package game2048;
 
 import it3105.ExpectiMax;
+import it3105.Result;
 import javafx.concurrent.Task;
 import it3105.Ivermax;
 import javafx.application.Application;
@@ -14,6 +15,10 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 /**
  * @author bruno.borges@oracle.com
  */
@@ -25,6 +30,8 @@ public class Game2048 extends Application {
     private GameManager gameManager;
     private Ivermax ivermax;
     private ExpectiMax expectiMax;
+    private int runs = 0;
+    private Map<Integer, Integer> score = new HashMap<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -110,8 +117,37 @@ public class Game2048 extends Application {
         });
     }
 
+    private void generateStatistics() {
+        runs++;
+        int highestTile = gameManager.getHighestTile();
+        gameManager.resetHighestTile();
+        score.put(runs, highestTile);
+        int beaten2048 = 0;
+        int beaten4096 = 0;
+        int beaten8192 = 0;
+        System.out.println("#########################");
+        for (Integer run : score.keySet()) {
+            int value = score.get(run);
+            System.out.println("# " + run + ", " + score.get(run));
+            if (value > 2048) beaten2048++;
+            if (value > 4096) beaten4096++;
+            if (value > 8192) beaten8192++;
+        }
+        System.out.println("Percent above 2048: " + (float) beaten2048 / runs);
+        System.out.println("Percent above 4096: " + (float) beaten4096 / runs);
+        System.out.println("Percent above 8192: " + (float) beaten8192 / runs);
+
+    }
+
     private void expectiMax() {
-        gameManager.move(expectiMax.nextDirection());
+        if (gameManager.isGameOver()) {
+            generateStatistics();
+            gameManager.tryAgain();
+        }
+        Direction direction = expectiMax.nextDirection();
+        if (direction == null)
+            gameManager.move(Direction.values()[new Random().nextInt(Direction.values().length - 1)]);
+        else gameManager.move(direction);
     }
 
     private void iverMax() {
