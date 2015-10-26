@@ -24,9 +24,13 @@ public class ExpectiMax {
     }
 
     public Direction nextDirection() {
+        Board board = new Board(gameGridToArray(), null);
+        int emptyTiles = board.getEmptyTiles();
+        int depth = 7;
+        if (emptyTiles <= 4) depth = 9;
         Result result = runExpectiMax(
-                new Board(gameGridToArray(), null),
-                7,
+                board,
+                depth,
                 true
         );
         //System.out.println(result.getDirection());
