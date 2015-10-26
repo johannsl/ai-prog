@@ -3,7 +3,6 @@ package game2048;
 import it3105.ExpectiMax;
 import it3105.Result;
 import javafx.concurrent.Task;
-import it3105.Ivermax;
 import javafx.application.Application;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
@@ -28,7 +27,6 @@ public class Game2048 extends Application {
     
     private GamePane root;
     private GameManager gameManager;
-    private Ivermax ivermax;
     private ExpectiMax expectiMax;
     private int runs = 0;
     private Map<Integer, Integer> score = new HashMap<>();
@@ -68,7 +66,6 @@ public class Game2048 extends Application {
         });
         primaryStage.show();
         addKeyHandler(scene);
-        ivermax = new Ivermax(gameManager);
         expectiMax = new ExpectiMax(gameManager);
     }
 
@@ -92,6 +89,7 @@ public class Game2048 extends Application {
         launch(args);
     }
 
+    // This method handles hotkeys
     private void addKeyHandler(Scene scene) {
         scene.setOnKeyPressed(key -> {
             KeyCode keyCode = key.getCode();
@@ -117,6 +115,7 @@ public class Game2048 extends Application {
         });
     }
 
+    // This method prints statistics after a run has terminated.
     private void generateStatistics() {
         runs++;
         int highestTile = gameManager.getHighestTile();
@@ -145,6 +144,7 @@ public class Game2048 extends Application {
 
     }
 
+    // This method runs the expectimax algorithm from the expectimax class.
     private void expectiMax() {
         if (gameManager.isGameOver()) {
             generateStatistics();
@@ -156,19 +156,10 @@ public class Game2048 extends Application {
         else gameManager.move(direction);
     }
 
-    private void iverMax() {
-        int[][] oldGrid = ivermax.gameGridToArray().clone();
-        gameManager.move(ivermax.nextDirection());
-        if (ivermax.compareGridArrays(ivermax.gameGridToArray(), oldGrid) && !ivermax.canMoveDown(ivermax.gameGridToArray()))
-            gameManager.move(Direction.LEFT);
-        else
-            gameManager.move(Direction.DOWN);
-    }
-
+    // This method begins the expectimax loop.
+    // It will keep running after termination to allow serial testing.
     private void runAI() {
-
         Task task = new Task<Void>() {
-
             @Override
             protected Void call() throws Exception {
                 while(gameManager.isMovingTiles());

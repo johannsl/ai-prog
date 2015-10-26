@@ -23,7 +23,6 @@ public class Board {
         }
     }
 
-
     // Board generating
     private List<Board> generateChildren(boolean max) {
         List<Board> children = new ArrayList<>();
@@ -37,8 +36,6 @@ public class Board {
                 Board child = new Board(getNewGridFromDirection(direction), direction);
                 if (!this.equals(child)) children.add(child);
             }
-            //System.out.println("##########################################");
-            //printChildren(children);
             return children;
         }
         else {
@@ -46,13 +43,11 @@ public class Board {
                 Board child = new Board(getNewExpectGrid(tile), null);
                 children.add(child);
             }
-            //System.out.println("##########################################");
-            //printChildren(children);
             return children;
         }
     }
 
-    // breaks the grid into lines that should be read left to right
+    // Breaks the grid into lines that should be read left to right
     private int[][] getNewGridFromDirection(Direction direction) {
         int[][] newGrid = copyGrid(grid);
         switch (direction) {
@@ -112,7 +107,7 @@ public class Board {
         return line;
     }
 
-    // moves elements in line left to right
+    // Moves elements in line left to right
     private int[] moveLine(int[] line) {
         line = shiftEmptyCells(line);
         int changedPos = -1;
@@ -127,7 +122,7 @@ public class Board {
         return line;
     }
 
-    // places all empty cells at the start of the line
+    // Places all empty cells at the start of the line
     private int[] shiftEmptyCells(int[] line) {
         int[] newLine = new int[4];
         int count = 0;
@@ -154,6 +149,7 @@ public class Board {
         return copy;
     }
 
+    // Creates and returns one possible chance grid
     private int[][] getNewExpectGrid(int fillTile) {
         int tileCount = 0;
         int[][] expectGrid = copyGrid(grid);
@@ -228,6 +224,7 @@ public class Board {
         return false;
     }
 
+    // This is our heuristics method, it calculates how good a grid is.
     private int calculateHeuristicValue() {
         int snakeScore = 0;
         int[][] weights = {{32768, 16384, 8192, 4096},
@@ -243,7 +240,7 @@ public class Board {
         return snakeScore;
     }
 
-    // counts empty tiles
+    // Counts empty tiles
     private int findEmptyTiles() {
         int empty = 0;
         for (int i = 0; i < 4; i++) {
