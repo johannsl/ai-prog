@@ -114,9 +114,11 @@ public class Board extends Group {
     }
     
     private void createScore() {
-        Label lblTitle = new Label("2048");
+        Label lblTitle = new Label("8192");
         lblTitle.getStyleClass().addAll("game-label","game-title");
         Label lblSubtitle = new Label("FX");
+        Label gottaGoFast = new Label("Gotta Go Fast");
+        gottaGoFast.getStyleClass().addAll("game-label", "game-gottaGoFast");
         lblSubtitle.getStyleClass().addAll("game-label","game-subtitle");
         HBox hFill = new HBox();
         HBox.setHgrow(hFill, Priority.ALWAYS);
@@ -146,7 +148,7 @@ public class Board extends Group {
         VBox.setVgrow(vFill, Priority.ALWAYS);
         vScores.getChildren().addAll(hScores,vFill);
                 
-        hTop.getChildren().addAll(lblTitle, lblSubtitle, hFill,vScores);
+        hTop.getChildren().addAll(gottaGoFast, lblSubtitle, hFill,vScores);
         hTop.setMinSize(gridWidth, TOP_HEIGHT);
         hTop.setPrefSize(gridWidth, TOP_HEIGHT);
         hTop.setMaxSize(gridWidth, TOP_HEIGHT);

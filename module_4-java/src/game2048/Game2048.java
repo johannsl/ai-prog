@@ -55,7 +55,7 @@ public class Game2048 extends Application {
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
         double factor = Math.min(visualBounds.getWidth() / (gameBounds.getWidth() + MARGIN),
                 visualBounds.getHeight() / (gameBounds.getHeight() + MARGIN));
-        primaryStage.setTitle("2048FX");
+        primaryStage.setTitle("8192FX");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(gameBounds.getWidth() / 2d);
         primaryStage.setMinHeight(gameBounds.getHeight() / 2d);
