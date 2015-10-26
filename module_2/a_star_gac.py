@@ -28,9 +28,9 @@ class AStarGAC:
     # "NON" if no change has happened
     def increment(self):
         # run astar
-        if self.csp.is_solved():
-            print "Solution found!"
-            return "SOL"
+        #if self.csp.is_solved():
+        #    print "Solution found!"
+        #    return "SOL"
 
         # From the pseudocode in the task description
         astar_result = self.astar.incremental_solver()
@@ -45,7 +45,7 @@ class AStarGAC:
                 # rerun csp and find best guess
                 self.csp.domains = node.domains
                 csp_rerun_result = self.csp.rerun()
-                if self.csp.is_solved():
+                if node.h == 0:
                     print "Solution found"
                     self.goal_node = node
                     return "SOL"
