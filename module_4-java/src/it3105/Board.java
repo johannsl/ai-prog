@@ -232,22 +232,32 @@ public class Board {
 
     private int calculateHeuristicValue() {
         int h = 0;
-        int highestValue = 0;
         int boardScore = 0;
+        int snakeScore = 0;
+        int penalty = 0;
+        int[][] weights = {{32773, 16398, 8205, 4108},
+                            {264, 521, 1034, 2059},
+                            {135, 70, 37, 20},
+                            {1, 3, 6, 11}};
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
+                snakeScore += grid[j][i] * weights[j][i];
                 if (grid[i][j] == 0) {
                     h++;
                 } else {
-                    highestValue = (highestValue > grid[j][i]) ? highestValue : grid[j][i];
                     boardScore += grid[j][i];
                 }
             }
         }
-        if (highestValue == grid[0][0]) highestValue *= 2;
+
+        if (grid[0][0] == 0) penalty -= 4056;
+
+        return snakeScore + penalty;
+
         //return -1 * (h + highestValue + totalValue);
-        if (h == 1) return -999;
-        return findEmptyTiles() + calcMergableTiles() + highestValue;
+        //if (h == 1) return -999;
+        //return findEmptyTiles() + calcMergableTiles() + snakeScore + penalty;
 
         //return (h + (highestValue/100) + calcMergableTiles());
         /* why not random?

@@ -24,7 +24,7 @@ public class ExpectiMax {
     public Direction nextDirection() {
         Result result = runExpectiMax(
                 new Board(gameGridToArray(), null),
-                3,
+                1,
                 true
         );
         System.out.println(result.getDirection());
@@ -36,7 +36,7 @@ public class ExpectiMax {
             return new Result(node.getHeuristicValue(), node.getMyDirection());
 
         if (isMaximizingPlayer) {
-            int bestValue = 0;
+            int bestValue = Integer.MIN_VALUE;
             Direction direction = null;
             for (Board child : node.getChildren(isMaximizingPlayer)) {
                 int value = runExpectiMax(child, depth - 1, false).getResult();
@@ -53,7 +53,7 @@ public class ExpectiMax {
             return new Result(bestValue, direction);
 
         } else {
-            int bestValue = 0;
+            int bestValue = Integer.MIN_VALUE;
             for (Board child : node.getChildren(isMaximizingPlayer)) {
                 int value = runExpectiMax(child, depth - 1, true).getResult();
                 if (bestValue < value) {
