@@ -26,11 +26,15 @@ public class ExpectiMax {
     public Direction nextDirection() {
         Result result = runExpectiMax(
                 new Board(gameGridToArray(), null),
-                5,
+                7,
                 true
         );
-        System.out.println(result.getDirection());
+        //System.out.println(result.getDirection());
         return result.getDirection();
+    }
+
+    private void generateStatistics() {
+
     }
 
     private Result runExpectiMax(Board node, int depth, boolean isMaximizingPlayer) {

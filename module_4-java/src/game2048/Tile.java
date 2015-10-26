@@ -15,7 +15,7 @@ public class Tile extends Label {
     private Boolean merged;
 
     public static Tile newRandomTile() {
-        int value = new Random().nextDouble() < 0.9 ? 128 : 256;
+        int value = new Random().nextDouble() < 0.9 ? 2 : 4;
         return new Tile(value);
         //return new Tile(2048); // hack for winning the game
     }
