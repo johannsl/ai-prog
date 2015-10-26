@@ -135,9 +135,9 @@ public class Game2048 extends Application {
             if (value >= 8192) beaten8192++;
             if (value >= 16384) beaten16384++;
         }
-        System.out.println("Percent above 2048: " + (float) beaten2048 / runs);
-        System.out.println("Percent above 4096: " + (float) beaten4096 / runs);
-        System.out.println("Percent above 8192: " + (float) beaten8192 / runs);
+        System.out.println("Percent above 2048: " + 100 * ((float) beaten2048 / (float) runs));
+        System.out.println("Percent above 4096: " + 100 * ((float) beaten4096 / (float) runs));
+        System.out.println("Percent above 8192: " + 100 * ((float) beaten8192 / (float) runs));
 
     }
 
