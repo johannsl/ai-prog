@@ -218,8 +218,6 @@ public class Board {
         return generateChildren(max);
     }
 
-
-    // Heuristics
     // board is a solution if it contains a 2048 tile
     public boolean isSolution() {
         for (int i = 0; i < 4; i++) {
@@ -231,9 +229,6 @@ public class Board {
     }
 
     private int calculateHeuristicValue() {
-        //int h = 0;
-        //int boardScore = 0;
-        //int penalty = 0;
 
         int snakeScore = 0;
         int[][] weights = {{32773, 16398, 8205, 4108},
@@ -244,28 +239,11 @@ public class Board {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 snakeScore += grid[j][i] * weights[j][i];
-
-                //if (grid[i][j] == 0) {
-                //    h++;
-                //} else {
-                //    boardScore += grid[j][i];
-                //}
             }
         }
 
         return snakeScore;
 
-        //if (grid[0][0] == 0) penalty -= 4056;
-        //return -1 * (h + highestValue + totalValue);
-        //if (h == 1) return -999;
-        //return findEmptyTiles() + calcMergableTiles() + snakeScore + penalty;
-
-        //return (h + (highestValue/100) + calcMergableTiles());
-        /* why not random?
-        int min = 0;
-        int max = 100;
-        return new Random().nextInt((max - min) + 1) + min;
-        */
     }
 
     // counts empty tiles
@@ -302,8 +280,7 @@ public class Board {
     }
 
     public int getEmptyTiles() {
-        int a = findEmptyTiles();
-        return a; //findEmptyTiles();
+        return findEmptyTiles();
     }
 
     public int getMergableTiles() {
