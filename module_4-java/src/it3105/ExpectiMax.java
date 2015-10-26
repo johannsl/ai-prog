@@ -7,6 +7,7 @@ import game2048.Tile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by iver on 15/10/15.
@@ -25,7 +26,7 @@ public class ExpectiMax {
     public Direction nextDirection() {
         Result result = runExpectiMax(
                 new Board(gameGridToArray(), null),
-                3,
+                5,
                 true
         );
         System.out.println(result.getDirection());
@@ -47,8 +48,8 @@ public class ExpectiMax {
                     //nextBoard = child;
                 }
             }
-            System.out.println("MAX BESTVALUE: " + bestValue);
-            System.out.println("MAX DIRECTION: " + direction);
+            //System.out.println("MAX BESTVALUE: " + bestValue);
+            //System.out.println("MAX DIRECTION: " + direction);
             return new Result(bestValue, direction);
 
         } else {
@@ -58,8 +59,8 @@ public class ExpectiMax {
                 totalValue += runExpectiMax(child, depth - 1, true).getResult();
             }
             totalValue /= children.size();
-            System.out.println("CHANCE TOTALVALUE: " + totalValue);
-            System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
+            //System.out.println("CHANCE TOTALVALUE: " + totalValue);
+            //System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
             return new Result(totalValue, node.getMyDirection());
         }
     }

@@ -37,8 +37,8 @@ public class Board {
                 Board child = new Board(getNewGridFromDirection(direction), direction);
                 if (!this.equals(child)) children.add(child);
             }
-            System.out.println("##########################################");
-            printChildren(children);
+            //System.out.println("##########################################");
+            //printChildren(children);
             return children;
         }
         else {
@@ -46,8 +46,8 @@ public class Board {
                 Board child = new Board(getNewExpectGrid(tile), null);
                 children.add(child);
             }
-            System.out.println("##########################################");
-            printChildren(children);
+            //System.out.println("##########################################");
+            //printChildren(children);
             return children;
         }
     }

@@ -1,6 +1,7 @@
 package game2048;
 
 import it3105.ExpectiMax;
+import it3105.Result;
 import javafx.concurrent.Task;
 import it3105.Ivermax;
 import javafx.application.Application;
@@ -13,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.util.Random;
 
 /**
  * @author bruno.borges@oracle.com
@@ -111,7 +114,10 @@ public class Game2048 extends Application {
     }
 
     private void expectiMax() {
-        gameManager.move(expectiMax.nextDirection());
+        Direction direction = expectiMax.nextDirection();
+        if (direction == null)
+            gameManager.move(Direction.values()[new Random().nextInt(Direction.values().length - 1)]);
+        else gameManager.move(direction);
     }
 
     private void iverMax() {

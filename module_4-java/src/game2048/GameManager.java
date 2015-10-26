@@ -34,7 +34,7 @@ import javafx.util.Duration;
  */
 public class GameManager extends Group {
 
-    public static final int FINAL_VALUE_TO_WIN = 2048;
+    public static final int FINAL_VALUE_TO_WIN = Integer.MAX_VALUE;
     
     private static final Duration ANIMATION_EXISTING_TILE = Duration.millis(15); // 65
     private static final Duration ANIMATION_NEWLY_ADDED_TILE = Duration.millis(15); // 125
