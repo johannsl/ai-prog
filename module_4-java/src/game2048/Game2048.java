@@ -126,6 +126,7 @@ public class Game2048 extends Application {
         int beaten4096 = 0;
         int beaten8192 = 0;
         int beaten16384 = 0;
+        int beaten32768 = 0;
         System.out.println("#########################");
         for (Integer run : score.keySet()) {
             int value = score.get(run);
@@ -134,11 +135,13 @@ public class Game2048 extends Application {
             if (value >= 4096) beaten4096++;
             if (value >= 8192) beaten8192++;
             if (value >= 16384) beaten16384++;
+            if (value >= 32768) beaten32768++;
         }
         System.out.println("Percent above 2048: " + 100 * ((float) beaten2048 / (float) runs));
         System.out.println("Percent above 4096: " + 100 * ((float) beaten4096 / (float) runs));
         System.out.println("Percent above 8192: " + 100 * ((float) beaten8192 / (float) runs));
         System.out.println("Percent above 16384: " + 100 * ((float) beaten16384 / (float) runs));
+        System.out.println("Percent above 32768: " + 100 * ((float) beaten32768 / (float) runs));
 
     }
 
