@@ -23,12 +23,16 @@ public class ExpectiMax {
     }
 
     public Direction nextDirection() {
+        Board board = new Board(gameGridToArray(), null);
+        int emptyTiles = board.getEmptyTiles();
+        int depth = 7;
+        if (emptyTiles <= 4) depth = 9;
         Result result = runExpectiMax(
-                new Board(gameGridToArray(), null),
-                3,
+                board,
+                depth,
                 true
         );
-        System.out.println(result.getDirection());
+        //System.out.println(result.getDirection());
         return result.getDirection();
     }
 
@@ -47,8 +51,8 @@ public class ExpectiMax {
                     //nextBoard = child;
                 }
             }
-            System.out.println("MAX BESTVALUE: " + bestValue);
-            System.out.println("MAX DIRECTION: " + direction);
+            //System.out.println("MAX BESTVALUE: " + bestValue);
+            //System.out.println("MAX DIRECTION: " + direction);
             return new Result(bestValue, direction);
 
         } else {
@@ -58,8 +62,8 @@ public class ExpectiMax {
                 totalValue += runExpectiMax(child, depth - 1, true).getResult();
             }
             totalValue /= children.size();
-            System.out.println("CHANCE TOTALVALUE: " + totalValue);
-            System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
+            //System.out.println("CHANCE TOTALVALUE: " + totalValue);
+            //System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
             return new Result(totalValue, node.getMyDirection());
         }
     }

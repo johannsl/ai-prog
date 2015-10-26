@@ -37,8 +37,8 @@ public class Board {
                 Board child = new Board(getNewGridFromDirection(direction), direction);
                 if (!this.equals(child)) children.add(child);
             }
-            System.out.println("##########################################");
-            printChildren(children);
+            //System.out.println("##########################################");
+            //printChildren(children);
             return children;
         }
         else {
@@ -46,8 +46,8 @@ public class Board {
                 Board child = new Board(getNewExpectGrid(tile), null);
                 children.add(child);
             }
-            System.out.println("##########################################");
-            printChildren(children);
+            //System.out.println("##########################################");
+            //printChildren(children);
             return children;
         }
     }
@@ -231,10 +231,11 @@ public class Board {
     }
 
     private int calculateHeuristicValue() {
-        int h = 0;
-        int boardScore = 0;
+        //int h = 0;
+        //int boardScore = 0;
+        //int penalty = 0;
+
         int snakeScore = 0;
-        int penalty = 0;
         int[][] weights = {{32773, 16398, 8205, 4108},
                             {264, 521, 1034, 2059},
                             {135, 70, 37, 20},
@@ -243,18 +244,18 @@ public class Board {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 snakeScore += grid[j][i] * weights[j][i];
-                if (grid[i][j] == 0) {
-                    h++;
-                } else {
-                    boardScore += grid[j][i];
-                }
+
+                //if (grid[i][j] == 0) {
+                //    h++;
+                //} else {
+                //    boardScore += grid[j][i];
+                //}
             }
         }
 
-        if (grid[0][0] == 0) penalty -= 4056;
+        return snakeScore;
 
-        return snakeScore + penalty;
-
+        //if (grid[0][0] == 0) penalty -= 4056;
         //return -1 * (h + highestValue + totalValue);
         //if (h == 1) return -999;
         //return findEmptyTiles() + calcMergableTiles() + snakeScore + penalty;
