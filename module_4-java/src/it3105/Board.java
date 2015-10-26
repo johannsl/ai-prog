@@ -23,119 +23,33 @@ public class Board {
         }
     }
 
-    private List<Board> generateChildren() {
+
+    // Board generating
+    private List<Board> generateChildren(boolean max) {
         List<Board> children = new ArrayList<>();
 
-        // generate children of board based
-        // on the four legal directions we can move
-        // (skip boards that are equal to our state)
+        if (max) {
+            // generate children of board based
+            // on the four legal directions we can move
+            // (skip boards that are equal to our state)
 
-        for (Direction direction : directions) {
-            Board child = new Board(getNewGridFromDirection(direction), direction);
-            if (!this.equals(child)) children.add(child);
-        }
-        //printChildren(children);
-        return children;
-    }
-
-    public Direction getMyDirection() {
-        return myDirection;
-    }
-
-    public int[][] getGrid() {
-        return  grid;
-    }
-
-    private void printChildren(List<Board> children) {
-        for (Board child : children) {
-            System.out.println(child);
-        }
-    }
-
-    public List<Board> getChildren() {
-        return generateChildren();
-    }
-
-    // board is a solution if it contains a 2048 tile
-    public boolean isSolution() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (grid[i][j] == 2048) return true;
+            for (Direction direction : directions) {
+                Board child = new Board(getNewGridFromDirection(direction), direction);
+                if (!this.equals(child)) children.add(child);
             }
+            System.out.println("##########################################");
+            printChildren(children);
+            return children;
         }
-        return false;
-    }
-
-    private int calculateHeuristicValue() {
-        int h = 0;
-        int highestValue = 0;
-        int boardScore = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (grid[i][j] == 0) {
-                    h++;
-                } else {
-                    highestValue = (highestValue > grid[j][i]) ? highestValue : grid[j][i];
-                    boardScore += grid[j][i];
-                }
+        else {
+            for (int tile=0; tile<getEmptyTiles(); tile++) {
+                Board child = new Board(getNewExpectGrid(tile), null);
+                children.add(child);
             }
+            System.out.println("##########################################");
+            printChildren(children);
+            return children;
         }
-        if (highestValue == grid[0][0]) highestValue *= 2;
-        //return -1 * (h + highestValue + totalValue);
-        if (h == 1) return -999;
-        return findEmptyTiles() + calcMergableTiles() + highestValue;
-
-        //return (h + (highestValue/100) + calcMergableTiles());
-        /* why not random?
-        int min = 0;
-        int max = 100;
-        return new Random().nextInt((max - min) + 1) + min;
-        */
-    }
-
-    // counts empty tiles
-    private int findEmptyTiles() {
-        int empty = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (grid[i][j] == 0) empty++;
-            }
-        }
-        return empty;
-    }
-
-    private int calcMergableTiles() {
-        int mergable = 0;
-        int[][] copy = copyGrid(grid);
-
-        for (int i = 0; i < 4; i++) {
-            // y axis
-            int[] lineY = copy[i];
-            lineY = shiftEmptyCells(lineY);
-            // x axis
-            int[] lineX = new int[4];
-            for (int j = 0; j < 4; j++) {
-                lineX[j] = copy[j][i];
-            }
-            lineX = shiftEmptyCells(lineX);
-            for (int j = 0; j < 3; j++) {
-                if (lineY[j] != 0 && lineY[j] == lineY[j + 1]) mergable++;
-                if (lineX[j] != 0 && lineX[j] == lineX[j + 1]) mergable++;
-            }
-        }
-        return mergable;
-    }
-
-    public int getEmptyTiles() {
-        return findEmptyTiles();
-    }
-
-    public int getMergableTiles() {
-        return calcMergableTiles();
-    }
-
-    public int getHeuristicValue() {
-        return calculateHeuristicValue();
     }
 
     // breaks the grid into lines that should be read left to right
@@ -240,6 +154,24 @@ public class Board {
         return copy;
     }
 
+    private int[][] getNewExpectGrid(int fillTile) {
+        int tileCount = 0;
+        int[][] expectGrid = copyGrid(grid);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (grid[i][j] == 0) {
+                    if (tileCount == fillTile) {
+                        expectGrid[i][j] = 2;
+                        return expectGrid;
+                    }
+                    tileCount++;
+                }
+            }
+        }
+        System.out.println("ERROR!");
+        return null;
+    }
+
     @Override
     public String toString() {
         String result = "\n";
@@ -268,4 +200,117 @@ public class Board {
         }
         return true;
     }
+
+    private void printChildren(List<Board> children) {
+        for (Board child : children) {
+            System.out.println(child);
+        }
+    }
+
+    public Direction getMyDirection() {
+        return myDirection;
+    }
+
+    public int[][] getGrid() {
+        return grid;
+    }
+    public List<Board> getChildren(boolean max) {
+        return generateChildren(max);
+    }
+
+
+    // Heuristics
+    // board is a solution if it contains a 2048 tile
+    public boolean isSolution() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (grid[i][j] == 2048) return true;
+            }
+        }
+        return false;
+    }
+
+    private int calculateHeuristicValue() {
+        int h = 0;
+        int boardScore = 0;
+        int snakeScore = 0;
+        int penalty = 0;
+        int[][] weights = {{32773, 16398, 8205, 4108},
+                            {264, 521, 1034, 2059},
+                            {135, 70, 37, 20},
+                            {1, 3, 6, 11}};
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                snakeScore += grid[j][i] * weights[j][i];
+                if (grid[i][j] == 0) {
+                    h++;
+                } else {
+                    boardScore += grid[j][i];
+                }
+            }
+        }
+
+        if (grid[0][0] == 0) penalty -= 4056;
+
+        return snakeScore + penalty;
+
+        //return -1 * (h + highestValue + totalValue);
+        //if (h == 1) return -999;
+        //return findEmptyTiles() + calcMergableTiles() + snakeScore + penalty;
+
+        //return (h + (highestValue/100) + calcMergableTiles());
+        /* why not random?
+        int min = 0;
+        int max = 100;
+        return new Random().nextInt((max - min) + 1) + min;
+        */
+    }
+
+    // counts empty tiles
+    private int findEmptyTiles() {
+        int empty = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (grid[i][j] == 0) empty++;
+            }
+        }
+        return empty;
+    }
+
+    private int calcMergableTiles() {
+        int mergable = 0;
+        int[][] copy = copyGrid(grid);
+
+        for (int i = 0; i < 4; i++) {
+            // y axis
+            int[] lineY = copy[i];
+            lineY = shiftEmptyCells(lineY);
+            // x axis
+            int[] lineX = new int[4];
+            for (int j = 0; j < 4; j++) {
+                lineX[j] = copy[j][i];
+            }
+            lineX = shiftEmptyCells(lineX);
+            for (int j = 0; j < 3; j++) {
+                if (lineY[j] != 0 && lineY[j] == lineY[j + 1]) mergable++;
+                if (lineX[j] != 0 && lineX[j] == lineX[j + 1]) mergable++;
+            }
+        }
+        return mergable;
+    }
+
+    public int getEmptyTiles() {
+        int a = findEmptyTiles();
+        return a; //findEmptyTiles();
+    }
+
+    public int getMergableTiles() {
+        return calcMergableTiles();
+    }
+
+    public int getHeuristicValue() {
+        return calculateHeuristicValue();
+    }
+
 }

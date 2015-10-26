@@ -5,58 +5,62 @@ import game2048.GameManager;
 import game2048.Location;
 import game2048.Tile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by iver on 15/10/15.
  */
-public class Expectimax {
+public class ExpectiMax {
 
     private GameManager gameManager;
-    private Direction nextDirection;
-    private Board nextBoard;
+    //private Direction nextDirection;
+    //private Board nextBoard;
 
-    public Expectimax(GameManager gameManager) {
+    public ExpectiMax(GameManager gameManager) {
         this.gameManager = gameManager;
         // TODO: set grid size dynamically
     }
 
     public Direction nextDirection() {
-        Result result = miniMax(
+        Result result = runExpectiMax(
                 new Board(gameGridToArray(), null),
-                1,
+                3,
                 true
         );
-        System.out.println(nextBoard);
+        System.out.println(result.getDirection());
         return result.getDirection();
     }
 
-    private Result miniMax(Board node, int depth, boolean isMaximizingPlayer) {
-        if (depth == 0 || node.isSolution())
+    private Result runExpectiMax(Board node, int depth, boolean isMaximizingPlayer) {
+        if (depth == 0)
             return new Result(node.getHeuristicValue(), node.getMyDirection());
 
         if (isMaximizingPlayer) {
             int bestValue = Integer.MIN_VALUE;
             Direction direction = null;
-            for (Board child : node.getChildren()) {
-                int value = miniMax(child, depth - 1, false).getResult();
+            for (Board child : node.getChildren(isMaximizingPlayer)) {
+                int value = runExpectiMax(child, depth - 1, false).getResult();
                 if (bestValue < value) {
                     bestValue = value;
                     direction = child.getMyDirection();
-                    nextBoard = child;
+                    //nextBoard = child;
                 }
             }
-
+            System.out.println("MAX BESTVALUE: " + bestValue);
+            System.out.println("MAX DIRECTION: " + direction);
             return new Result(bestValue, direction);
+
         } else {
-            int bestValue = Integer.MAX_VALUE;
-            for (Board child : node.getChildren()) {
-                int value = miniMax(child, depth - 1, true).getResult();
-                if (bestValue > value) {
-                    bestValue = value;
-                }
+            int totalValue = 0;
+            List<Board> children = node.getChildren(isMaximizingPlayer);
+            for (Board child : children) {
+                totalValue += runExpectiMax(child, depth - 1, true).getResult();
             }
-            return new Result(bestValue, null);
+            totalValue /= children.size();
+            System.out.println("CHANCE TOTALVALUE: " + totalValue);
+            System.out.println("CHANCE DIRECTION: " + node.getMyDirection());
+            return new Result(totalValue, node.getMyDirection());
         }
     }
 
