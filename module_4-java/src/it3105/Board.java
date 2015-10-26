@@ -229,21 +229,18 @@ public class Board {
     }
 
     private int calculateHeuristicValue() {
-
         int snakeScore = 0;
-        int[][] weights = {{32773, 16398, 8205, 4108},
-                            {264, 521, 1034, 2059},
-                            {135, 70, 37, 20},
-                            {1, 3, 6, 11}};
+        int[][] weights = {{32768, 16384, 8192, 4096},
+                {256, 512, 1024, 2048},
+                {128, 64, 32, 16},
+                {1, 2, 4, 8}};
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 snakeScore += grid[j][i] * weights[j][i];
             }
         }
-
         return snakeScore;
-
     }
 
     // counts empty tiles
