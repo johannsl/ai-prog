@@ -3,7 +3,8 @@
 ```bash
 brew install python3
 sudo pip3 install --upgrade pip setuptools
-pip3 install theano matplotlib```
+pip3 install theano matplotlib
+```
 
 ## Locale
 
