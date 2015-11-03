@@ -227,8 +227,8 @@ public class Board {
     // This is our heuristics method, it calculates how good a grid is.
     private int calculateHeuristicValue() {
         int snakeScore = 0;
-        int[][] weights = {{32768, 16384, 8192, 4096},
-                {256, 512, 1024, 2048},
+        int[][] weights = {{65563, 32768, 16384, 8192},
+                {256, 512, 2048, 2048},
                 {128, 64, 32, 16},
                 {1, 2, 4, 8}};
 

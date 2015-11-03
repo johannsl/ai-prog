@@ -26,6 +26,7 @@ public class ExpectiMax {
         int emptyTiles = board.getEmptyTiles();
         int depth = 7;
         if (emptyTiles <= 4) depth = 9;
+        else if (emptyTiles <= 2) depth = 11;
         Result result = runExpectiMax(
                 board,
                 depth,
