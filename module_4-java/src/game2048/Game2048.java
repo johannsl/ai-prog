@@ -1,6 +1,7 @@
 package game2048;
 
 import it3105.ExpectiMax;
+import it3105.HistoryElement;
 import it3105.Result;
 import javafx.concurrent.Task;
 import javafx.application.Application;
@@ -14,6 +15,9 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -30,6 +34,7 @@ public class Game2048 extends Application {
     private ExpectiMax expectiMax;
     private int runs = 0;
     private Map<Integer, Integer> score = new HashMap<>();
+    private boolean isRunningAI = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -110,6 +115,7 @@ public class Game2048 extends Application {
                 expectiMax();
             }
             if(keyCode.equals(KeyCode.M)){
+                isRunningAI = !isRunningAI;
                 runAI();
             }
         });
@@ -121,6 +127,16 @@ public class Game2048 extends Application {
         int highestTile = gameManager.getHighestTile();
         gameManager.resetHighestTile();
         score.put(runs, highestTile);
+        int beaten2 = 0;
+        int beaten4 = 0;
+        int beaten8 = 0;
+        int beaten16 = 0;
+        int beaten32 = 0;
+        int beaten64 = 0;
+        int beaten128 = 0;
+        int beaten256 = 0;
+        int beaten512 = 0;
+        int beaten1024 = 0;
         int beaten2048 = 0;
         int beaten4096 = 0;
         int beaten8192 = 0;
@@ -130,25 +146,78 @@ public class Game2048 extends Application {
         for (Integer run : score.keySet()) {
             int value = score.get(run);
             System.out.println("# " + run + ", " + score.get(run));
+            if (value >= 2) beaten2++;
+            if (value >= 4) beaten4++;
+            if (value >= 8) beaten8++;
+            if (value >= 16) beaten16++;
+            if (value >= 32) beaten32++;
+            if (value >= 64) beaten64++;
+            if (value >= 128) beaten128++;
+            if (value >= 256) beaten256++;
+            if (value >= 512) beaten512++;
+            if (value >= 1024) beaten1024++;
             if (value >= 2048) beaten2048++;
             if (value >= 4096) beaten4096++;
             if (value >= 8192) beaten8192++;
             if (value >= 16384) beaten16384++;
             if (value >= 32768) beaten32768++;
         }
+        System.out.println("Percent above 2: " + 100 * ((float) beaten2 / (float) runs));
+        System.out.println("Percent above 4: " + 100 * ((float) beaten4 / (float) runs));
+        System.out.println("Percent above 8: " + 100 * ((float) beaten8 / (float) runs));
+        System.out.println("Percent above 16: " + 100 * ((float) beaten16 / (float) runs));
+        System.out.println("Percent above 32: " + 100 * ((float) beaten32 / (float) runs));
+        System.out.println("Percent above 64: " + 100 * ((float) beaten64 / (float) runs));
+        System.out.println("Percent above 128: " + 100 * ((float) beaten128 / (float) runs));
+        System.out.println("Percent above 256: " + 100 * ((float) beaten256 / (float) runs));
+        System.out.println("Percent above 512: " + 100 * ((float) beaten512 / (float) runs));
+        System.out.println("Percent above 1024: " + 100 * ((float) beaten1024 / (float) runs));
         System.out.println("Percent above 2048: " + 100 * ((float) beaten2048 / (float) runs));
         System.out.println("Percent above 4096: " + 100 * ((float) beaten4096 / (float) runs));
         System.out.println("Percent above 8192: " + 100 * ((float) beaten8192 / (float) runs));
         System.out.println("Percent above 16384: " + 100 * ((float) beaten16384 / (float) runs));
         System.out.println("Percent above 32768: " + 100 * ((float) beaten32768 / (float) runs));
+    }
+
+    private void printHistory() {
+
+        for (String element : expectiMax.getHistory()) {
+            System.out.println(element);
+        }
+    }
+
+    private void writeHistoryToFile(String filename) {
+        try {
+            Writer writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(filename), "utf-8"));
+
+            for (String element : expectiMax.getHistory()) {
+                writer.write(element);
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    // This method runs the expectimax algorithm from the expectimax class.
+    private void generateHistory() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        writeHistoryToFile("../module_6/training_data/" + timeStamp + "-" + runs + ".dat");
+    }
+
+        // This method runs the expectimax algorithm from the expectimax class.
     private void expectiMax() {
         if (gameManager.isGameOver()) {
             generateStatistics();
+            //printHistory();
+            generateHistory();
             gameManager.tryAgain();
+            runAI();
         }
         Direction direction = expectiMax.nextDirection();
         if (direction == null)
@@ -168,9 +237,10 @@ public class Game2048 extends Application {
         };
         task.setOnSucceeded(event -> {
             expectiMax();
+            generateHistory();
             runAI();
         });
-        new Thread(task).start();
+        if (!gameManager.isGameOver() && isRunningAI) new Thread(task).start();
     }
 
 }

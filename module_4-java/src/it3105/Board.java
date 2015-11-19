@@ -4,6 +4,7 @@ import game2048.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by iver on 20/10/15.
@@ -237,6 +238,13 @@ public class Board {
                 snakeScore += grid[j][i] * weights[j][i];
             }
         }
+
+        /*
+        // why not random? http://pastebin.com/NdNARNxY
+        int min = 0;
+        int max = 100;
+        return new Random().nextInt((max - min) + 1) + min;
+        */
         return snakeScore;
     }
 

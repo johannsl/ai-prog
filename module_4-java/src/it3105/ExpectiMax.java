@@ -5,18 +5,20 @@ import game2048.GameManager;
 import game2048.Location;
 import game2048.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by iver on 15/10/15.
  */
 public class ExpectiMax {
     private GameManager gameManager;
+    private History history;
 
     public ExpectiMax(GameManager gameManager) {
         this.gameManager = gameManager;
+        this.history = new History();
         // TODO: set grid size dynamically
     }
 
@@ -26,13 +28,21 @@ public class ExpectiMax {
         int emptyTiles = board.getEmptyTiles();
         int depth = 7;
         if (emptyTiles <= 4) depth = 9;
-        else if (emptyTiles <= 2) depth = 11;
+        else if (emptyTiles <= 2) depth = 9;
         Result result = runExpectiMax(
                 board,
                 depth,
                 true
         );
+        history.add(new HistoryElement(
+                gameGridToArray(),
+                result.getDirection()
+        ));
         return result.getDirection();
+    }
+
+    public List<String> getHistory() {
+        return this.history.getHistoryAsString();
     }
 
     // This is the expectimax method which calculates which following move is the most promising.
