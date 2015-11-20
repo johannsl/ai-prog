@@ -203,4 +203,3 @@ def minor_demo(ann,ignore=0):
     print('Testing set:\n ',test_it(ann,test_cases,4))
     print('Demo 100 set: \n ',test_it(ann,demo100,8))
 
-minor_demo
