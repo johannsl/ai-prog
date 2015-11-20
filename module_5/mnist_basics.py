@@ -22,7 +22,7 @@ def kd_reduce(func,seq):
 
 # Set this to the complete path to your mnist files.
 ## __mnist_path__ = "path/to/all/your/mnist/files"
-__mnist_path__ = path + "/mnist_data/"
+__mnist_path__ = path + "/mnist_data/ubytefiles/"
 print(__mnist_path__)
 
 # The load_mnist function is the main interface between the MNIST files and your machine-learning code.  It fetches
@@ -203,4 +203,4 @@ def minor_demo(ann,ignore=0):
     print('Testing set:\n ',test_it(ann,test_cases,4))
     print('Demo 100 set: \n ',test_it(ann,demo100,8))
 
-
+minor_demo

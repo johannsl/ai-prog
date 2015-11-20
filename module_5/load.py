@@ -1,6 +1,5 @@
 import numpy as np
 import os
-import os
 path = os.path.dirname(os.path.abspath(__file__))
 
 datasets_dir = path + "/mnist_data/"
