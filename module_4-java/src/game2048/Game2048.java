@@ -214,7 +214,6 @@ public class Game2048 extends Application {
     private void expectiMax() {
         if (gameManager.isGameOver()) {
             generateStatistics();
-            //printHistory();
             generateHistory();
             gameManager.tryAgain();
             runAI();
@@ -237,7 +236,6 @@ public class Game2048 extends Application {
         };
         task.setOnSucceeded(event -> {
             expectiMax();
-            generateHistory();
             runAI();
         });
         if (!gameManager.isGameOver() && isRunningAI) new Thread(task).start();

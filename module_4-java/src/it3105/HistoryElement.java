@@ -38,15 +38,15 @@ public class HistoryElement {
         if (this.direction == null) return "NONE";
         switch (this.direction) {
             case LEFT:
-                return "0";
+                return "0\n";
             case UP:
-                return "1";
+                return "1\n";
             case RIGHT:
-                return "2";
+                return "2\n";
             case DOWN:
-                return "3";
+                return "3\n";
             default:
-                return "0";
+                return "0\n";
 
         }
     }
