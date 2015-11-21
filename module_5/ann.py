@@ -68,8 +68,6 @@ weight_hidden = init_weights((784, 625))
 weight_hidden2 = init_weights((625, 625))
 weight_out = init_weights((625, 10))
 
-print(weight_hidden)
-
 noise_h, noise_h2, noise_py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0.2, 0.5)
 h, h2, py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0., 0.)
 y_x = tensor.argmax(py_x, axis=1)
