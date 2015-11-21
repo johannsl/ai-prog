@@ -27,9 +27,8 @@ public class HistoryElement {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 result += this.board[i][j];
-                if (j != 3) result += " ";
+                result += " ";
             }
-            result += "\n";
         }
         return result;
     }
