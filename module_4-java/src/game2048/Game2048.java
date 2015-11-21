@@ -237,7 +237,7 @@ public class Game2048 extends Application {
         };
         task.setOnSucceeded(event -> {
             expectiMax();
-            //generateHistory();
+            generateHistory();
             runAI();
         });
         if (!gameManager.isGameOver() && isRunningAI) new Thread(task).start();
