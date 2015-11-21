@@ -9,6 +9,7 @@ NUMBER_OF_RUNS = 100
 LEARNING_RATE = 0.001
 RHO = 0.9
 EPSILON = 1e-6
+DATA_STEP = 100
 
 # Stream random number generator
 srng = MRG_RandomStreams()
@@ -80,11 +81,12 @@ updates = RMSprop(cost, params)
 train = theano.function(inputs=[x, y], outputs=cost, updates=updates, allow_input_downcast=True)
 predict = theano.function(inputs=[x], outputs=y_x, allow_input_downcast=True)
 
+print(len(training_x))
 # Run training and testing
 def run():
     for i in range(NUMBER_OF_RUNS):
-        for start, end in zip(range(0, len(training_x), 128),
-                             range(128, len(training_x), 128)):
+        for start, end in zip(range(0, len(training_x), DATA_STEP),
+                             range(DATA_STEP, len(training_x), DATA_STEP)):
             cost = train(training_x[start:end], training_y[start:end])
         print(numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x)))
 
