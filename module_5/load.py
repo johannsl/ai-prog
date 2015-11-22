@@ -1,52 +1,53 @@
+# Written based on Newmu's Theano-Tutorial
+# (https://github.com/Newmu/Theano-Tutorials)
+
 import numpy
 import os
 path = os.path.dirname(os.path.abspath(__file__))
 datasets_dir = path + "/mnist_data/"
 
-def one_hot(x,n):
+# Creates 'one hot' arrays
+def one_hot(x, n):
     if type(x) == list:
     	x = numpy.array(x)
     x = x.flatten()
-    o_h = numpy.zeros((len(x),n))
-    o_h[numpy.arange(len(x)),x] = 1
-    return o_h
+    one_hot = numpy.zeros((len(x),n))
+    one_hot[numpy.arange(len(x)),x] = 1
+    return one_hot
 
-def mnist(ntrain=60000,ntest=10000,onehot=True):
+# Loads the mnist database
+def mnist(ntrain=60000, ntest=10000, onehot=True):
     data_dir = datasets_dir
-    fd = open(os.path.join(data_dir,'train-images.idx3-ubyte'))
-    loaded = numpy.fromfile(file=fd,dtype=numpy.uint8)
-    trX = loaded[16:].reshape((60000,28*28)).astype(float)
+    fd = open(os.path.join(data_dir, 'train-images.idx3-ubyte'))
+    loaded = numpy.fromfile(file=fd, dtype=numpy.uint8)
+    training_x = loaded[16:].reshape((60000,28*28)).astype(float)
 
-    fd = open(os.path.join(data_dir,'train-labels.idx1-ubyte'))
-    loaded = numpy.fromfile(file=fd,dtype=numpy.uint8)
-    trY = loaded[8:].reshape((60000))
+    fd = open(os.path.join(data_dir, 'train-labels.idx1-ubyte'))
+    loaded = numpy.fromfile(file=fd, dtype=numpy.uint8)
+    training_y = loaded[8:].reshape((60000))
 
-    fd = open(os.path.join(data_dir,'t10k-images.idx3-ubyte'))
-    loaded = numpy.fromfile(file=fd,dtype=numpy.uint8)
-    teX = loaded[16:].reshape((10000,28*28)).astype(float)
+    fd = open(os.path.join(data_dir, 't10k-images.idx3-ubyte'))
+    loaded = numpy.fromfile(file=fd, dtype=numpy.uint8)
+    test_x = loaded[16:].reshape((10000,28*28)).astype(float)
 
-    fd = open(os.path.join(data_dir,'t10k-labels.idx1-ubyte'))
-    loaded = numpy.fromfile(file=fd,dtype=numpy.uint8)
-    teY = loaded[8:].reshape((10000))
+    fd = open(os.path.join(data_dir, 't10k-labels.idx1-ubyte'))
+    loaded = numpy.fromfile(file=fd, dtype=numpy.uint8)
+    test_y = loaded[8:].reshape((10000))
 
-    trX = trX/255.
-    teX = teX/255.
+    training_x = training_x/255.
+    test_x = test_x/255.
     
-    print("trX: ", trX,"len: ", len(trX))
-    print("trY: ", trY,"len: ", len(trY))
-    trX = trX[:ntrain]
-    trY = trY[:ntrain]
-    print("trX: ", trX,"len: ", len(trX))
-    print("trY: ", trY,"len: ", len(trY))
+    training_x = training_x[:ntrain]
+    training_y = training_y[:ntrain]
 
-    teX = teX[:ntest]
-    teY = teY[:ntest]
+    test_x = test_x[:ntest]
+    test_y = test_y[:ntest]
 
     if onehot:
-    	trY = one_hot(trY, 10)
-    	teY = one_hot(teY, 10)
+    	training_y = one_hot(training_y, 10)
+    	test_y = one_hot(test_y, 10)
     else:
-    	trY = numpy.asarray(trY)
-    	teY = numpy.asarray(teY)
+    	training_y = numpy.asarray(training_y)
+    	test_y = numpy.asarray(test_y)
+    return training_x, test_x, training_y, test_y
 
-    return trX,teX,trY,teY
