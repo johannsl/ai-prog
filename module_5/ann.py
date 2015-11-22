@@ -8,13 +8,13 @@ from theano import tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
-NUMBER_OF_RUNS = 100
+NUMBER_OF_RUNS = 5
 INPUT_SIZE = 28*28
 OUTPUT_SIZE = 10
 LEARNING_RATE = 0.001
 RHO = 0.9
 EPSILON = 1e-6
-DATA_STEP = 100
+BATCH_SIZE = 100
 
 # Stream random number generator
 srng = MRG_RandomStreams()
@@ -98,7 +98,7 @@ class ann():
         return model_layer_values
     
     # Load, init, and run function
-    def run(self):
+    def main(self):
         
         # Load training and test data
         training_x, test_x, training_y, test_y = load.mnist(onehot=True)
@@ -138,13 +138,22 @@ class ann():
                         inputs=[x], 
                         outputs=y_x, 
                         allow_input_downcast=True)
-
-        # Running training and tests
+        
+        # Run mnist training and tests
+        print("TRAINING...")
         for i in range(NUMBER_OF_RUNS):
-            for start, end in zip(range(0, len(training_x), DATA_STEP),
-                                 range(DATA_STEP, len(training_x), DATA_STEP)):
+            print("Iteration ", i+1, "/", NUMBER_OF_RUNS) 
+            for start, end in zip(range(0, len(training_x), BATCH_SIZE),
+                                 range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
                 cost = train(training_x[start:end], training_y[start:end])
-            print("Iteration ", i, "/", NUMBER_OF_RUNS, ":", 
-                numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x))*100,
+        print("\nTESTING ON: MNIST TRAINING SET...")
+        print(numpy.mean(numpy.argmax(training_y, axis=1) == 
+                predict(training_x))*100, "percent correct")
+        print("\nTESTING ON: MNIST TEST SET...")
+        print(numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x))*100,
                 "percent correct")
- 
+
+    # Run a blind test
+    def blind_test(self, feature_sets):
+        print(feature_sets)
+
