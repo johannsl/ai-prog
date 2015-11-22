@@ -64,13 +64,14 @@ training_x, test_x, training_y, test_y = load.game2048()
 x = tensor.fmatrix()
 y = tensor.fmatrix()
 
-weight_hidden = init_weights((784, 625))
-weight_hidden2 = init_weights((625, 625))
-weight_out = init_weights((625, 10))
+tada = len(training_x)
+
+weight_hidden = init_weights((16, tada))
+weight_hidden2 = init_weights((tada, tada))
+weight_out = init_weights((tada, 4))
 
 noise_h, noise_h2, noise_py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0.2, 0.5)
 h, h2, py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0., 0.)
-y_x = tensor.argmax(py_x, axis=1)
 
 cost = tensor.mean(tensor.nnet.categorical_crossentropy(noise_py_x, y))
 params = [weight_hidden, weight_hidden2, weight_out]
@@ -78,15 +79,24 @@ updates = RMSprop(cost, params)
 
 # This is the core of the ann functionality
 train = theano.function(inputs=[x, y], outputs=cost, updates=updates, allow_input_downcast=True)
-predict = theano.function(inputs=[x], outputs=y_x, allow_input_downcast=True)
+predict = theano.function(inputs=[x], outputs=py_x, allow_input_downcast=True)
 
 # Run training and testing
 def run():
-    for i in range(NUMBER_OF_RUNS):
-        #for start, end in zip(range(0, len(training_x), 128),
-        #                     range(128, len(training_x), 128)):
-        #    cost = train(training_x[start:end], training_y[start:end])
+    numpy.set_printoptions(threshold=numpy.nan)
+    #for i in range(NUMBER_OF_RUNS):
+    n = 5
+    for i in range(n):
+        print("Training iteration", i+1, "of", n)
+        for start, end in zip(range(0, len(training_x), 128),
+                             range(128, len(training_y), 128)):
+            cost = train(training_x[start:end], training_y[start:end])
         #print(numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x)))
-        pass
-    print(predict(test_x))
+        #print(test_y[0], predict(test_x)[0])
+        #print(len(predict(test_x)))
 
+def predict_move(board):
+    #print("board", board)
+    result = predict(board)
+    #print("result", result)
+    return result[0]
