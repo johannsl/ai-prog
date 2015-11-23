@@ -9,6 +9,7 @@ NUMBER_OF_RUNS = 100
 LEARNING_RATE = 0.001
 RHO = 0.9
 EPSILON = 1e-6
+WEIGHTS = 1200
 
 # Stream random number generator
 srng = MRG_RandomStreams()
@@ -64,9 +65,9 @@ training_x, test_x, training_y, test_y = load.game2048()
 x = tensor.fmatrix()
 y = tensor.fmatrix()
 
-weight_hidden = init_weights((16, 1200))
-weight_hidden2 = init_weights((1200, 1200))
-weight_out = init_weights((1200, 4))
+weight_hidden = init_weights((16, WEIGHTS))
+weight_hidden2 = init_weights((WEIGHTS, WEIGHTS))
+weight_out = init_weights((WEIGHTS, 4))
 
 noise_h, noise_h2, noise_py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0.2, 0.5)
 h, h2, py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0., 0.)
