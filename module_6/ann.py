@@ -64,11 +64,11 @@ training_x, test_x, training_y, test_y = load.game2048()
 x = tensor.fmatrix()
 y = tensor.fmatrix()
 
-tada = len(training_x)
+#tada = len(training_x)
 
-weight_hidden = init_weights((16, tada))
-weight_hidden2 = init_weights((tada, tada))
-weight_out = init_weights((tada, 4))
+weight_hidden = init_weights((16, 600))
+weight_hidden2 = init_weights((600, 600))
+weight_out = init_weights((600, 4))
 
 noise_h, noise_h2, noise_py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0.2, 0.5)
 h, h2, py_x = model(x, weight_hidden, weight_hidden2, weight_out, 0., 0.)
@@ -85,7 +85,7 @@ predict = theano.function(inputs=[x], outputs=py_x, allow_input_downcast=True)
 def run():
     numpy.set_printoptions(threshold=numpy.nan)
     #for i in range(NUMBER_OF_RUNS):
-    n = 5
+    n = 100
     for i in range(n):
         print("Training iteration", i+1, "of", n)
         for start, end in zip(range(0, len(training_x), 128),

@@ -8,7 +8,7 @@ from theano import tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
-NUMBER_OF_RUNS = 5
+NUMBER_OF_RUNS = 10
 INPUT_SIZE = 28*28
 OUTPUT_SIZE = 10
 LEARNING_RATE = 0.001
@@ -72,7 +72,8 @@ class ann():
             x /= retain_prob
         return x
     
-    # The network models
+    # The network models:
+    # simple network with sigmoid activation;
     def model(self, x, weights, p_drop_input, p_drop_hidden):
         model_layer_values = []
         temp_layer_value = x
@@ -83,7 +84,8 @@ class ann():
         layer_value = self.softmax(tensor.dot(temp_layer_value, weights[-1]))
         model_layer_values.append(layer_value)
         return model_layer_values
-
+    
+    # advanced network with rec activation and noise;
     def model2(self, x, weights, p_drop_input, p_drop_hidden):
         model_layer_values = []
         x = self.dropout(x, p_drop_input)
@@ -126,34 +128,44 @@ class ann():
         cost = tensor.mean(tensor.nnet.categorical_crossentropy(
                                                 model_layer_noise[-1], y))
         params = weights
-        updates = self.RMSprop(cost, params)
-        
+        updates = self.RMSprop(cost, params) # SGD / RMSprop
+
         # Initialize core functionality
         train = theano.function(
                         inputs=[x, y],
                         outputs=cost, 
                         updates=updates,
                         allow_input_downcast=True)
-        predict = theano.function(
+        self.predict = theano.function(
                         inputs=[x], 
                         outputs=y_x, 
                         allow_input_downcast=True)
         
-        # Run mnist training and tests
-        print("TRAINING...")
+        # Training on mnist
+        print("\nTRAINING...")
         for i in range(NUMBER_OF_RUNS):
-            print("Iteration ", i+1, "/", NUMBER_OF_RUNS) 
             for start, end in zip(range(0, len(training_x), BATCH_SIZE),
-                                 range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
+                            range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
                 cost = train(training_x[start:end], training_y[start:end])
+            print("Iteration ", i+1, "/", NUMBER_OF_RUNS, "(", 
+                        numpy.mean(numpy.argmax(test_y, axis=1) 
+                        == self.predict(test_x))*100, ")")
+        
+        # Testing
         print("\nTESTING ON: MNIST TRAINING SET...")
         print(numpy.mean(numpy.argmax(training_y, axis=1) == 
-                predict(training_x))*100, "percent correct")
+                self.predict(training_x))*100, "percent correct")
         print("\nTESTING ON: MNIST TEST SET...")
-        print(numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x))*100,
-                "percent correct")
+        print(numpy.mean(numpy.argmax(test_y, axis=1) 
+                == self.predict(test_x))*100, "percent correct")
 
     # Run a blind test
     def blind_test(self, feature_sets):
-        print(feature_sets)
+        print("\nBLIND TESTING...")
+        feature_sets = numpy.asarray(feature_sets)
+        feature_sets = feature_sets/255.
+        result = self.predict(feature_sets[0])
+        result = result.tolist()
+        print("Result: ", result)
+        return result
 
