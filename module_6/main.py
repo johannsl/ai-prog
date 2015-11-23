@@ -65,6 +65,11 @@ def printboard():
             print(board[j][i], end=" ")
         print("\n")
 
+def print_game(game):
+    margins = {'left': 4, 'top': 4, 'bottom': 4}
+    print("\n")
+    print(game.__str__(margins=margins)) 
+
 def play_ai(game):
     """
     main game loop. returns the final score.
@@ -75,6 +80,7 @@ def play_ai(game):
     while True:
         if not game.board.canMove():
             break
+        #print_game(game)
         board = get_board(game)
         ai_moves = get_ai_moves(game)
         while True:
@@ -130,11 +136,11 @@ def benchmark_silent(n):
     results = []
     for i in range(n):
         results.append(benchmark(50, silent=True).pvalue)
-        print("result so far:", results)
-        print("avg p-value so far:", float(sum(results)/len(results)))
-    print("results:", results)
-    print("avg p-value:", float(sum(results)/len(results)))
+        #print("result so far:", results)
+        #print("avg p-value so far:", float(sum(results)/len(results)))
+    #print("results:", results)
+    #print("avg p-value:", float(sum(results)/len(results)))
 
 if __name__ == "__main__":
-    benchmark_silent(50)
-    #benchmark(50)
+    #benchmark_silent(50)
+    benchmark(50)
