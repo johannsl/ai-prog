@@ -111,8 +111,8 @@ def print_results(results):
     print("Avg:", float(sum(results)/len(results)))
     
 def benchmark(n, silent=False):
-    ai_result = run_ai(n, silent=True)
-    random_result = run_random(n, silent=True)
+    ai_result = run_ai(n, silent)
+    random_result = run_random(n, silent)
     if not silent:
         ai_avg = float(sum(ai_result)/len(ai_result))
         random_avg = float(sum(random_result)/len(random_result))
@@ -121,11 +121,12 @@ def benchmark(n, silent=False):
         print("Random player results")
         print_results(random_result)
         print("Difference:", ai_avg - random_avg)
-    print("Demo points:", welch(random_result, ai_result))
+    print(welch(random_result, ai_result))
 
 def benchmark_silent(n):
     for i in range(n):
         benchmark(50, silent=True)
 
 if __name__ == "__main__":
-    benchmark_silent(20)
+    #benchmark_silent(20)
+    benchmark(50)
