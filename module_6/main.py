@@ -136,5 +136,5 @@ def benchmark_silent(n):
     print("avg p-value:", float(sum(results)/len(results)))
 
 if __name__ == "__main__":
-    benchmark_silent(20)
+    benchmark_silent(50)
     #benchmark(50)
