@@ -4,12 +4,13 @@ import random
 import os
 import ann as annie
 import numpy
-from load import normalize
+from load import normalize, append_snake
 from ai2048demo import welch
+import scipy
 
 moves = [Board.LEFT, Board.UP, Board.RIGHT, Board.DOWN]
 
-ann = annie.ann([1200])
+ann = annie.ann([1000])
 
 def setup_ai(silent=False):
     ann.main(silent)
@@ -25,6 +26,7 @@ def get_ai_moves(game):
     board = get_board_weird(game)
     board = numpy.asarray(board)
     board = normalize(board)
+    board = append_snake(board)
     return ann.predict_move(board)
 
 def get_random_move():
@@ -122,11 +124,17 @@ def benchmark(n, silent=False):
         print_results(random_result)
         print("Difference:", ai_avg - random_avg)
     print(welch(random_result, ai_result))
+    return scipy.stats.ttest_ind(random_result, ai_result)
 
 def benchmark_silent(n):
+    results = []
     for i in range(n):
-        benchmark(50, silent=True)
+        results.append(benchmark(50, silent=True).pvalue)
+        print("result so far:", results)
+        print("avg p-value so far:", float(sum(results)/len(results)))
+    print("results:", results)
+    print("avg p-value:", float(sum(results)/len(results)))
 
 if __name__ == "__main__":
-    #benchmark_silent(20)
-    benchmark(50)
+    benchmark_silent(20)
+    #benchmark(50)

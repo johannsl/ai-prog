@@ -18,7 +18,19 @@ def normalize(data):
             if data[i][j] > 0: data[i][j] = log(data[i][j])
     return data
 
-def game2048():
+def append_snake(data):
+    snake = [65563, 32768, 16384, 8192, 256, 512, 2048, 2048, 128, 64, 32, 16, 1, 2, 4, 8]
+    a = numpy.zeros((len(data), 32))
+    for i in range(len(data)):
+        a[i][0:16] = data[i]
+        a[i][16:32] = [snake[x]*data[i][x] for x in range(len(snake))]
+    #data = numpy.array(data)
+    #snake = numpy.array(snake)
+    #data = numpy.hstack((data, numpy.atleast_2d(snake).T))
+    return a
+
+
+def game2048(with_snake=False):
     files = os.listdir(datasets_dir)
     datas = []
     labels = []
@@ -27,7 +39,6 @@ def game2048():
             os.path.join(datasets_dir, f),
             dtype=int,
             delimiter=' ',
-            #unpack=True,
             usecols=range(16))
         data2 = numpy.loadtxt(
             os.path.join(datasets_dir, f),
@@ -35,22 +46,18 @@ def game2048():
             delimiter=' ',
             usecols=range(17))
         raw_labels = data2[:,16]
-        #print("Shape of datas:", numpy.shape(data))
-        #print("Shape of labels:", numpy.shape(raw_labels))
-        #print("Raw labels:", raw_labels)
         labels2 = [[0 for y in range(4)] for x in range(len(raw_labels))]
         for i in range(len(raw_labels)):
            labels2[i][int(raw_labels[i])] = 1.0
         labbel = numpy.asarray(labels2)
-        #print("labbel", labbel)
-        #labbel = one_hot(labbel, 16)
-        #print("HOT labbel", labbel)
         data = normalize(data)
+
+        if with_snake:
+            data = append_snake(data)
+
         datas.append(data)
         labels.append(labbel)
     training_x = numpy.concatenate(datas)#datas[1]# + datas[1]
     training_y = numpy.concatenate(labels)#labels[1]# + labels[1]
-    #print(training_x)
-    #print(training_y)
     return training_x, training_x, training_y, training_y
 
