@@ -8,7 +8,7 @@ from theano import tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
-NUMBER_OF_RUNS = 1
+NUMBER_OF_RUNS = 10
 INPUT_SIZE = 16
 OUTPUT_SIZE = 4
 LEARNING_RATE = 0.001
@@ -148,9 +148,7 @@ class ann():
             for start, end in zip(range(0, len(training_x), BATCH_SIZE),
                             range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
                 cost = train(training_x[start:end], training_y[start:end])
-            if not silent: print("Iteration ", i+1, "/", NUMBER_OF_RUNS, "(", 
-                        numpy.mean(numpy.argmax(test_y, axis=1) 
-                        == self.predict(test_x))*100, ")")
+            if not silent: print("Iteration ", i+1, "/", NUMBER_OF_RUNS)
         
 
     # Run a blind test
