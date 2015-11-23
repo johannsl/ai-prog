@@ -9,7 +9,7 @@ from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
 NUMBER_OF_RUNS = 10
-INPUT_SIZE = 32
+INPUT_SIZE = 16
 OUTPUT_SIZE = 4
 LEARNING_RATE = 0.001
 RHO = 0.9
@@ -103,7 +103,7 @@ class ann():
     def main(self, silent=False):
         
         # Load training and test data
-        training_x, test_x, training_y, test_y = load.game2048(with_snake=True)
+        training_x, test_x, training_y, test_y = load.game2048(with_snake=False)
         
         # Symbolic variables
         x = tensor.fmatrix()

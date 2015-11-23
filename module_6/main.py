@@ -26,7 +26,7 @@ def get_ai_moves(game):
     board = get_board_weird(game)
     board = numpy.asarray(board)
     board = normalize(board)
-    board = append_snake(board)
+    #board = append_snake(board)
     return ann.predict_move(board)
 
 def get_random_move():
