@@ -148,9 +148,7 @@ class ann():
             for start, end in zip(range(0, len(training_x), BATCH_SIZE),
                             range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
                 cost = train(training_x[start:end], training_y[start:end])
-            if not silent: print("Iteration ", i+1, "/", NUMBER_OF_RUNS, "(", 
-                        numpy.mean(numpy.argmax(test_y, axis=1) 
-                        == self.predict(test_x))*100, ")")
+            if not silent: print("Iteration ", i+1, "/", NUMBER_OF_RUNS)
         
 
     # Run a blind test
