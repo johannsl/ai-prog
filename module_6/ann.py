@@ -8,9 +8,9 @@ from theano import tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
-NUMBER_OF_RUNS = 5
-INPUT_SIZE = 28*28
-OUTPUT_SIZE = 10
+NUMBER_OF_RUNS = 1
+INPUT_SIZE = 16
+OUTPUT_SIZE = 4
 LEARNING_RATE = 0.001
 RHO = 0.9
 EPSILON = 1e-6
@@ -72,7 +72,8 @@ class ann():
             x /= retain_prob
         return x
     
-    # The network models
+    # The network models:
+    # simple network with sigmoid activation;
     def model(self, x, weights, p_drop_input, p_drop_hidden):
         model_layer_values = []
         temp_layer_value = x
@@ -83,7 +84,8 @@ class ann():
         layer_value = self.softmax(tensor.dot(temp_layer_value, weights[-1]))
         model_layer_values.append(layer_value)
         return model_layer_values
-
+    
+    # advanced network with rec activation and noise;
     def model2(self, x, weights, p_drop_input, p_drop_hidden):
         model_layer_values = []
         x = self.dropout(x, p_drop_input)
@@ -98,10 +100,10 @@ class ann():
         return model_layer_values
     
     # Load, init, and run function
-    def main(self):
+    def main(self, silent=False):
         
         # Load training and test data
-        training_x, test_x, training_y, test_y = load.mnist(onehot=True)
+        training_x, test_x, training_y, test_y = load.game2048()
         
         # Symbolic variables
         x = tensor.fmatrix()
@@ -120,40 +122,48 @@ class ann():
         # Initialize model
         model_layer_noise = self.model2(x, weights, 0.2, 0.5)
         model_layer_values = self.model2(x, weights, 0., 0.)
-        y_x = tensor.argmax(model_layer_values[-1], axis=1)
+        #y_x = tensor.argmax(model_layer_values[-1], axis=1)
+        y_x = model_layer_values[-1]
         
         # Initialize the update function
         cost = tensor.mean(tensor.nnet.categorical_crossentropy(
                                                 model_layer_noise[-1], y))
         params = weights
-        updates = self.RMSprop(cost, params)
-        
+        updates = self.RMSprop(cost, params) # SGD / RMSprop
+
         # Initialize core functionality
         train = theano.function(
                         inputs=[x, y],
                         outputs=cost, 
                         updates=updates,
                         allow_input_downcast=True)
-        predict = theano.function(
+        self.predict = theano.function(
                         inputs=[x], 
                         outputs=y_x, 
                         allow_input_downcast=True)
         
-        # Run mnist training and tests
-        print("TRAINING...")
+        # Training on mnist
+        if not silent: print("\nTRAINING...")
         for i in range(NUMBER_OF_RUNS):
-            print("Iteration ", i+1, "/", NUMBER_OF_RUNS) 
             for start, end in zip(range(0, len(training_x), BATCH_SIZE),
-                                 range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
+                            range(BATCH_SIZE, len(training_x), BATCH_SIZE)):
                 cost = train(training_x[start:end], training_y[start:end])
-        print("\nTESTING ON: MNIST TRAINING SET...")
-        print(numpy.mean(numpy.argmax(training_y, axis=1) == 
-                predict(training_x))*100, "percent correct")
-        print("\nTESTING ON: MNIST TEST SET...")
-        print(numpy.mean(numpy.argmax(test_y, axis=1) == predict(test_x))*100,
-                "percent correct")
+            if not silent: print("Iteration ", i+1, "/", NUMBER_OF_RUNS, "(", 
+                        numpy.mean(numpy.argmax(test_y, axis=1) 
+                        == self.predict(test_x))*100, ")")
+        
 
     # Run a blind test
     def blind_test(self, feature_sets):
-        print(feature_sets)
+        print("\nBLIND TESTING...")
+        feature_sets = numpy.asarray(feature_sets)
+        feature_sets = feature_sets/255.
+        result = self.predict(feature_sets[0])
+        result = result.tolist()
+        print("Result: ", result)
+        return result
+
+    def predict_move(self, board):
+        result = self.predict(board)
+        return result[0] 
 

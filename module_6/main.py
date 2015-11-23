@@ -2,15 +2,17 @@ import game as myGame
 from board import Board
 import random
 import os
-import ann
+import ann as annie
 import numpy
 from load import normalize
 from ai2048demo import welch
 
 moves = [Board.LEFT, Board.UP, Board.RIGHT, Board.DOWN]
 
+ann = annie.ann([1200])
+
 def setup_ai(silent=False):
-    ann.run(silent)
+    ann.main(silent)
 
 def get_ai_move(game):
     board = get_board_weird(game)
