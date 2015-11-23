@@ -8,7 +8,7 @@ from theano import tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # Constants
-NUMBER_OF_RUNS = 1
+NUMBER_OF_RUNS = 10
 INPUT_SIZE = 16
 OUTPUT_SIZE = 4
 LEARNING_RATE = 0.001
