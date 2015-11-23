@@ -52,5 +52,5 @@ def game2048():
     training_y = numpy.concatenate(labels)#labels[1]# + labels[1]
     #print(training_x)
     #print(training_y)
-    return trX, trX, trY, trY
+    return training_x, training_x, training_y, training_y
 
