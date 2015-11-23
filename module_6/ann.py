@@ -85,7 +85,7 @@ predict = theano.function(inputs=[x], outputs=py_x, allow_input_downcast=True)
 def run():
     numpy.set_printoptions(threshold=numpy.nan)
     #for i in range(NUMBER_OF_RUNS):
-    n = 5
+    n = 1
     for i in range(n):
         print("Training iteration", i+1, "of", n)
         for start, end in zip(range(0, len(training_x), 128),

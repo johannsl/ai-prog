@@ -5,6 +5,7 @@ import os
 import ann
 import numpy
 from load import normalize
+from ai2048demo import welch
 
 moves = [Board.LEFT, Board.UP, Board.RIGHT, Board.DOWN]
 
@@ -21,7 +22,8 @@ def get_ai_move(game):
 def get_ai_moves(game):
     board = get_board_weird(game)
     board = numpy.asarray(board)
-    return ann.predict_move(normalize(board))
+    #board = normalize(board)
+    return ann.predict_move(board)
 
 def get_random_move():
     return random.choice(moves)
@@ -88,11 +90,11 @@ def run_ai(n):
     setup_ai()
     results = []
     for i in range(n):
-        print("Iteration", i+1, "of", n)
+        print("AI player iteration", i+1, "of", n)
         game = myGame.Game()
         results.append(play_ai(game))
-    print("AI player results")
-    print_results(results)
+    #print("AI player results")
+    #print_results(results)
     return results
 
 def run_random(n):
@@ -100,9 +102,9 @@ def run_random(n):
     for i in range(n):
         game = myGame.Game()
         results.append(play_random(game))
-        print("Iteration", i+1, "of", n)
-    print("Random player results")
-    print_results(results)
+        print("Random player iteration", i+1, "of", n)
+    #print("Random player results")
+    #print_results(results)
     return results
 
 def print_results(results):
@@ -111,14 +113,17 @@ def print_results(results):
     print("Avg:", float(sum(results)/len(results)))
     
 def benchmark(n):
-    n = 50
     ai_result = run_ai(n)
     random_result = run_random(n)
     ai_avg = float(sum(ai_result)/len(ai_result))
     random_avg = float(sum(random_result)/len(random_result))
-    print("AI average score:", ai_avg)
-    print("Random average score:", random_avg)
+    print("AI player results")
+    print_results(ai_result)
+    print("Random player results")
+    print_results(random_result)
     print("Difference:", ai_avg - random_avg)
+    print("Demo points:", welch(random_result, ai_result))
+
 
 if __name__ == "__main__":
     benchmark(50)

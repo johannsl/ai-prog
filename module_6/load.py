@@ -45,7 +45,7 @@ def game2048():
         #print("labbel", labbel)
         #labbel = one_hot(labbel, 16)
         #print("HOT labbel", labbel)
-        data = normalize(data)
+        #data = normalize(data)
         datas.append(data)
         labels.append(labbel)
     trX = datas[0]# + datas[1]
