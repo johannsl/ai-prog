@@ -8,9 +8,9 @@ def one_hot(x,n):
     if type(x) == list:
         x = numpy.array(x)
     x = x.flatten()
-    o_h = numpy.zeros((len(x),n))
-    o_h[numpy.arange(len(x)),x] = 1
-    return o_h
+    one_hot = numpy.zeros((len(x),n))
+    one_hot[numpy.arange(len(x)),x] = 1
+    return one_hot
 
 def normalize(data):
     for i in range(len(data)):
@@ -48,8 +48,9 @@ def game2048():
         data = normalize(data)
         datas.append(data)
         labels.append(labbel)
-    trX = numpy.concatenate(datas)#datas[1]# + datas[1]
-    trY = numpy.concatenate(labels)#labels[1]# + labels[1]
-    #print(trX)
-    #print(trY)
+    training_x = numpy.concatenate(datas)#datas[1]# + datas[1]
+    training_y = numpy.concatenate(labels)#labels[1]# + labels[1]
+    #print(training_x)
+    #print(training_y)
     return trX, trX, trY, trY
+
