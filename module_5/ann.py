@@ -164,8 +164,8 @@ class ann():
         print("\nBLIND TESTING...")
         feature_sets = numpy.asarray(feature_sets)
         feature_sets = feature_sets/255.
-        result = self.predict(feature_sets[0])
+        result = self.predict(feature_sets)
         result = result.tolist()
-        print("Result: ", result)
+        #print("Result: ", result)
         return result
 
